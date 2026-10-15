@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { Entry } from "@/components/Entry";
 import { groupByDay, itemsQuery, monthKey } from "@/lib/items";
 
@@ -30,7 +30,8 @@ function ReadView() {
   const shown = items.filter((i) => monthKey(i.item_date) === month).reverse();
   const streamRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  // Scroll to top before paint so switching views never shows a jump.
+  useLayoutEffect(() => {
     streamRef.current?.scrollTo({ top: 0 });
   }, [month]);
 
