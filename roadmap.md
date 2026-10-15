@@ -27,3 +27,4 @@
 - Ctrl/Cmd+Z removes the last mark (newest first) and undoes an auto-capital.
 - Auto-capitals on, always: first word of a line and after ". ", "? ", "! " — Ctrl/Cmd+Z reverts.
 - Overlapping marks verified in a test browser: two marks sharing words both render and both persist.
+- Fixed: marks landing on the wrong words (blank lines were doubled on every save), Esc now closes from the source fields too, 60s close also runs while the tab is in the background.
