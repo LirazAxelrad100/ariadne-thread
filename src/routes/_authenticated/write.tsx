@@ -64,7 +64,10 @@ function WriteView() {
   }, []);
 
   const close = useCallback(async () => {
+    const started = draft.current.startedAt;
     await flush();
+    // Something new landed in the box while saving (e.g. a capture): keep it.
+    if (draft.current.startedAt !== started) return;
     draft.current = { id: null, body: "", startedAt: new Date().toISOString() };
     localStorage.removeItem(DRAFT_KEY);
     setBoxBody("");
