@@ -122,6 +122,32 @@ export function MarkedBody({
   const [slot, setSlot] = useState<HTMLElement | null>(null);
   // Marks made here since the last keystroke; Ctrl/Cmd+Z removes them newest first.
   const undoStack = useRef<string[]>([]);
+  // Auto-capital after ". ", "? ", "! " — Ctrl/Cmd+Z right after puts the small letter back.
+  const lastCap = useRef<{ node: Text; at: number; lower: string } | null>(null);
+  const autoCap = (ev: InputEvent) => {
+    if (ev.inputType !== "insertText" || !ev.data || ev.data.length !== 1) return;
+    const ch = ev.data;
+    if (ch === ch.toUpperCase()) return;
+    const sel = window.getSelection();
+    const node = sel?.anchorNode;
+    if (!sel || !node || node.nodeType !== Node.TEXT_NODE) return;
+    const at = sel.anchorOffset - 1;
+    const t = node.textContent ?? "";
+    if (at < 0 || t[at] !== ch || !/[.!?][\s\u00a0]+$/.test(t.slice(0, at))) return;
+    node.textContent = t.slice(0, at) + ch.toUpperCase() + t.slice(at + 1);
+    sel.collapse(node, at + 1);
+    lastCap.current = { node: node as Text, at, lower: ch };
+  };
+  const undoCap = () => {
+    const c = lastCap.current;
+    lastCap.current = null;
+    if (!c || !c.node.isConnected) return false;
+    const t = c.node.textContent ?? "";
+    if (t[c.at] !== c.lower.toUpperCase()) return false;
+    c.node.textContent = t.slice(0, c.at) + c.lower + t.slice(c.at + 1);
+    window.getSelection()?.collapse(c.node, c.at + 1);
+    return true;
+  };
 
   useLayoutEffect(() => {
     if (!actions) return;
@@ -274,8 +300,12 @@ export function MarkedBody({
         suppressContentEditableWarning
         style={editable ? { outline: "none" } : undefined}
         onPaste={editable ? plainPaste : undefined}
-        onInput={editable ? () => { undoStack.current = []; if (ref.current) { listOnInput(ref.current); onEdit?.(domToMd(ref.current)); } } : undefined}
-        onKeyDown={editable ? (e) => { if (ref.current && !enterBelowComment(e, ref.current)) listOnKeyDown(e, ref.current); } : undefined}
+        onInput={editable ? (e) => { undoStack.current = []; lastCap.current = null; if (ref.current) { autoCap(e.nativeEvent as InputEvent); listOnInput(ref.current); onEdit?.(domToMd(ref.current)); } } : undefined}
+        onKeyDown={editable ? (e) => {
+          if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z" && undoCap()) { e.preventDefault(); if (ref.current) onEdit?.(domToMd(ref.current)); return; }
+          if (e.key.length === 1 || e.key === "Backspace" || e.key === "Enter") lastCap.current = null;
+          if (ref.current && !enterBelowComment(e, ref.current)) listOnKeyDown(e, ref.current);
+        } : undefined}
       />
       {pop && (
         <div
