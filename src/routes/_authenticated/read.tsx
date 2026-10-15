@@ -27,6 +27,11 @@ function ReadView() {
   const navigate = useNavigate();
   const month = m ?? (items[0] ? monthKey(items[0].item_date) : monthKey(new Date()));
   const shown = items.filter((i) => monthKey(i.item_date) === month);
+  const streamRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    streamRef.current?.scrollTo({ top: 0 });
+  }, [month]);
 
   if (!items.length) {
     return (
