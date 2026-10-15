@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { fetchTodayNotes, hhmm, saveNote, type NoteRow } from "@/lib/notes";
 import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
 
@@ -102,7 +102,7 @@ function WriteView() {
   // Keep the newest past note visible just above the writing box: stick to the bottom
   // when notes change or the box grows, unless an earlier note is being edited.
   const streamRef = useRef<HTMLElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = streamRef.current;
     if (!el) return;
     const toBottom = () => { if (!el.contains(document.activeElement)) el.scrollTop = el.scrollHeight; };
