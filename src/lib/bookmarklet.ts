@@ -1,7 +1,9 @@
 /** The bookmarklet source. It never saves: it reads the page in the user's own
- * browser (so paywalled pages work) and opens the app's /capture page in the
- * same tab with everything in the URL fragment, which never reaches a server.
- * Same-tab navigation keeps the user's existing session, so no re-sign-in. */
+ * browser (so paywalled pages work), opens /capture?bm=1 in the tab named
+ * "ariadne" (an already-open app tab is reused), and hands the page over by
+ * postMessage once that tab says it's ready. A whole article is too big for a
+ * URL ("Payload Too Large"), so only a short text may ride in the hash, as a
+ * fallback when the tab can't be opened. */
 export function bookmarkletHref(origin: string) {
   const js = `(function(){
 var g=function(q){var e=document.querySelector(q);return e?(e.getAttribute('content')||e.textContent||'').trim():''};
@@ -18,8 +20,12 @@ var w=g('meta[name="author"]')||g('meta[property="article:author"]')||g('[rel="a
 if(/^https?:/.test(w))w='';
 var h=document.querySelector('h1.post-title,article h1,main h1,h1');
 var d={url:location.href,title:(h&&h.innerText.trim())||g('meta[property="og:title"]')||document.title,text:s.slice(0,60000),writer:w.slice(0,120)};
-var u=${JSON.stringify(origin)}+'/capture#'+encodeURIComponent(JSON.stringify(d));
-location.href=u;
+var O=${JSON.stringify(origin)};
+var w=window.open(O+'/capture?bm=1','ariadne');
+if(!w){var u=O+'/capture#'+encodeURIComponent(JSON.stringify(d));if(u.length<8000){location.href=u}else{alert('Ariadne: allow pop-ups for this site, then click again.')}return}
+var f=function(e){if(e.origin===O&&e.data==='ariadne:ready'){try{e.source.postMessage({type:'ariadne:page',d:d},O)}catch(_){}}if(e.origin===O&&e.data==='ariadne:got'){window.removeEventListener('message',f)}};
+window.addEventListener('message',f);
+try{w.focus()}catch(_){}
 })()`;
   return "javascript:" + encodeURIComponent(js.replace(/\n/g, ""));
 }
