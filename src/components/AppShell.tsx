@@ -4,7 +4,7 @@ import { itemsQuery, monthKey, monthLabel, SYNTH_MIN } from "@/lib/items";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { LogoMark, ThreadIcon } from "@/components/Logo";
 import { signOut } from "@/lib/auth";
-import { bookmarkletHref } from "@/lib/bookmarklet";
+import { BookmarkletLink } from "@/components/BookmarkletLink";
 
 function useNow() {
   const [now, setNow] = useState(() => new Date());
@@ -147,11 +147,7 @@ function AccountMenu() {
           <div className="meta" style={{ whiteSpace: "normal", wordBreak: "break-all" }}>{user.email}</div>
         </div>
         <div className="bmBlock">
-          <a className="btn" href={bookmarkletHref(window.location.origin)}
-            onClick={(e) => e.preventDefault()} draggable title="Drag me to your bookmarks bar">
-            <ThreadIcon />
-            Capture to Ariadne
-          </a>
+          <BookmarkletLink />
           <div className="bmHint">Drag it to your bookmarks bar. On any page, select a passage and click it. Desktop only. On a phone, paste text into the box.</div>
         </div>
         <button role="menuitem" onClick={onSignOut}>Sign out</button>
