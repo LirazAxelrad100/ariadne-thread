@@ -133,7 +133,7 @@ export function MarkedBody({
       after.set(block, line);
     }
     setSlot(newSlot);
-  }, [body, annots, editable, plain, editing, writer]);
+  }, [body, annotsKey, editable, plain, editing, writer]);
 
   function place(rect: DOMRect) {
     const w = wrapRef.current!.getBoundingClientRect();
