@@ -86,6 +86,27 @@ export function MarkedBody({
   const [editing, setEditing] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [slot, setSlot] = useState<HTMLElement | null>(null);
+  // Marks made here since the last keystroke; Ctrl/Cmd+Z removes them newest first.
+  const undoStack = useRef<string[]>([]);
+
+  useLayoutEffect(() => {
+    if (!actions) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey) || e.shiftKey || e.key.toLowerCase() !== "z") return;
+      const t = e.target as HTMLElement | null;
+      if (t && t.closest("textarea, input")) return;
+      if (t && t.isContentEditable && t !== ref.current && !ref.current?.contains(t)) return;
+      const id = undoStack.current.pop();
+      if (!id) return;
+      e.preventDefault();
+      e.stopPropagation();
+      setPop(null);
+      if (editing === id) setEditing(null);
+      void actions.remove(id);
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  });
 
   // Callers pass freshly filtered arrays each render, so compare by content.
   const annotsKey = JSON.stringify(annots.map((a) => [a.id, a.start_offset, a.end_offset, a.note]));
@@ -97,8 +118,16 @@ export function MarkedBody({
     prevAnnotsKey.current = annotsKey;
     // While typing, the DOM already holds this text: don't reset the caret.
     // New or changed marks still re-render, or they would never show in an editable box.
-    if (editable && !annotsChanged && !editing && document.activeElement === root && domToMd(root) === body) return;
-    root.innerHTML = mdToHtml(body, plain && !editable);
+    const sameText = editable && domToMd(root) === body;
+    if (sameText && !annotsChanged && !editing && document.activeElement === root) return;
+    if (sameText) {
+      // Keep the box's own structure (lists, caret area): only redo marks and comment lines.
+      root.querySelectorAll(".annot, .annotSlot").forEach((n) => n.remove());
+      root.querySelectorAll("mark[data-id]").forEach((m) => m.replaceWith(...Array.from(m.childNodes)));
+      root.normalize();
+    } else {
+      root.innerHTML = mdToHtml(body, plain && !editable);
+    }
     const segs = segments(body);
     const sorted = [...annots].sort((a, b) => a.start_offset - b.start_offset);
     for (const a of sorted) for (const [f, t] of toRendered(segs, a.start_offset, a.end_offset)) wrap(root, f, t, a.id);
@@ -171,6 +200,8 @@ export function MarkedBody({
     window.getSelection()?.removeAllRanges();
     if (end <= start) return;
     const id = await actions.create({ start, end, quote: text.slice(start, end), note: null });
+    if (id) undoStack.current.push(id);
+    if (id && editable) ref.current?.focus({ preventScroll: true });
     if (id && withComment) { setDraft(""); setEditing(id); }
   }
 
@@ -192,7 +223,7 @@ export function MarkedBody({
         suppressContentEditableWarning
         style={editable ? { outline: "none" } : undefined}
         onPaste={editable ? plainPaste : undefined}
-        onInput={editable ? () => { if (ref.current) { listOnInput(ref.current); onEdit?.(domToMd(ref.current)); } } : undefined}
+        onInput={editable ? () => { undoStack.current = []; if (ref.current) { listOnInput(ref.current); onEdit?.(domToMd(ref.current)); } } : undefined}
         onKeyDown={editable ? (e) => ref.current && listOnKeyDown(e, ref.current) : undefined}
       />
       {pop && (
