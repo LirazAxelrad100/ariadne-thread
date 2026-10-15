@@ -8,7 +8,7 @@
 - None.
 
 ## In progress
-- Step 3 — Read timeline: built from the design picture (dots + times, day headings, captures clamped to 4 lines with Expand, Synthesize gated at 5 entries, month arrows). Read now always opens at the top (window scroll restore switched off); awaiting the user's confirmation.
+- None.
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
 1. Marks & comments — text-lock after the first mark.
