@@ -32,7 +32,7 @@ function WriteView() {
   const { data: allAnnots = [] } = useQuery(annotationsQuery());
 
   const draft = useRef<Draft>({ id: null, body: "", startedAt: new Date().toISOString() });
-  const saving = useRef<Promise<void>>(Promise.resolve());
+  const saving = useRef<Promise<string | null>>(Promise.resolve(null));
   const saveTimer = useRef<number | undefined>(undefined);
   const idleLeft = useRef(IDLE_MS);
   const lastTick = useRef(Date.now());
@@ -56,8 +56,10 @@ function WriteView() {
           persistLocal();
         }
         if (id) setSavedAt(hhmm(new Date()));
+        return id;
       } catch {
-        /* stays in localStorage; next save retries */
+        persistLocal(); /* keep the draft safe; next save retries */
+        return null;
       }
     });
     return saving.current;
@@ -65,9 +67,14 @@ function WriteView() {
 
   const close = useCallback(async () => {
     const started = draft.current.startedAt;
-    await flush();
+    const savedId = await flush();
     // Something new landed in the box while saving (e.g. a capture): keep it.
     if (draft.current.startedAt !== started) return;
+    // Save failed: keep the text in the box and in localStorage, never lose it.
+    if (draft.current.body.trim() && !savedId) {
+      persistLocal();
+      return;
+    }
     draft.current = { id: null, body: "", startedAt: new Date().toISOString() };
     localStorage.removeItem(DRAFT_KEY);
     setBoxBody("");
