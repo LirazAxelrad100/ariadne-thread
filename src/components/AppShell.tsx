@@ -147,6 +147,8 @@ function AccountMenu() {
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
+        onMouseEnter={onEnter}
+        onMouseLeave={() => open && onLeave()}
         style={avatar ? { padding: 0, overflow: "hidden" } : undefined}
       >
         {avatar ? (
@@ -155,7 +157,7 @@ function AccountMenu() {
           initial
         )}
       </button>
-      <div className="menu" role="menu" hidden={!open}>
+      <div className="menu" role="menu" hidden={!open} onMouseEnter={onEnter} onMouseLeave={onLeave}>
         <div style={{ padding: "6px 10px 8px", lineHeight: 1.4 }}>
           {name && name !== user.email && <div style={{ fontSize: 13.5, fontWeight: 500 }}>{name}</div>}
           <div className="meta" style={{ whiteSpace: "normal", wordBreak: "break-all" }}>{user.email}</div>
