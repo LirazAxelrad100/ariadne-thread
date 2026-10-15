@@ -60,6 +60,7 @@ export function domToMd(root: HTMLElement): string {
     node.childNodes.forEach((c) => {
       if (c.nodeType === Node.TEXT_NODE) { cur += (c.textContent ?? "").replace(/\u00a0/g, " "); open = true; }
       else if (c instanceof Element) {
+        if (c.closest(".annot, .annotSlot")) return; // comment lines are not body text
         if (c.tagName === "BR") { open = true; push(); }
         else if (/^(UL|OL)$/.test(c.tagName)) { push(); walkList(c, 0); }
         else if (/^(DIV|P)$/.test(c.tagName)) { push(); walk(c); if (open || !c.textContent) { open = true; push(); } }
