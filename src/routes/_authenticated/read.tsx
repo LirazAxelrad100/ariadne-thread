@@ -26,7 +26,8 @@ function ReadView() {
   const { m } = Route.useSearch();
   const navigate = useNavigate();
   const month = m ?? (items[0] ? monthKey(items[0].item_date) : monthKey(new Date()));
-  const shown = items.filter((i) => monthKey(i.item_date) === month);
+  // Read runs oldest → newest, top to bottom (user rule); items arrive newest-first.
+  const shown = items.filter((i) => monthKey(i.item_date) === month).reverse();
   const streamRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ function ReadView() {
         <div className="inner" style={{ alignItems: "center", textAlign: "center", paddingTop: "12vh" }}>
           <p style={{ margin: 0, fontSize: 17, fontWeight: 300 }}>Nothing to read yet.</p>
           <p style={{ margin: "4px 0 0", fontSize: 15, color: "var(--ink-recede)" }}>
-            Your notes and captures will gather here, day by day, newest first.
+            Your notes and captures will gather here, day by day.
           </p>
           <p style={{ marginTop: 14, fontSize: 15 }}>
             <Link to="/write" style={{ color: "var(--ink)" }}>Write your first thought</Link>
