@@ -87,11 +87,15 @@ export function MarkedBody({
   const [draft, setDraft] = useState("");
   const [slot, setSlot] = useState<HTMLElement | null>(null);
 
+  const prevAnnots = useRef(annots);
   useLayoutEffect(() => {
     const root = ref.current;
     if (!root) return;
+    const annotsChanged = prevAnnots.current !== annots;
+    prevAnnots.current = annots;
     // While typing, the DOM already holds this text: don't reset the caret.
-    if (editable && document.activeElement === root && domToMd(root) === body) return;
+    // New or changed marks still re-render, or they would never show in an editable box.
+    if (editable && !annotsChanged && !editing && document.activeElement === root && domToMd(root) === body) return;
     root.innerHTML = mdToHtml(body, plain && !editable);
     const segs = segments(body);
     const sorted = [...annots].sort((a, b) => a.start_offset - b.start_offset);

@@ -127,6 +127,7 @@ function WriteView() {
       setLiveTime(new Date());
     }
     draft.current.body = body;
+    setBoxBody(body);
     idleLeft.current = IDLE_MS;
     persistLocal();
     window.clearTimeout(saveTimer.current);
