@@ -56,8 +56,10 @@ function WriteView() {
           persistLocal();
         }
         if (id) setSavedAt(hhmm(new Date()));
+        return id;
       } catch {
-        /* stays in localStorage; next save retries */
+        persistLocal(); /* keep the draft safe; next save retries */
+        return null;
       }
     });
     return saving.current;
