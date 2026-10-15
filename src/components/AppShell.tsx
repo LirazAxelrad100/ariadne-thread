@@ -105,19 +105,33 @@ function AccountMenu() {
   const avatar = meta.avatar_url || meta.picture;
   const initial = (name || "?").trim().charAt(0).toUpperCase();
 
+  // The menu closes by itself: on an outside click, Esc, after dragging the
+  // bookmarklet out, when the window loses focus, or 1.5s after the pointer leaves it.
+  const leaveTimer = useRef<number | undefined>(undefined);
   useEffect(() => {
     if (!open) return;
+    const close = () => setOpen(false);
     const onDown = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node)) close();
     };
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
     document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onKey);
+    document.addEventListener("dragend", close);
+    window.addEventListener("blur", close);
     return () => {
+      window.clearTimeout(leaveTimer.current);
       document.removeEventListener("mousedown", onDown);
       document.removeEventListener("keydown", onKey);
+      document.removeEventListener("dragend", close);
+      window.removeEventListener("blur", close);
     };
   }, [open]);
+  const onLeave = () => {
+    window.clearTimeout(leaveTimer.current);
+    leaveTimer.current = window.setTimeout(() => setOpen(false), 1500);
+  };
+  const onEnter = () => window.clearTimeout(leaveTimer.current);
 
   async function onSignOut() {
     setOpen(false);
