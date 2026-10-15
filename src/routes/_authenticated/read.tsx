@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import { Entry } from "@/components/Entry";
 import { groupByDay, itemsQuery, monthKey } from "@/lib/items";
 
@@ -26,6 +27,11 @@ function ReadView() {
   const navigate = useNavigate();
   const month = m ?? (items[0] ? monthKey(items[0].item_date) : monthKey(new Date()));
   const shown = items.filter((i) => monthKey(i.item_date) === month);
+  const streamRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    streamRef.current?.scrollTo({ top: 0 });
+  }, [month]);
 
   if (!items.length) {
     return (
@@ -44,7 +50,7 @@ function ReadView() {
   }
 
   return (
-    <main className="stream">
+    <main className="stream" ref={streamRef}>
       <div className="inner">
         {groupByDay(shown).map((g) => (
           <section key={g.key}>
