@@ -67,9 +67,14 @@ function WriteView() {
 
   const close = useCallback(async () => {
     const started = draft.current.startedAt;
-    await flush();
+    const savedId = await flush();
     // Something new landed in the box while saving (e.g. a capture): keep it.
     if (draft.current.startedAt !== started) return;
+    // Save failed: keep the text in the box and in localStorage, never lose it.
+    if (draft.current.body.trim() && !savedId) {
+      persistLocal();
+      return;
+    }
     draft.current = { id: null, body: "", startedAt: new Date().toISOString() };
     localStorage.removeItem(DRAFT_KEY);
     setBoxBody("");
