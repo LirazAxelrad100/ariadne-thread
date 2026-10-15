@@ -39,7 +39,7 @@ function wrap(root: HTMLElement, from: number, to: number, id: string) {
     if (from > a) node = node.splitText(from - a);
     if (to < z) node.splitText(to - Math.max(a, from));
     const m = document.createElement("mark");
-    m.dataset.id = id;
+    m.dataset["id"] = id;
     node.parentNode!.insertBefore(m, node);
     m.appendChild(node);
   }
@@ -76,8 +76,8 @@ export function MarkedBody({
   className?: string;
   plain?: boolean;
   editable?: boolean;
-  actions?: MarkActions;
-  onEdit?: (body: string) => void;
+  actions?: MarkActions | undefined;
+  onEdit?: ((body: string) => void) | undefined;
 }) {
   const { data: writer = "" } = useQuery(writerQuery());
   const ref = useRef<HTMLDivElement>(null);
@@ -150,7 +150,7 @@ export function MarkedBody({
     const m = (e.target as HTMLElement).closest("mark[data-id]") as HTMLElement | null;
     if (m) {
       e.stopPropagation();
-      setPop({ kind: "mark", ...place(m.getBoundingClientRect()), id: m.dataset.id! });
+      setPop({ kind: "mark", ...place(m.getBoundingClientRect()), id: m.dataset["id"]! });
     } else setPop(null);
   }
 
