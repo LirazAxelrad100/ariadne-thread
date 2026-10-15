@@ -9,7 +9,9 @@ if(!s){var a=document.querySelector('article')||document.querySelector('main')||
 var w=g('meta[name="author"]')||g('meta[property="article:author"]')||g('[rel="author"]');
 if(/^https?:/.test(w))w='';
 var d={url:location.href,title:g('meta[property="og:title"]')||document.title,text:s.slice(0,60000),writer:w.slice(0,120)};
-window.open(${JSON.stringify(origin)}+'/capture#'+encodeURIComponent(JSON.stringify(d)),'_blank');
+var u=${JSON.stringify(origin)}+'/capture#'+encodeURIComponent(JSON.stringify(d));
+var t=null;try{t=window.open(u,'_blank');}catch(e){}
+if(!t)location.href=u;
 })()`;
   return "javascript:" + encodeURIComponent(js.replace(/\n/g, ""));
 }
