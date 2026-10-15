@@ -1,6 +1,8 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+/* Ariadne design system: source-of-truth values from ariadne-base.css (do not restyle). */
+@import "./ariadne.css";
 
 @custom-variant dark (&:is(.dark *));
 
