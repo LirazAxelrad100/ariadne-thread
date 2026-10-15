@@ -92,9 +92,10 @@ function WriteView() {
         }
       }
     } catch { /* ignore */ }
-    const inc = localStorage.getItem(INCOMING_KEY);
-    if (!inc) return;
-    void (async () => {
+    // Deferred so a dev-mode remount can't close the capture right after it lands.
+    const t = window.setTimeout(() => void (async () => {
+      const inc = localStorage.getItem(INCOMING_KEY);
+      if (!inc) return;
       try {
         const c = JSON.parse(inc) as Incoming;
         if (draft.current.body.trim()) await close();
@@ -107,7 +108,8 @@ function WriteView() {
         setLiveTime(new Date());
         if (draft.current.body) await flush();
       } catch { localStorage.removeItem(INCOMING_KEY); }
-    })();
+    })(), 0);
+    return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flush]);
 
