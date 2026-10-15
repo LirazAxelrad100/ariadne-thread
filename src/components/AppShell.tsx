@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate, useRouteContext } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { itemsQuery, monthKey, monthLabel, SYNTH_MIN } from "@/lib/items";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { LogoMark, ThreadIcon } from "@/components/Logo";
 import { signOut } from "@/lib/auth";
@@ -20,17 +21,25 @@ function formatWriting(d: Date) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { pathname } = useLocation();
-  const view: "write" | "read" = pathname.startsWith("/read") ? "read" : "write";
+  const { pathname, search } = useLocation();
+  const view: "write" | "read" = pathname.startsWith("/write") ? "write" : "read";
+  const isItem = pathname.startsWith("/item");
   const now = useNow();
+  const { data: items = [] } = useQuery({ ...itemsQuery(), enabled: view === "read" });
 
   useEffect(() => {
-    const cls = view === "read" ? "mode-reading" : "mode-writing";
+    const cls = isItem ? "mode-item" : view === "read" ? "mode-reading" : "mode-writing";
     document.body.classList.add(cls);
     return () => document.body.classList.remove(cls);
-  }, [view]);
+  }, [view, isItem]);
 
-  const month = now.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+  const months = [...new Set(items.map((i) => monthKey(i.item_date)))]; // newest first
+  const m = (search as { m?: string }).m;
+  const month = m ?? months[0] ?? monthKey(now);
+  const idx = months.indexOf(month);
+  const older = idx >= 0 ? months[idx + 1] : undefined;
+  const newer = idx > 0 ? months[idx - 1] : undefined;
+  const count = items.filter((i) => monthKey(i.item_date) === month).length;
 
   return (
     <>
@@ -50,15 +59,20 @@ export function AppShell({ children }: { children: ReactNode }) {
           <>
             <span className="barTitle">Read</span>
             <nav className="monthNav" aria-label="Month">
-              <button className="mArrow" aria-label="Previous month" disabled>‹</button>
-              <button className="mLabel" aria-expanded="false">{month}</button>
-              <button className="mArrow" aria-label="Next month" disabled>›</button>
+              <Link to="/read" search={{ m: older }} className="mArrow" aria-label="Previous month"
+                disabled={!older} style={!older ? { opacity: 0.3, pointerEvents: "none" } : undefined}>‹</Link>
+              <span className="mLabel">{monthLabel(month)}</span>
+              <Link to="/read" search={{ m: newer }} className="mArrow" aria-label="Next month"
+                disabled={!newer} style={!newer ? { opacity: 0.3, pointerEvents: "none" } : undefined}>›</Link>
             </nav>
+            <span className="mono">{count} {count === 1 ? "entry" : "entries"}</span>
           </>
         )}
         <div className="spacer" />
         {view === "read" && (
-          <button className="btn" type="button">
+          <button className="btn" type="button" disabled={items.length < SYNTH_MIN}
+            title={items.length < SYNTH_MIN ? `Synthesize needs at least ${SYNTH_MIN} entries` : undefined}
+            style={items.length < SYNTH_MIN ? { opacity: 0.45, cursor: "default" } : undefined}>
             <ThreadIcon />
             Synthesize
           </button>

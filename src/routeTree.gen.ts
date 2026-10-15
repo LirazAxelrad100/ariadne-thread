@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedReadRouteImport } from './routes/_authenticated/read'
 import { Route as AuthenticatedWriteRouteImport } from './routes/_authenticated/write'
+import { Route as AuthenticatedItemIdRouteImport } from './routes/_authenticated/item.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -39,18 +40,25 @@ const AuthenticatedWriteRoute = AuthenticatedWriteRouteImport.update({
   path: '/write',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedItemIdRoute = AuthenticatedItemIdRouteImport.update({
+  id: '/item/$id',
+  path: '/item/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/read': typeof AuthenticatedReadRoute
   '/write': typeof AuthenticatedWriteRoute
+  '/item/$id': typeof AuthenticatedItemIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/read': typeof AuthenticatedReadRoute
   '/write': typeof AuthenticatedWriteRoute
+  '/item/$id': typeof AuthenticatedItemIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +67,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/read': typeof AuthenticatedReadRoute
   '/_authenticated/write': typeof AuthenticatedWriteRoute
+  '/_authenticated/item/$id': typeof AuthenticatedItemIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/read' | '/write'
+  fullPaths: '/' | '/auth' | '/read' | '/write' | '/item/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/read' | '/write'
+  to: '/' | '/auth' | '/read' | '/write' | '/item/$id'
   id:
     | '__root__'
     | '/'
@@ -72,6 +81,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/read'
     | '/_authenticated/write'
+    | '/_authenticated/item/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -117,17 +127,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWriteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/item/$id': {
+      id: '/_authenticated/item/$id'
+      path: '/item/$id'
+      fullPath: '/item/$id'
+      preLoaderRoute: typeof AuthenticatedItemIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedReadRoute: typeof AuthenticatedReadRoute
   AuthenticatedWriteRoute: typeof AuthenticatedWriteRoute
+  AuthenticatedItemIdRoute: typeof AuthenticatedItemIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedReadRoute: AuthenticatedReadRoute,
   AuthenticatedWriteRoute: AuthenticatedWriteRoute,
+  AuthenticatedItemIdRoute: AuthenticatedItemIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
