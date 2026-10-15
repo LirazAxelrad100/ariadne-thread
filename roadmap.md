@@ -7,9 +7,9 @@
 - Step 4 — Marks & comments: select text in an opened item and a dark popup offers Mark (amber highlight) and Comment (highlight plus a field under that paragraph; Enter saves it as a grey italic "↳ Liraz" line, no border or timestamp). Clicking a mark offers Edit comment and Delete mark. Body text locks once the first mark exists — reading and annotating only, with the reason shown. Marks and comments also show in the Read timeline and work inside the writing box before a note is saved (verified in a test browser: mark, comment, reload persistence). Back arrow returns to Read. Verified by the user.
 - Rail alignment fix: dot, time and first line of every entry share one centre line in both views (and on the composer's live dot/time) via a shared `--l1` variable (28.4px Write, 30.3px Read/item; mobile 25.5/27.1). Byline, capture title and lock line get the same first-line line-height; lock line sits 6px above the body.
 
+- Step 5 — Capture: bookmarklet ("Capture to Ariadne" in the account menu) opens the app with title, link, writer and text in the writing box; logged-out captures wait through sign-in; "Add its source" turns a pasted text into a capture (phone path); optional "What caught you?" line; no AI summary, no badge (per spec). Bookmarklet also goes into the first-visit steps when empty states are built.
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
-1. Capture — desktop bookmarklet + in-app paste on mobile.
 2. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
 3. Synthesis — needs 5+ items, four sections, "From" source links.
 4. Empty states.
