@@ -895,3 +895,35 @@ body.mode-item .composerWrap { display: none; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* ---------- ARIADNE: lists inside an entry body ----------
+   Bullet: 5px round dot in the rail-dot grey-blue, hanging left so text lines up.
+   Second level: same dot as an outline ring, one step further in.
+   Numbers: small mono, soft grey (content, not metadata). */
+.entry .body ul,
+.entry .body ol { list-style: none; margin: 0 0 .7em; padding-inline-start: 1.1em; }
+.entry .body ul:last-child,
+.entry .body ol:last-child { margin-bottom: 0; }
+.entry .body li { position: relative; }
+.entry .body li.lvl2 { margin-inline-start: 1.1em; }
+.entry .body ul > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -1.1em;
+  top: calc(.85em - 2.5px);
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--dot);
+  opacity: .75;
+}
+.entry .body ul > li.lvl2::before { background: transparent; box-shadow: inset 0 0 0 1px var(--dot); }
+.entry .body ol { counter-reset: none; }
+.entry .body ol > li::before {
+  content: attr(data-n);
+  position: absolute;
+  inset-inline-end: calc(100% + .45em);
+  top: .15em;
+  font-family: var(--font-mono);
+  font-size: .78em;
+  color: var(--dot);
+}

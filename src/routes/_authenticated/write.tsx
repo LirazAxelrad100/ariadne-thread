@@ -156,20 +156,62 @@ function WriteView() {
   );
 }
 
-// Enter after a "- " line continues the bullet on the next line.
-function continueBullet(e: React.KeyboardEvent) {
-  if (e.key !== "Enter" || e.shiftKey) return;
+// List typing: Enter continues "- ", "* " or "1. " lines; Enter on an empty item ends the list; Tab / Shift+Tab nest.
+const LIST_RE = /^(\s*)([-*]|\d+\.)\s(.*)$/;
+function caretOffset(el: HTMLElement) {
   const sel = window.getSelection();
-  if (!sel || !sel.rangeCount) return;
+  if (!sel || !sel.rangeCount) return null;
   const range = sel.getRangeAt(0);
   const pre = range.cloneRange();
-  pre.selectNodeContents(e.currentTarget as HTMLElement);
+  pre.selectNodeContents(el);
   pre.setEnd(range.startContainer, range.startOffset);
-  const before = pre.toString();
-  const line = before.slice(before.lastIndexOf("\n") + 1);
-  if (!line.startsWith("- ")) return;
+  return pre.toString().length;
+}
+function setText(el: HTMLElement, text: string, caret: number) {
+  el.innerText = text;
+  const node = el.firstChild;
+  if (node) {
+    const r = document.createRange();
+    r.setStart(node, Math.min(caret, node.textContent?.length ?? 0));
+    r.collapse(true);
+    const sel = window.getSelection();
+    sel?.removeAllRanges();
+    sel?.addRange(r);
+  }
+  el.dispatchEvent(new Event("input", { bubbles: true }));
+}
+function continueBullet(e: React.KeyboardEvent) {
+  if ((e.key !== "Enter" && e.key !== "Tab") || (e.key === "Enter" && e.shiftKey)) return;
+  const el = e.currentTarget as HTMLElement;
+  const pos = caretOffset(el);
+  if (pos == null) return;
+  const text = el.innerText.replace(/\n$/, "");
+  const start = text.lastIndexOf("\n", pos - 1) + 1;
+  const endIdx = text.indexOf("\n", pos);
+  const end = endIdx === -1 ? text.length : endIdx;
+  const line = text.slice(start, end);
+  const m = line.match(LIST_RE);
+  if (e.key === "Tab") {
+    e.preventDefault();
+    if (e.shiftKey) {
+      const cut = line.startsWith("  ") ? 2 : 0;
+      setText(el, text.slice(0, start) + line.slice(cut) + text.slice(end), pos - cut);
+    } else {
+      setText(el, text.slice(0, start) + "  " + line + text.slice(end), pos + 2);
+    }
+    return;
+  }
+  if (!m) return;
   e.preventDefault();
-  document.execCommand("insertText", false, "\n- ");
+  const [, indent = "", marker = "-", rest] = m;
+  if (!(rest ?? "").trim()) {
+    // Empty item: end the list (or step out one level).
+    const out = indent.length >= 2 ? indent.slice(2) + marker + " " : "";
+    setText(el, text.slice(0, start) + out + text.slice(end), start + out.length);
+    return;
+  }
+  const next = /\d/.test(marker) ? `${parseInt(marker) + 1}.` : marker;
+  document.execCommand("insertText", false, `\n${indent}${next} `);
 }
 
 function TodayNote({ note }: { note: NoteRow }) {
@@ -208,7 +250,8 @@ function TodayNote({ note }: { note: NoteRow }) {
         <div className="body">
           {toBlocks(note.body).map((b, i) =>
             b.kind === "p" ? <p key={i} style={{ whiteSpace: "pre-wrap" }}>{b.text}</p>
-              : <ul key={i}>{b.items.map((t, j) => <li key={j}>{t}</li>)}</ul>,
+              : b.kind === "ul" ? <ul key={i}>{b.items.map((t, j) => <li key={j} className={t.level ? "lvl2" : undefined}>{t.text}</li>)}</ul>
+              : <ol key={i}>{b.items.map((t, j) => <li key={j} className={t.level ? "lvl2" : undefined} data-n={`${t.n}.`}>{t.text}</li>)}</ol>,
           )}
         </div>
       )}
