@@ -63,7 +63,7 @@ export function domToMd(root: HTMLElement): string {
         if (c.closest(".annot, .annotSlot")) return; // comment lines are not body text
         if (c.tagName === "BR") { open = true; push(); }
         else if (/^(UL|OL)$/.test(c.tagName)) { push(); walkList(c, 0); }
-        else if (/^(DIV|P)$/.test(c.tagName)) { push(); walk(c); if (open || !c.textContent) { open = true; push(); } }
+        else if (/^(DIV|P)$/.test(c.tagName)) { push(); const before = lines.length; walk(c); if (open || (lines.length === before && !c.textContent)) { open = true; push(); } }
         else { walk(c); }
       }
     });

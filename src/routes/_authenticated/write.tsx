@@ -146,6 +146,20 @@ function WriteView() {
     return () => window.clearInterval(t);
   }, [close]);
 
+  // Esc closes the note from anywhere on the page (the box, the capture fields, or nowhere in particular).
+  // A comment being written handles its own Esc.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      if ((e.target as HTMLElement | null)?.closest?.(".annotInput")) return;
+      e.preventDefault();
+      (document.activeElement as HTMLElement | null)?.blur?.();
+      void close();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [close]);
+
   // Leaving Write closes the note.
   useEffect(() => () => { void close(); }, [close]);
 
@@ -181,7 +195,9 @@ function WriteView() {
 
   const actions: MarkActions = {
     saveBody: async (body) => {
+      // Keep the box's text in step with the text the mark's offsets are counted in.
       draft.current.body = body;
+      setBoxBody(body);
       persistLocal();
       await flush();
     },
@@ -230,13 +246,7 @@ function WriteView() {
           <div
             onPointerDown={() => { idleLeft.current = IDLE_MS; }}
             onInput={() => { idleLeft.current = IDLE_MS; }}
-            onKeyDown={(e) => {
-              idleLeft.current = IDLE_MS;
-              if (e.key === "Escape" && !(e.target as HTMLElement).closest(".annotInput")) {
-                e.preventDefault();
-                void close();
-              }
-            }}
+            onKeyDown={() => { idleLeft.current = IDLE_MS; }}
           >
             <MarkedBody
               body={boxBody}
