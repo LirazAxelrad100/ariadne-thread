@@ -8,13 +8,17 @@
 
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
-1. Marks inside the Write box before saving (brief) — not built yet.
-2. Capture — desktop bookmarklet + in-app paste on mobile.
-3. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
-4. Synthesis — needs 5+ items, four sections, "From" source links.
-5. Empty states.
-6. Landing page (current front page is a stand-in: logo + "Start").
+1. Capture — desktop bookmarklet + in-app paste on mobile.
+2. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
+3. Synthesis — needs 5+ items, four sections, "From" source links.
+4. Empty states.
+5. Landing page (current front page is a stand-in: logo + "Start").
 
 ## Still not supplied
 - `ariadne-base.css` values are in `src/ariadne.css`, but the logo lockup/header mark SVG source, screens 01–11, and `seed.json` from the brief have not been uploaded.
-- Auto-capitalize after a full stop in the writing box — waiting on user's decision
+
+## Extra, beyond the original Step 4
+- Marks & comments inside the Write box before saving (Enter continues below a comment line).
+- Ctrl/Cmd+Z removes the last mark (newest first) and undoes an auto-capital.
+- Auto-capitals on, always: first word of a line and after ". ", "? ", "! " — Ctrl/Cmd+Z reverts.
+- Overlapping marks verified in a test browser: two marks sharing words both render and both persist.
