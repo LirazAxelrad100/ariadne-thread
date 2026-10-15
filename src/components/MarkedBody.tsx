@@ -51,6 +51,40 @@ function blockOf(el: Element, root: HTMLElement): Element {
   return b;
 }
 
+/** Enter at the end of a line that has comments under it starts a new line below the comments. */
+function enterBelowComment(e: React.KeyboardEvent, root: HTMLElement): boolean {
+  if (e.key !== "Enter" || e.shiftKey) return false;
+  const sel = window.getSelection();
+  if (!sel || !sel.isCollapsed || !sel.rangeCount) return false;
+  const r = sel.getRangeAt(0);
+  let block: Node | null = r.startContainer;
+  while (block && block.parentNode !== root) block = block.parentNode;
+  if (!block || (block instanceof Element && /^(UL|OL)$/.test(block.tagName))) return false;
+  // Find the first comment line after the caret's line (loose text at the root counts as one line).
+  let annot: Node | null = block.nextSibling;
+  while (annot && !(annot instanceof Element && annot.matches(".annot, .annotSlot"))) {
+    if (annot instanceof Element && /^(DIV|P|UL|OL)$/.test(annot.tagName)) return false;
+    annot = annot.nextSibling;
+  }
+  if (!annot) return false;
+  const tail = document.createRange();
+  tail.setStart(r.endContainer, r.endOffset);
+  tail.setEndBefore(annot);
+  if (tail.toString().trim()) return false;
+  e.preventDefault();
+  let last = annot as Element;
+  while (last.nextElementSibling?.matches(".annot, .annotSlot")) last = last.nextElementSibling;
+  const d = document.createElement("div");
+  d.appendChild(document.createElement("br"));
+  last.after(d);
+  const c = document.createRange();
+  c.setStart(d, 0);
+  c.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(c);
+  return true;
+}
+
 type Pop =
   | { kind: "new"; x: number; y: number; start: number; end: number }
   | { kind: "mark"; x: number; y: number; id: string };
@@ -128,6 +162,16 @@ export function MarkedBody({
     } else {
       root.innerHTML = mdToHtml(body, plain && !editable);
     }
+    // Loose text at the top of an editable box becomes its own line, so comment lines sit under the whole line.
+    if (editable) {
+      let group: HTMLDivElement | null = null;
+      for (const n of Array.from(root.childNodes)) {
+        const isBlock = n instanceof Element && /^(DIV|P|UL|OL)$/.test(n.tagName);
+        if (isBlock) { group = null; continue; }
+        if (!group) { group = document.createElement("div"); root.insertBefore(group, n); }
+        group.appendChild(n);
+      }
+    }
     const segs = segments(body);
     const sorted = [...annots].sort((a, b) => a.start_offset - b.start_offset);
     for (const a of sorted) for (const [f, t] of toRendered(segs, a.start_offset, a.end_offset)) wrap(root, f, t, a.id);
@@ -161,12 +205,19 @@ export function MarkedBody({
       else (after.get(block) ?? block).after(line);
       after.set(block, line);
     }
+    // Keep an editable line after a trailing comment so writing can continue below it.
+    if (editable && root.lastElementChild?.matches(".annot, .annotSlot")) {
+      const d = document.createElement("div");
+      d.appendChild(document.createElement("br"));
+      root.appendChild(d);
+    }
     setSlot(newSlot);
   }, [body, annotsKey, editable, plain, editing, writer]);
 
   function place(rect: DOMRect) {
     const w = wrapRef.current!.getBoundingClientRect();
-    return { x: rect.left + rect.width / 2 - w.left, y: rect.top - w.top - 10 };
+    const x = rect.left + rect.width / 2 - w.left;
+    return { x: Math.min(Math.max(x, 90), w.width - 90), y: rect.top - w.top - 10 };
   }
 
   function onMouseUp(e: React.MouseEvent) {
@@ -224,12 +275,12 @@ export function MarkedBody({
         style={editable ? { outline: "none" } : undefined}
         onPaste={editable ? plainPaste : undefined}
         onInput={editable ? () => { undoStack.current = []; if (ref.current) { listOnInput(ref.current); onEdit?.(domToMd(ref.current)); } } : undefined}
-        onKeyDown={editable ? (e) => ref.current && listOnKeyDown(e, ref.current) : undefined}
+        onKeyDown={editable ? (e) => { if (ref.current && !enterBelowComment(e, ref.current)) listOnKeyDown(e, ref.current); } : undefined}
       />
       {pop && (
         <div
           className="selPop"
-          style={{ left: pop.x, top: pop.y, transform: "translate(-50%, -100%)" }}
+          style={{ left: pop.x, top: pop.y, transform: "translate(-50%, -100%)", whiteSpace: "nowrap" }}
           onMouseDown={(e) => e.preventDefault()}
           onMouseUp={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
