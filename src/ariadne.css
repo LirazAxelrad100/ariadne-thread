@@ -38,7 +38,18 @@
 
   /* the thread rail gutter — the one breakpoint-sensitive measurement */
   --gutter: 96px;
+
+  /* ARIADNE — height of an entry's first line, so the rail dot, the time and
+     the first line share one centre line. Write: 16.5px × 1.72 = 28.4px;
+     Read and opened items override to 17px × 1.78 = 30.3px. Mobile: 25.5px
+     when writing, 27.1px when reading. --boxTop: composer top padding 16px
+     + 1px border, so the live dot and live time centre on the first line of
+     text inside the box, not on the box's top edge. */
+  --l1: 28.4px;
+  --boxTop: 17px;
 }
+
+body.mode-reading, body.mode-item { --l1: 30.3px; }
 
 * { box-sizing: border-box; }
 
@@ -402,7 +413,7 @@ body.mode-reading .entry { cursor: pointer; }
 .entry .dot {
   position: absolute;
   inset-inline-start: calc(var(--gutter) * -1 - 5px);
-  top: 7px;
+  top: calc(var(--l1) / 2 - 4.5px);
   width: 9px;
   height: 9px;
   border-radius: 999px;
@@ -415,7 +426,8 @@ body.mode-reading .entry { cursor: pointer; }
 .entry .time {
   position: absolute;
   inset-inline-start: calc(var(--gutter) * -1 + 12px);
-  top: 1px;
+  top: 0;
+  line-height: var(--l1);
   font-family: var(--font-mono);
   font-size: 11.5px;
   color: var(--meta);
@@ -526,6 +538,7 @@ body.mode-item .entry .body {
 .byline {
   font-family: var(--font-mono);
   font-size: 11.5px;
+  line-height: var(--l1);
   color: var(--meta);
 }
 
@@ -548,7 +561,7 @@ body.mode-item .entry .body {
 .capTitle {
   font-size: 17px;
   font-weight: 500;
-  line-height: 1.5;
+  line-height: var(--l1);
   color: var(--ink);
 }
 
@@ -643,7 +656,8 @@ mark mark { background: #ecd394; }
 
 /* Shown once the first mark is placed. */
 .lockLine {
-  margin: 0 0 14px;
+  margin: 0 0 6px;
+  line-height: var(--l1);
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--meta-soft);
@@ -742,7 +756,7 @@ body.mode-item .composerWrap { display: none; }
 .liveDot {
   position: absolute;
   inset-inline-start: -6px;
-  top: 7px;
+  top: calc(var(--boxTop) + var(--l1) / 2 - 5px);
   width: 10px;
   height: 10px;
   border-radius: 999px;
@@ -752,7 +766,8 @@ body.mode-item .composerWrap { display: none; }
 .liveTime {
   position: absolute;
   inset-inline-start: 14px;
-  top: 1px;
+  top: var(--boxTop);
+  line-height: var(--l1);
   font-family: var(--font-mono);
   font-size: 11.5px;
   color: var(--accent-live);
@@ -855,9 +870,12 @@ body.mode-item .composerWrap { display: none; }
   body.mode-reading .inner,
   body.mode-item .inner { gap: 18px; }
 
+  :root { --l1: 25.5px; --boxTop: 15px; }
+  body.mode-reading, body.mode-item { --l1: 27.1px; }
+
   .thread { gap: 18px; }
-  .entry .dot { top: 6px; width: 8px; height: 8px; inset-inline-start: calc(var(--gutter) * -1 - 5px); }
-  .entry .time { top: 0; font-size: 11px; inset-inline-start: calc(var(--gutter) * -1 + 10px); }
+  .entry .dot { top: calc(var(--l1) / 2 - 4px); width: 8px; height: 8px; inset-inline-start: calc(var(--gutter) * -1 - 5px); }
+  .entry .time { font-size: 11px; inset-inline-start: calc(var(--gutter) * -1 + 10px); }
 
   body.mode-reading .entry .body,
   body.mode-item .entry .body { font-size: 15.5px; line-height: 1.75; }
@@ -870,8 +888,7 @@ body.mode-item .composerWrap { display: none; }
   /* On a phone the composer never changes height: a box that resizes under
      your hands is worse than one that scrolls. */
   .composer { min-height: 232px; max-height: 232px; }
-  .liveTime { inset-inline-start: 12px; top: 0; font-size: 11px; }
-  .liveDot { top: 6px; }
+  .liveTime { inset-inline-start: 12px; font-size: 11px; }
   .status { font-size: 10.5px; margin-top: 8px; }
   .status .escHint { display: none; }
 
