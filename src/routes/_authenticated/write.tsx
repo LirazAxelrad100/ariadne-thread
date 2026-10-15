@@ -4,6 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ChangeE
 import { fetchTodayNotes, hhmm, INCOMING_KEY, saveNote, type CaptureMeta, type Incoming, type NoteRow } from "@/lib/notes";
 import { annotationsQuery } from "@/lib/marks";
 import { MarkedBody, type MarkActions } from "@/components/MarkedBody";
+import { Entry } from "@/components/Entry";
 import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -214,7 +215,10 @@ function WriteView() {
         <div className="inner">
           {notes.length > 0 && (
             <div className="thread">
-              {notes.filter((n) => n.id !== draft.current.id).map((n) => <TodayNote key={n.id} note={n} />)}
+              {notes.filter((n) => n.id !== draft.current.id).map((n) =>
+                n.type === "capture"
+                  ? <Entry key={n.id} item={n} annots={allAnnots.filter((a) => a.item_id === n.id)} />
+                  : <TodayNote key={n.id} note={n} />)}
             </div>
           )}
         </div>
