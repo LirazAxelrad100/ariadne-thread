@@ -50,7 +50,7 @@ function ReadView() {
   }
 
   return (
-    <main className="stream">
+    <main className="stream" ref={streamRef}>
       <div className="inner">
         {groupByDay(shown).map((g) => (
           <section key={g.key}>
