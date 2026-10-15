@@ -157,13 +157,13 @@ function WriteView() {
 }
 
 // Enter after a "- " line continues the bullet on the next line.
-function continueBullet(e: React.KeyboardEvent<HTMLElement>) {
+function continueBullet(e: React.KeyboardEvent) {
   if (e.key !== "Enter" || e.shiftKey) return;
   const sel = window.getSelection();
   if (!sel || !sel.rangeCount) return;
   const range = sel.getRangeAt(0);
   const pre = range.cloneRange();
-  pre.selectNodeContents(e.currentTarget);
+  pre.selectNodeContents(e.currentTarget as HTMLElement);
   pre.setEnd(range.startContainer, range.startOffset);
   const before = pre.toString();
   const line = before.slice(before.lastIndexOf("\n") + 1);
