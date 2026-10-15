@@ -11,6 +11,8 @@
   - [x] Fix "Payload Too Large": article now handed over by message, not in the link; bookmark reuses an open Ariadne tab (published app only). Verify with user after publish.
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
+0. Make Step 5 look good and re-test with the user. They deleted their bookmark — first thing tomorrow: reload the app, drag **Capture to Ariadne** to the bookmarks bar, then try it on a real article (LinkedIn bullets and a Guardian piece are the known cases).
+1. Bookmarklet button in exactly three places, identical everywhere (same `<a>`, same code, outlined 1px `--control-border`, radius 8px, transparent, 44px tall): account menu panel now (16px padding, 12px between items, instructions line 14px/300 `--ink-recede`, "Desktop browsers only." in `--meta-soft`, Esc or outside click closes); "First steps" on first visit to Write and the landing page later, both with the same button. Never in the header itself.
 2. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
 3. Synthesis — needs 5+ items, four sections, "From" source links.
 4. Empty states.
