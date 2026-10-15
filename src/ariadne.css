@@ -950,3 +950,25 @@ body.mode-item .composerWrap { display: none; }
   font-size: .78em;
   color: var(--dot);
 }
+
+/* ---------- capture in the writing box (Step 5) ---------- */
+.capFields { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.capRow { display: flex; gap: 6px; align-items: center; }
+.capField {
+  flex: 1; min-width: 0; height: 32px; padding: 0 10px;
+  border: 1px solid var(--surface-border); border-radius: 8px;
+  background: var(--white); color: var(--ink); font: inherit; font-size: 14px; font-weight: 300;
+}
+.capField:focus { outline: none; border-color: var(--meta-soft); }
+.capField::placeholder { color: var(--meta-soft); }
+.capFieldTitle { font-weight: 500; }
+.capWhy { font-family: var(--font-mono); font-style: italic; font-size: 13px; }
+.capMine { flex: none; font-size: 12px; color: var(--ink-recede); display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+.capToggle { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
+.bmBlock { padding: 8px 10px 10px; border-top: 1px solid var(--surface-border); border-bottom: 1px solid var(--surface-border); margin: 4px 0; }
+.bmBlock .btn { cursor: grab; text-decoration: none; }
+.bmHint { margin-top: 6px; font-size: 12px; line-height: 1.4; color: var(--meta-soft); white-space: normal; max-width: 240px; }
+@media (max-width: 719px) {
+  .capField { font-size: 16px; height: 36px; }
+  .capRow { flex-wrap: wrap; }
+}
