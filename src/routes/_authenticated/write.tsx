@@ -156,6 +156,22 @@ function WriteView() {
   );
 }
 
+// Enter after a "- " line continues the bullet on the next line.
+function continueBullet(e: React.KeyboardEvent<HTMLElement>) {
+  if (e.key !== "Enter" || e.shiftKey) return;
+  const sel = window.getSelection();
+  if (!sel || !sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  const pre = range.cloneRange();
+  pre.selectNodeContents(e.currentTarget);
+  pre.setEnd(range.startContainer, range.startOffset);
+  const before = pre.toString();
+  const line = before.slice(before.lastIndexOf("\n") + 1);
+  if (!line.startsWith("- ")) return;
+  e.preventDefault();
+  document.execCommand("insertText", false, "\n- ");
+}
+
 function TodayNote({ note }: { note: NoteRow }) {
   const qc = useQueryClient();
   const [editing, setEditing] = useState(false);
