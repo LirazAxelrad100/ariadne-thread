@@ -8,6 +8,7 @@
 - Rail alignment fix: dot, time and first line of every entry share one centre line in both views (and on the composer's live dot/time) via a shared `--l1` variable (28.4px Write, 30.3px Read/item; mobile 25.5/27.1). Byline, capture title and lock line get the same first-line line-height; lock line sits 6px above the body.
 
 - Step 5 — Capture: bookmarklet ("Capture to Ariadne" in the account menu) opens the app with title, link, writer and text in the writing box; logged-out captures wait through sign-in; "Add its source" turns a pasted text into a capture (phone path); optional "What caught you?" line; no AI summary, no badge (per spec). Bookmarklet also goes into the first-visit steps when empty states are built. Verified by the user on a real article after the drag handle was rebuilt to carry the real `javascript:` code.
+  - [x] Fix "Payload Too Large": article now handed over by message, not in the link; bookmark reuses an open Ariadne tab (published app only). Verify with user after publish.
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
 2. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.

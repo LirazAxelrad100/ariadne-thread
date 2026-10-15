@@ -123,6 +123,11 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
 
+  // Name this tab so the bookmarklet's window.open(…, "ariadne") reuses it.
+  useEffect(() => {
+    if (window.top === window) window.name = "ariadne";
+  }, []);
+
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
