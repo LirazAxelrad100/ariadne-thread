@@ -122,7 +122,7 @@ export function MarkedBody({
   const [slot, setSlot] = useState<HTMLElement | null>(null);
   // Marks made here since the last keystroke; Ctrl/Cmd+Z removes them newest first.
   const undoStack = useRef<string[]>([]);
-  // Auto-capital after ". ", "? ", "! " — Ctrl/Cmd+Z right after puts the small letter back.
+  // Auto-capital after ". ", "? ", "! " and at the start of a line — Ctrl/Cmd+Z right after puts the small letter back.
   const lastCap = useRef<{ node: Text; at: number; lower: string } | null>(null);
   const autoCap = (ev: InputEvent) => {
     if (ev.inputType !== "insertText" || !ev.data || ev.data.length !== 1) return;
@@ -133,8 +133,11 @@ export function MarkedBody({
     if (!sel || !node || node.nodeType !== Node.TEXT_NODE) return;
     const at = sel.anchorOffset - 1;
     const t = node.textContent ?? "";
-    if (at < 0 || t[at] !== ch || !/[.!?][\s\u00a0]+$/.test(t.slice(0, at))) return;
-    node.textContent = t.slice(0, at) + ch.toUpperCase() + t.slice(at + 1);
+    if (at < 0 || t[at] !== ch) return;
+    const before = t.slice(0, at);
+    const startOfLine = /^[ \t]*$/.test(before) || /\n[ \t]*$/.test(before);
+    if (!startOfLine && !/[.!?][\s\u00a0]+$/.test(before)) return;
+    node.textContent = before + ch.toUpperCase() + t.slice(at + 1);
     sel.collapse(node, at + 1);
     lastCap.current = { node: node as Text, at, lower: ch };
   };
