@@ -3,8 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { fetchTodayNotes, hhmm, saveNote, type NoteRow } from "@/lib/notes";
 import { annotationsQuery } from "@/lib/marks";
-import { MarkedBody } from "@/components/MarkedBody";
+import { MarkedBody, type MarkActions } from "@/components/MarkedBody";
 import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/write")({
   head: () => ({
@@ -27,8 +28,8 @@ type Draft = { id: string | null; body: string; startedAt: string };
 function WriteView() {
   const qc = useQueryClient();
   const { data: notes = [] } = useQuery({ queryKey: ["notes", "today"], queryFn: fetchTodayNotes });
+  const { data: allAnnots = [] } = useQuery(annotationsQuery());
 
-  const boxRef = useRef<HTMLDivElement>(null);
   const draft = useRef<Draft>({ id: null, body: "", startedAt: new Date().toISOString() });
   const saving = useRef<Promise<void>>(Promise.resolve());
   const saveTimer = useRef<number | undefined>(undefined);
@@ -36,6 +37,8 @@ function WriteView() {
   const lastTick = useRef(Date.now());
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [liveTime, setLiveTime] = useState(() => new Date());
+  const [boxBody, setBoxBody] = useState("");
+  const [boxId, setBoxId] = useState<string | null>(null);
 
   const persistLocal = () => localStorage.setItem(DRAFT_KEY, JSON.stringify(draft.current));
 
@@ -47,6 +50,7 @@ function WriteView() {
         const id = await saveNote(draft.current.id ?? snapshot.id, snapshot.body, snapshot.startedAt);
         if (draft.current.startedAt === snapshot.startedAt) {
           draft.current.id = id;
+          setBoxId(id);
           persistLocal();
         }
         if (id) setSavedAt(hhmm(new Date()));
@@ -61,7 +65,8 @@ function WriteView() {
     await flush();
     draft.current = { id: null, body: "", startedAt: new Date().toISOString() };
     localStorage.removeItem(DRAFT_KEY);
-    if (boxRef.current) boxRef.current.innerHTML = "";
+    setBoxBody("");
+    setBoxId(null);
     idleLeft.current = IDLE_MS;
     setSavedAt(null);
     setLiveTime(new Date());
@@ -76,13 +81,13 @@ function WriteView() {
         const d = JSON.parse(raw) as Draft;
         if (d.body.trim()) {
           draft.current = d;
-          if (boxRef.current) boxRef.current.innerHTML = mdToHtml(d.body);
+          setBoxBody(d.body);
+          setBoxId(d.id);
           setLiveTime(new Date(d.startedAt));
           flush();
         }
       }
     } catch { /* ignore */ }
-    boxRef.current?.focus();
   }, [flush]);
 
   // 60s idle timer: runs only while there is text, pauses while the tab is hidden.
@@ -116,9 +121,7 @@ function WriteView() {
     return () => ro.disconnect();
   }, [notes.length]);
 
-  function onInput() {
-    if (boxRef.current) listOnInput(boxRef.current);
-    const body = boxRef.current ? domToMd(boxRef.current) : "";
+  function onEdit(body: string) {
     if (!draft.current.body.trim() && body.trim() && !draft.current.id) {
       draft.current.startedAt = new Date().toISOString();
       setLiveTime(new Date());
@@ -130,14 +133,37 @@ function WriteView() {
     saveTimer.current = window.setTimeout(flush, 1000);
   }
 
-  function onKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Escape") {
-      e.preventDefault();
-      void close();
-      return;
-    }
-    if (boxRef.current) listOnKeyDown(e, boxRef.current);
-  }
+  const refreshMarks = () => qc.invalidateQueries({ queryKey: ["annotations"] });
+
+  const actions: MarkActions = {
+    saveBody: async (body) => {
+      draft.current.body = body;
+      persistLocal();
+      await flush();
+    },
+    create: async ({ start, end, quote, note }) => {
+      await flush();
+      const id = draft.current.id;
+      if (!id) return null;
+      const { data, error } = await supabase
+        .from("annotations")
+        .insert({ item_id: id, start_offset: start, end_offset: end, quote, note })
+        .select("id")
+        .single();
+      await refreshMarks();
+      return error ? null : data.id;
+    },
+    setNote: async (aid, note) => {
+      await supabase.from("annotations").update({ note }).eq("id", aid);
+      await refreshMarks();
+    },
+    remove: async (aid) => {
+      await supabase.from("annotations").delete().eq("id", aid);
+      await refreshMarks();
+    },
+  };
+
+  const boxAnnots = allAnnots.filter((a) => a.item_id === boxId);
 
   return (
     <>
@@ -155,17 +181,22 @@ function WriteView() {
           <span className="liveDot" />
           <span className="liveTime">{hhmm(liveTime)}</span>
           <div
-            ref={boxRef}
-            className="composer"
-            contentEditable
-            suppressContentEditableWarning
-            onPaste={plainPaste}
-            role="textbox"
-            aria-multiline="true"
-            aria-label="Write"
-            onInput={onInput}
-            onKeyDown={onKeyDown}
-          />
+            onKeyDown={(e) => {
+              if (e.key === "Escape" && !(e.target as HTMLElement).closest(".annotInput")) {
+                e.preventDefault();
+                void close();
+              }
+            }}
+          >
+            <MarkedBody
+              body={boxBody}
+              annots={boxAnnots}
+              className="composer"
+              editable
+              actions={actions}
+              onEdit={onEdit}
+            />
+          </div>
           <p className="status">
             {savedAt ? <>Saved <span className="mono">{savedAt}</span></> : "Saves as you type"}
             <span className="escHint"> · Esc to close the note</span>
