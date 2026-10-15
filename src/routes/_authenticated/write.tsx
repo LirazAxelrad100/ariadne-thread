@@ -98,6 +98,21 @@ function WriteView() {
   // Leaving Write closes the note.
   useEffect(() => () => { void close(); }, [close]);
 
+  // Keep the newest past note visible just above the writing box: stick to the bottom
+  // when notes change or the box grows, unless an earlier note is being edited.
+  const streamRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = streamRef.current;
+    if (!el) return;
+    const toBottom = () => { if (!el.contains(document.activeElement)) el.scrollTop = el.scrollHeight; };
+    toBottom();
+    const ro = new ResizeObserver(toBottom);
+    ro.observe(el);
+    const inner = el.firstElementChild;
+    if (inner) ro.observe(inner);
+    return () => ro.disconnect();
+  }, [notes.length]);
+
   function onInput() {
     const body = boxRef.current?.innerText.replace(/\n$/, "") ?? "";
     if (!draft.current.body.trim() && body.trim() && !draft.current.id) {
@@ -122,7 +137,7 @@ function WriteView() {
 
   return (
     <>
-      <main className="stream">
+      <main className="stream" ref={streamRef}>
         <div className="inner">
           {notes.length > 0 && (
             <div className="thread">
@@ -167,18 +182,38 @@ function caretOffset(el: HTMLElement) {
   pre.setEnd(range.startContainer, range.startOffset);
   return pre.toString().length;
 }
-function setText(el: HTMLElement, text: string, caret: number) {
-  el.innerText = text;
-  const node = el.firstChild;
-  if (node) {
-    const r = document.createRange();
-    r.setStart(node, Math.min(caret, node.textContent?.length ?? 0));
-    r.collapse(true);
-    const sel = window.getSelection();
-    sel?.removeAllRanges();
-    sel?.addRange(r);
+// Map a plain-text offset to a DOM position (text nodes + <br> count as characters).
+function posAt(el: HTMLElement, offset: number): [Node, number] {
+  let left = offset;
+  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+  let n: Node | null;
+  while ((n = walk.nextNode())) {
+    if (n.nodeType === Node.TEXT_NODE) {
+      const len = n.textContent?.length ?? 0;
+      if (left <= len) return [n, left];
+      left -= len;
+    } else if ((n as Element).tagName === "BR") {
+      if (left === 0) return [n.parentNode!, Array.prototype.indexOf.call(n.parentNode!.childNodes, n)];
+      left -= 1;
+    }
   }
-  el.dispatchEvent(new Event("input", { bubbles: true }));
+  return [el, el.childNodes.length];
+}
+function replaceRange(el: HTMLElement, from: number, to: number, text: string, caret: number) {
+  const sel = window.getSelection();
+  if (!sel) return;
+  const r = document.createRange();
+  r.setStart(...posAt(el, from));
+  r.setEnd(...posAt(el, to));
+  sel.removeAllRanges();
+  sel.addRange(r);
+  if (text) document.execCommand("insertText", false, text);
+  else if (from !== to) document.execCommand("delete");
+  const c = document.createRange();
+  c.setStart(...posAt(el, caret));
+  c.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(c);
 }
 function continueBullet(e: React.KeyboardEvent) {
   if ((e.key !== "Enter" && e.key !== "Tab") || (e.key === "Enter" && e.shiftKey)) return;
@@ -195,9 +230,9 @@ function continueBullet(e: React.KeyboardEvent) {
     e.preventDefault();
     if (e.shiftKey) {
       const cut = line.startsWith("  ") ? 2 : 0;
-      setText(el, text.slice(0, start) + line.slice(cut) + text.slice(end), pos - cut);
+      if (cut) replaceRange(el, start, start + cut, "", Math.max(start, pos - cut));
     } else {
-      setText(el, text.slice(0, start) + "  " + line + text.slice(end), pos + 2);
+      replaceRange(el, start, start, "  ", pos + 2);
     }
     return;
   }
@@ -207,7 +242,7 @@ function continueBullet(e: React.KeyboardEvent) {
   if (!(rest ?? "").trim()) {
     // Empty item: end the list (or step out one level).
     const out = indent.length >= 2 ? indent.slice(2) + marker + " " : "";
-    setText(el, text.slice(0, start) + out + text.slice(end), start + out.length);
+    replaceRange(el, start, end, out, start + out.length);
     return;
   }
   const next = /\d/.test(marker) ? `${parseInt(marker) + 1}.` : marker;
