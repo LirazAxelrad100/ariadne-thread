@@ -2,9 +2,10 @@
 
 ## Done
 - Step 1 — App shell & auth: Cloud on, Google sign-in, shared header (Write/Read tabs, account menu, sign-out), owner-scoped tables with RLS. Verified: sign-in, refresh persistence, view switching, sign-out.
+- Step 2 — Write view: writing box pinned to the bottom, autosave ~1s after typing stops, notes saved as items type "note", auto-close on Esc / 60s idle / navigating away, blank notes never saved, browser draft backup. Lists render live while typing: "- " or "* " becomes a 5px soft grey-blue dot hanging left, second level an outline ring, "1. " a mono number in soft grey, Tab/Shift+Tab nest and unnest with the cursor staying put, Enter continues a list, Enter on an empty item ends or steps out, pasted text stays plain. Verified by the user.
 
 ## Waiting on user
-- None — header review passed; awaiting the Step 2 prompt.
+- None.
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
 1. Write view — writing box pinned to the bottom, autosave, notes/captures as items.
