@@ -8,7 +8,10 @@ export const getRouter = () => {
   const router = createRouter({
     routeTree,
     context: { queryClient },
-    scrollRestoration: true,
+    // The page itself never scrolls (only .stream does), so restoring the
+    // window position after a route swap only fights the views' own
+    // scroll-to-top. Keep it off.
+    scrollRestoration: false,
     defaultPreloadStaleTime: 0,
   });
 
