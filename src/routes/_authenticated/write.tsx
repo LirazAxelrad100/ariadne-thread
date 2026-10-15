@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchTodayNotes, hhmm, saveNote, toBlocks, type NoteRow } from "@/lib/notes";
+import { fetchTodayNotes, hhmm, saveNote, type NoteRow } from "@/lib/notes";
+import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
 
 export const Route = createFileRoute("/_authenticated/write")({
   head: () => ({
@@ -58,7 +59,7 @@ function WriteView() {
     await flush();
     draft.current = { id: null, body: "", startedAt: new Date().toISOString() };
     localStorage.removeItem(DRAFT_KEY);
-    if (boxRef.current) boxRef.current.innerText = "";
+    if (boxRef.current) boxRef.current.innerHTML = "";
     idleLeft.current = IDLE_MS;
     setSavedAt(null);
     setLiveTime(new Date());
@@ -73,7 +74,7 @@ function WriteView() {
         const d = JSON.parse(raw) as Draft;
         if (d.body.trim()) {
           draft.current = d;
-          if (boxRef.current) boxRef.current.innerText = d.body;
+          if (boxRef.current) boxRef.current.innerHTML = mdToHtml(d.body);
           setLiveTime(new Date(d.startedAt));
           flush();
         }
@@ -114,7 +115,8 @@ function WriteView() {
   }, [notes.length]);
 
   function onInput() {
-    const body = boxRef.current?.innerText.replace(/\n$/, "") ?? "";
+    if (boxRef.current) listOnInput(boxRef.current);
+    const body = boxRef.current ? domToMd(boxRef.current) : "";
     if (!draft.current.body.trim() && body.trim() && !draft.current.id) {
       draft.current.startedAt = new Date().toISOString();
       setLiveTime(new Date());
@@ -132,7 +134,7 @@ function WriteView() {
       void close();
       return;
     }
-    continueBullet(e);
+    if (boxRef.current) listOnKeyDown(e, boxRef.current);
   }
 
   return (
@@ -153,8 +155,9 @@ function WriteView() {
           <div
             ref={boxRef}
             className="composer"
-            contentEditable="plaintext-only"
+            contentEditable
             suppressContentEditableWarning
+            onPaste={plainPaste}
             role="textbox"
             aria-multiline="true"
             aria-label="Write"
@@ -171,84 +174,6 @@ function WriteView() {
   );
 }
 
-// List typing: Enter continues "- ", "* " or "1. " lines; Enter on an empty item ends the list; Tab / Shift+Tab nest.
-const LIST_RE = /^(\s*)([-*]|\d+\.)\s(.*)$/;
-function caretOffset(el: HTMLElement) {
-  const sel = window.getSelection();
-  if (!sel || !sel.rangeCount) return null;
-  const range = sel.getRangeAt(0);
-  const pre = range.cloneRange();
-  pre.selectNodeContents(el);
-  pre.setEnd(range.startContainer, range.startOffset);
-  return pre.toString().length;
-}
-// Map a plain-text offset to a DOM position (text nodes + <br> count as characters).
-function posAt(el: HTMLElement, offset: number): [Node, number] {
-  let left = offset;
-  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
-  let n: Node | null;
-  while ((n = walk.nextNode())) {
-    if (n.nodeType === Node.TEXT_NODE) {
-      const len = n.textContent?.length ?? 0;
-      if (left <= len) return [n, left];
-      left -= len;
-    } else if ((n as Element).tagName === "BR") {
-      if (left === 0) return [n.parentNode!, Array.prototype.indexOf.call(n.parentNode!.childNodes, n)];
-      left -= 1;
-    }
-  }
-  return [el, el.childNodes.length];
-}
-function replaceRange(el: HTMLElement, from: number, to: number, text: string, caret: number) {
-  const sel = window.getSelection();
-  if (!sel) return;
-  const r = document.createRange();
-  r.setStart(...posAt(el, from));
-  r.setEnd(...posAt(el, to));
-  sel.removeAllRanges();
-  sel.addRange(r);
-  if (text) document.execCommand("insertText", false, text);
-  else if (from !== to) document.execCommand("delete");
-  const c = document.createRange();
-  c.setStart(...posAt(el, caret));
-  c.collapse(true);
-  sel.removeAllRanges();
-  sel.addRange(c);
-}
-function continueBullet(e: React.KeyboardEvent) {
-  if ((e.key !== "Enter" && e.key !== "Tab") || (e.key === "Enter" && e.shiftKey)) return;
-  const el = e.currentTarget as HTMLElement;
-  const pos = caretOffset(el);
-  if (pos == null) return;
-  const text = el.innerText.replace(/\n$/, "");
-  const start = text.lastIndexOf("\n", pos - 1) + 1;
-  const endIdx = text.indexOf("\n", pos);
-  const end = endIdx === -1 ? text.length : endIdx;
-  const line = text.slice(start, end);
-  const m = line.match(LIST_RE);
-  if (e.key === "Tab") {
-    e.preventDefault();
-    if (e.shiftKey) {
-      const cut = line.startsWith("  ") ? 2 : 0;
-      if (cut) replaceRange(el, start, start + cut, "", Math.max(start, pos - cut));
-    } else {
-      replaceRange(el, start, start, "  ", pos + 2);
-    }
-    return;
-  }
-  if (!m) return;
-  e.preventDefault();
-  const [, indent = "", marker = "-", rest] = m;
-  if (!(rest ?? "").trim()) {
-    // Empty item: end the list (or step out one level).
-    const out = indent.length >= 2 ? indent.slice(2) + marker + " " : "";
-    replaceRange(el, start, end, out, start + out.length);
-    return;
-  }
-  const next = /\d/.test(marker) ? `${parseInt(marker) + 1}.` : marker;
-  document.execCommand("insertText", false, `\n${indent}${next} `);
-}
-
 function TodayNote({ note }: { note: NoteRow }) {
   const qc = useQueryClient();
   const [editing, setEditing] = useState(false);
@@ -256,13 +181,13 @@ function TodayNote({ note }: { note: NoteRow }) {
 
   useEffect(() => {
     if (editing && ref.current) {
-      ref.current.innerText = note.body;
+      ref.current.innerHTML = mdToHtml(note.body);
       ref.current.focus();
     }
   }, [editing, note.body]);
 
   async function onBlur() {
-    const body = ref.current?.innerText.replace(/\n$/, "") ?? "";
+    const body = ref.current ? domToMd(ref.current) : "";
     setEditing(false);
     if (body !== note.body) {
       await saveNote(note.id, body, note.item_date);
@@ -275,20 +200,15 @@ function TodayNote({ note }: { note: NoteRow }) {
       <span className="dot" />
       <span className="time">{hhmm(note.item_date)}</span>
       {editing ? (
-        <div ref={ref} className="body" contentEditable="plaintext-only" suppressContentEditableWarning
-          style={{ outline: "none", whiteSpace: "pre-wrap" }} onBlur={onBlur}
+        <div ref={ref} className="body" contentEditable suppressContentEditableWarning
+          style={{ outline: "none" }} onBlur={onBlur} onPaste={plainPaste}
+          onInput={() => ref.current && listOnInput(ref.current)}
           onKeyDown={(e) => {
             if (e.key === "Escape") (e.currentTarget as HTMLElement).blur();
-            else continueBullet(e);
+            else if (ref.current) listOnKeyDown(e, ref.current);
           }} />
       ) : (
-        <div className="body">
-          {toBlocks(note.body).map((b, i) =>
-            b.kind === "p" ? <p key={i} style={{ whiteSpace: "pre-wrap" }}>{b.text}</p>
-              : b.kind === "ul" ? <ul key={i}>{b.items.map((t, j) => <li key={j} className={t.level ? "lvl2" : undefined}>{t.text}</li>)}</ul>
-              : <ol key={i}>{b.items.map((t, j) => <li key={j} className={t.level ? "lvl2" : undefined} data-n={`${t.n}.`}>{t.text}</li>)}</ol>,
-          )}
-        </div>
+        <div className="body" dangerouslySetInnerHTML={{ __html: mdToHtml(note.body, true) }} />
       )}
     </article>
   );
