@@ -19,25 +19,44 @@ export async function fetchTodayNotes(): Promise<NoteRow[]> {
   return data ?? [];
 }
 
-/** Save a note's text. Blank text deletes the note (or never creates it). Returns the id, or null if nothing is stored. */
-export async function saveNote(id: string | null, body: string, startedAt: string): Promise<string | null> {
+/** Source details of a capture; null for a plain note. */
+export type CaptureMeta = {
+  title: string; source_url: string; writer: string; author_me: boolean; why: string;
+};
+
+function capFields(cap: CaptureMeta) {
+  return {
+    title: cap.title.trim() || null,
+    source_url: cap.source_url.trim() || null,
+    writer: cap.writer.trim() || null,
+    author_me: cap.author_me,
+    why: cap.why.trim() || null,
+  };
+}
+
+/** Save a note's (or capture's) text. Blank text deletes it (or never creates it). Returns the id, or null if nothing is stored. */
+export async function saveNote(id: string | null, body: string, startedAt: string, cap: CaptureMeta | null = null): Promise<string | null> {
   if (!body.trim()) {
     if (id) await supabase.from("items").delete().eq("id", id);
     return null;
   }
+  const extra = cap ? { type: "capture" as const, ...capFields(cap) } : {};
   if (id) {
-    const { error } = await supabase.from("items").update({ body }).eq("id", id);
+    const { error } = await supabase.from("items").update({ body, ...extra }).eq("id", id);
     if (error) throw error;
     return id;
   }
   const { data, error } = await supabase
     .from("items")
-    .insert({ type: "note", body, item_date: startedAt })
+    .insert({ type: "note" as const, body, item_date: startedAt, ...extra })
     .select("id")
     .single();
   if (error) throw error;
   return data.id;
 }
+
+export const INCOMING_KEY = "ariadne:incoming";
+export type Incoming = { url: string; title: string; text: string; writer: string };
 
 export function hhmm(d: Date | string) {
   return new Date(d).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
