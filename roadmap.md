@@ -4,7 +4,7 @@
 - Step 1 — App shell & auth: Cloud on, Google sign-in, shared header (Write/Read tabs, account menu, sign-out), owner-scoped tables with RLS. Verified: sign-in, refresh persistence, view switching, sign-out.
 
 ## Waiting on user
-- Header review (user is checking it in the preview now).
+- None — header review passed; awaiting the Step 2 prompt.
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
 1. Write view — writing box pinned to the bottom, autosave, notes/captures as items.
