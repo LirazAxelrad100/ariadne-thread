@@ -6,10 +6,10 @@
 - Step 3 — Read timeline: built from the design picture (dots + times, full notes, day headings like "Wednesday · 14 October", captures clamped to 4 lines with Expand, AI byline "AI · Synthesis of N items", Synthesize gated at 5 entries, month arrows and entry count). Oldest first within the month and inside each day; opens at the top on the oldest entry; switching Write/Read no longer jumps (mode + header advance only once the next route commits, and Read's list never inherits Write's scroll). Verified by the user.
 
 ## Waiting on user
-- None.
+- Step 4 — Marks & comments in opened items (and shown in Read): built and checked in a test browser; awaiting user test.
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
-1. Marks & comments — text-lock after the first mark.
+1. Marks inside the Write box before saving (brief) — not built yet.
 2. Capture — desktop bookmarklet + in-app paste on mobile.
 3. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
 4. Synthesis — needs 5+ items, four sections, "From" source links.

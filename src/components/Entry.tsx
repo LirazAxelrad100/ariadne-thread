@@ -1,12 +1,23 @@
 import { useState } from "react";
-import { mdToHtml } from "@/lib/listEditor";
 import { hhmm } from "@/lib/notes";
 import { hostOf, wordCount, type Item } from "@/lib/items";
+import type { Annot } from "@/lib/marks";
+import { MarkedBody, type MarkActions } from "@/components/MarkedBody";
 
 const SHORT_CAPTURE = 120;
 
 /** One timeline entry, as in the Read design. `full` = item view (no cut). */
-export function Entry({ item, full = false, onOpen }: { item: Item; full?: boolean; onOpen?: () => void }) {
+export function Entry({
+  item, full = false, onOpen, annots = [], actions, editable = false, onEdit,
+}: {
+  item: Item;
+  full?: boolean;
+  onOpen?: () => void;
+  annots?: Annot[];
+  actions?: MarkActions;
+  editable?: boolean;
+  onEdit?: (body: string) => void;
+}) {
   const [expanded, setExpanded] = useState(false);
   const isCapture = item.type === "capture";
   const words = wordCount(item.body);
@@ -34,11 +45,17 @@ export function Entry({ item, full = false, onOpen }: { item: Item; full?: boole
           </div>
         </>
       )}
-      <div
-        className={`body${cut ? " clamp4" : ""}`}
-        style={isCapture ? { marginTop: 10 } : undefined}
-        dangerouslySetInnerHTML={{ __html: mdToHtml(item.body, true) }}
-      />
+      <div style={isCapture ? { marginTop: 10 } : undefined}>
+        <MarkedBody
+          body={item.body}
+          annots={annots}
+          className={`body${cut ? " clamp4" : ""}`}
+          editable={editable && annots.length === 0}
+          actions={actions}
+          onEdit={onEdit}
+        />
+      </div>
+
       {isCapture && item.why && (
         <div className="caught"><span className="who">What caught me</span> <span className="text">{item.why}</span></div>
       )}

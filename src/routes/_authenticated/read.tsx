@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLayoutEffect, useRef } from "react";
 import { Entry } from "@/components/Entry";
 import { groupByDay, itemsQuery, monthKey } from "@/lib/items";
+import { annotationsQuery } from "@/lib/marks";
 
 type Search = { m?: string };
 
@@ -17,12 +18,16 @@ export const Route = createFileRoute("/_authenticated/read")({
       { property: "og:description", content: "Your notes and captures, day by day." },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(itemsQuery()),
+  loader: ({ context }) => Promise.all([
+    context.queryClient.ensureQueryData(itemsQuery()),
+    context.queryClient.ensureQueryData(annotationsQuery()),
+  ]),
   component: ReadView,
 });
 
 function ReadView() {
   const { data: items } = useSuspenseQuery(itemsQuery());
+  const { data: annots } = useSuspenseQuery(annotationsQuery());
   const { m } = Route.useSearch();
   const navigate = useNavigate();
   const month = m ?? (items[0] ? monthKey(items[0].item_date) : monthKey(new Date()));
@@ -61,7 +66,7 @@ function ReadView() {
             <div className="dayDivider"><span>{g.label}</span></div>
             <div className="thread">
               {g.items.map((it) => (
-                <Entry key={it.id} item={it}
+                <Entry key={it.id} item={it} annots={annots.filter((a) => a.item_id === it.id)}
                   onOpen={() => navigate({ to: "/item/$id", params: { id: it.id } })} />
               ))}
             </div>

@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { fetchTodayNotes, hhmm, saveNote, type NoteRow } from "@/lib/notes";
+import { annotationsQuery } from "@/lib/marks";
+import { MarkedBody } from "@/components/MarkedBody";
 import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
 
 export const Route = createFileRoute("/_authenticated/write")({
@@ -177,6 +179,8 @@ function WriteView() {
 function TodayNote({ note }: { note: NoteRow }) {
   const qc = useQueryClient();
   const [editing, setEditing] = useState(false);
+  const { data: all = [] } = useQuery(annotationsQuery());
+  const annots = all.filter((a) => a.item_id === note.id);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -196,7 +200,7 @@ function TodayNote({ note }: { note: NoteRow }) {
   }
 
   return (
-    <article className="entry" onClick={() => setEditing(true)}>
+    <article className="entry" onClick={() => { if (!annots.length) setEditing(true); }}>
       <span className="dot" />
       <span className="time">{hhmm(note.item_date)}</span>
       {editing ? (
@@ -208,7 +212,7 @@ function TodayNote({ note }: { note: NoteRow }) {
             else if (ref.current) listOnKeyDown(e, ref.current);
           }} />
       ) : (
-        <div className="body" dangerouslySetInnerHTML={{ __html: mdToHtml(note.body, true) }} />
+        <MarkedBody body={note.body} annots={annots} />
       )}
     </article>
   );

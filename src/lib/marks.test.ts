@@ -1,0 +1,19 @@
+import { describe, expect, it } from "vitest";
+import { segments, toBody, toRendered } from "./marks";
+
+describe("mark offsets", () => {
+  const body = "Intro line\n\n- first bullet\n- second";
+  const segs = segments(body);
+
+  it("maps rendered text back to body offsets, skipping bullet prefixes", () => {
+    // rendered: "Intro line" + "first bullet" + "second"
+    const start = toBody(segs, 10, false); // "f" of "first"
+    expect(body.slice(start, start + 5)).toBe("first");
+  });
+
+  it("a mark across two bullets becomes two rendered pieces", () => {
+    const s = body.indexOf("bullet");
+    const e = body.indexOf("second") + 3;
+    expect(toRendered(segs, s, e)).toEqual([[16, 22], [22, 25]]);
+  });
+});
