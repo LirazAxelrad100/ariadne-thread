@@ -200,7 +200,10 @@ function TodayNote({ note }: { note: NoteRow }) {
       {editing ? (
         <div ref={ref} className="body" contentEditable="plaintext-only" suppressContentEditableWarning
           style={{ outline: "none", whiteSpace: "pre-wrap" }} onBlur={onBlur}
-          onKeyDown={(e) => e.key === "Escape" && (e.currentTarget as HTMLElement).blur()} />
+          onKeyDown={(e) => {
+            if (e.key === "Escape") (e.currentTarget as HTMLElement).blur();
+            else continueBullet(e);
+          }} />
       ) : (
         <div className="body">
           {toBlocks(note.body).map((b, i) =>
