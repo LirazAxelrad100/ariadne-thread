@@ -59,14 +59,20 @@ function enterBelowComment(e: React.KeyboardEvent, root: HTMLElement): boolean {
   const r = sel.getRangeAt(0);
   let block: Node | null = r.startContainer;
   while (block && block.parentNode !== root) block = block.parentNode;
-  if (!(block instanceof Element) || block.tagName === "UL" || block.tagName === "OL") return false;
-  if (!block.nextElementSibling?.matches(".annot, .annotSlot")) return false;
+  if (!block || (block instanceof Element && /^(UL|OL)$/.test(block.tagName))) return false;
+  // Find the first comment line after the caret's line (loose text at the root counts as one line).
+  let annot: Node | null = block.nextSibling;
+  while (annot && !(annot instanceof Element && annot.matches(".annot, .annotSlot"))) {
+    if (annot instanceof Element && /^(DIV|P|UL|OL)$/.test(annot.tagName)) return false;
+    annot = annot.nextSibling;
+  }
+  if (!annot) return false;
   const tail = document.createRange();
   tail.setStart(r.endContainer, r.endOffset);
-  tail.setEndAfter(block.lastChild ?? block);
+  tail.setEndBefore(annot);
   if (tail.toString().trim()) return false;
   e.preventDefault();
-  let last: Element = block;
+  let last = annot as Element;
   while (last.nextElementSibling?.matches(".annot, .annotSlot")) last = last.nextElementSibling;
   const d = document.createElement("div");
   d.appendChild(document.createElement("br"));
