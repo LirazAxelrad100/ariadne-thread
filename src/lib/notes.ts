@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { Item } from "@/lib/items";
 
-export type NoteRow = { id: string; body: string; item_date: string };
+export type NoteRow = Item;
 
 export function startOfToday() {
   const d = new Date();
@@ -8,15 +9,17 @@ export function startOfToday() {
   return d;
 }
 
+/** Today's notes and captures (Write shows both above the box). */
 export async function fetchTodayNotes(): Promise<NoteRow[]> {
   const { data, error } = await supabase
     .from("items")
-    .select("id, body, item_date")
-    .eq("type", "note")
+    .select("id, type, is_synthesis, title, body, source_url, source_label, writer, why, author_me, synthesis, item_date")
+    .in("type", ["note", "capture"])
+    .eq("is_synthesis", false)
     .gte("item_date", startOfToday().toISOString())
     .order("item_date", { ascending: true });
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as NoteRow[];
 }
 
 /** Source details of a capture; null for a plain note. */

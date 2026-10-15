@@ -214,7 +214,10 @@ function WriteView() {
         <div className="inner">
           {notes.length > 0 && (
             <div className="thread">
-              {notes.filter((n) => n.id !== draft.current.id).map((n) => <TodayNote key={n.id} note={n} />)}
+              {notes.filter((n) => n.id !== draft.current.id).map((n) =>
+                n.type === "capture"
+                  ? <Entry key={n.id} item={n} annots={allAnnots.filter((a) => a.item_id === n.id)} />
+                  : <TodayNote key={n.id} note={n} />)}
             </div>
           )}
         </div>
