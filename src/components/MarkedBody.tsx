@@ -162,6 +162,16 @@ export function MarkedBody({
     } else {
       root.innerHTML = mdToHtml(body, plain && !editable);
     }
+    // Loose text at the top of an editable box becomes its own line, so comment lines sit under the whole line.
+    if (editable) {
+      let group: HTMLDivElement | null = null;
+      for (const n of Array.from(root.childNodes)) {
+        const isBlock = n instanceof Element && /^(DIV|P|UL|OL)$/.test(n.tagName);
+        if (isBlock) { group = null; continue; }
+        if (!group) { group = document.createElement("div"); root.insertBefore(group, n); }
+        group.appendChild(n);
+      }
+    }
     const segs = segments(body);
     const sorted = [...annots].sort((a, b) => a.start_offset - b.start_offset);
     for (const a of sorted) for (const [f, t] of toRendered(segs, a.start_offset, a.end_offset)) wrap(root, f, t, a.id);
