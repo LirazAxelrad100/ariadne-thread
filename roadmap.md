@@ -17,3 +17,4 @@
 
 ## Still not supplied
 - `ariadne-base.css` values are in `src/ariadne.css`, but the logo lockup/header mark SVG source, screens 01–11, and `seed.json` from the brief have not been uploaded.
+- Auto-capitalize after a full stop in the writing box — waiting on user's decision

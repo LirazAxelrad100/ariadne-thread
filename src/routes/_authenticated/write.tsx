@@ -182,7 +182,10 @@ function WriteView() {
           <span className="liveDot" />
           <span className="liveTime">{hhmm(liveTime)}</span>
           <div
+            onPointerDown={() => { idleLeft.current = IDLE_MS; }}
+            onInput={() => { idleLeft.current = IDLE_MS; }}
             onKeyDown={(e) => {
+              idleLeft.current = IDLE_MS;
               if (e.key === "Escape" && !(e.target as HTMLElement).closest(".annotInput")) {
                 e.preventDefault();
                 void close();
