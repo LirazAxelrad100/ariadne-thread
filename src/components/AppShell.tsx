@@ -24,7 +24,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   // resolvedLocation only advances once the next route has committed, so the
   // header and body mode stay in sync with the view still on screen — no
   // half-switched frame while the next view loads.
-  const { pathname, search } = useRouterState({ select: (s) => s.resolvedLocation });
+  const { pathname, search } = useRouterState({ select: (s) => s.resolvedLocation ?? s.location });
   const view: "write" | "read" = pathname.startsWith("/write") ? "write" : "read";
   const isItem = pathname.startsWith("/item");
   const now = useNow();
