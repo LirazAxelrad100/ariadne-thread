@@ -40,7 +40,7 @@ export async function saveNote(id: string | null, body: string, startedAt: strin
     if (id) await supabase.from("items").delete().eq("id", id);
     return null;
   }
-  const extra = cap ? capFields(cap) : {};
+  const extra = cap ? { type: "capture" as const, ...capFields(cap) } : {};
   if (id) {
     const { error } = await supabase.from("items").update({ body, ...extra }).eq("id", id);
     if (error) throw error;
@@ -48,7 +48,7 @@ export async function saveNote(id: string | null, body: string, startedAt: strin
   }
   const { data, error } = await supabase
     .from("items")
-    .insert({ type: cap ? "capture" : "note", body, item_date: startedAt, ...extra })
+    .insert({ type: "note" as const, body, item_date: startedAt, ...extra })
     .select("id")
     .single();
   if (error) throw error;

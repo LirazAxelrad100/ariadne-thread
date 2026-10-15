@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { fetchTodayNotes, hhmm, saveNote, type NoteRow } from "@/lib/notes";
+import { fetchTodayNotes, hhmm, INCOMING_KEY, saveNote, type CaptureMeta, type Incoming, type NoteRow } from "@/lib/notes";
 import { annotationsQuery } from "@/lib/marks";
 import { MarkedBody, type MarkActions } from "@/components/MarkedBody";
 import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
@@ -23,7 +23,8 @@ export const Route = createFileRoute("/_authenticated/write")({
 
 const IDLE_MS = 60_000;
 const DRAFT_KEY = "ariadne:draft";
-type Draft = { id: string | null; body: string; startedAt: string };
+type Draft = { id: string | null; body: string; startedAt: string; cap?: CaptureMeta | null };
+const EMPTY_CAP: CaptureMeta = { title: "", source_url: "", writer: "", author_me: false, why: "" };
 
 function WriteView() {
   const qc = useQueryClient();
@@ -39,6 +40,7 @@ function WriteView() {
   const [liveTime, setLiveTime] = useState(() => new Date());
   const [boxBody, setBoxBody] = useState("");
   const [boxId, setBoxId] = useState<string | null>(null);
+  const [cap, setCapState] = useState<CaptureMeta | null>(null);
 
   const persistLocal = () => localStorage.setItem(DRAFT_KEY, JSON.stringify(draft.current));
 
@@ -47,7 +49,7 @@ function WriteView() {
     const snapshot = { ...draft.current };
     saving.current = saving.current.then(async () => {
       try {
-        const id = await saveNote(draft.current.id ?? snapshot.id, snapshot.body, snapshot.startedAt);
+        const id = await saveNote(draft.current.id ?? snapshot.id, snapshot.body, snapshot.startedAt, snapshot.cap ?? null);
         if (draft.current.startedAt === snapshot.startedAt) {
           draft.current.id = id;
           setBoxId(id);
@@ -67,13 +69,14 @@ function WriteView() {
     localStorage.removeItem(DRAFT_KEY);
     setBoxBody("");
     setBoxId(null);
+    setCapState(null);
     idleLeft.current = IDLE_MS;
     setSavedAt(null);
     setLiveTime(new Date());
     qc.invalidateQueries({ queryKey: ["notes"] });
   }, [flush, qc]);
 
-  // Restore an unsynced draft, then focus.
+  // Restore an unsynced draft, then land any capture sent by the bookmarklet.
   useEffect(() => {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
@@ -83,12 +86,39 @@ function WriteView() {
           draft.current = d;
           setBoxBody(d.body);
           setBoxId(d.id);
+          setCapState(d.cap ?? null);
           setLiveTime(new Date(d.startedAt));
           flush();
         }
       }
     } catch { /* ignore */ }
+    const inc = localStorage.getItem(INCOMING_KEY);
+    if (!inc) return;
+    void (async () => {
+      try {
+        const c = JSON.parse(inc) as Incoming;
+        if (draft.current.body.trim()) await close();
+        const meta: CaptureMeta = { ...EMPTY_CAP, title: c.title || "", source_url: c.url || "", writer: c.writer || "" };
+        draft.current = { id: null, body: (c.text || "").trim(), startedAt: new Date().toISOString(), cap: meta };
+        localStorage.removeItem(INCOMING_KEY);
+        persistLocal();
+        setBoxBody(draft.current.body);
+        setCapState(meta);
+        setLiveTime(new Date());
+        if (draft.current.body) await flush();
+      } catch { localStorage.removeItem(INCOMING_KEY); }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flush]);
+
+  function setCap(next: CaptureMeta) {
+    draft.current.cap = next;
+    setCapState(next);
+    idleLeft.current = IDLE_MS;
+    persistLocal();
+    window.clearTimeout(saveTimer.current);
+    saveTimer.current = window.setTimeout(flush, 1000);
+  }
 
   // 60s idle timer: runs only while there is text, pauses while the tab is hidden.
   useEffect(() => {
@@ -201,9 +231,13 @@ function WriteView() {
               onEdit={onEdit}
             />
           </div>
+          {cap && <CaptureFields cap={cap} onChange={setCap} />}
           <p className="status">
             {savedAt ? <>Saved <span className="mono">{savedAt}</span></> : "Saves as you type"}
-            <span className="escHint"> · Esc to close the note</span>
+            <span className="escHint"> · Esc to close the {cap ? "capture" : "note"}</span>
+            {!cap && (
+              <> · <button type="button" className="capToggle" onClick={() => setCap({ ...EMPTY_CAP })}>Pasting something you read? Add its source</button></>
+            )}
           </p>
         </div>
       </div>
@@ -250,5 +284,21 @@ function TodayNote({ note }: { note: NoteRow }) {
         <MarkedBody body={note.body} annots={annots} />
       )}
     </article>
+  );
+}
+
+function CaptureFields({ cap, onChange }: { cap: CaptureMeta; onChange: (c: CaptureMeta) => void }) {
+  const set = (k: keyof CaptureMeta) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    onChange({ ...cap, [k]: k === "author_me" ? e.target.checked : e.target.value });
+  return (
+    <div className="capFields">
+      <input className="capField capFieldTitle" placeholder="Title" value={cap.title} onChange={set("title")} aria-label="Title" />
+      <div className="capRow">
+        <input className="capField" placeholder="Writer" value={cap.writer} onChange={set("writer")} aria-label="Writer" disabled={cap.author_me} />
+        <input className="capField" placeholder="Source link" value={cap.source_url} onChange={set("source_url")} aria-label="Source link" inputMode="url" />
+        <label className="capMine"><input type="checkbox" checked={cap.author_me} onChange={set("author_me")} /> I wrote this</label>
+      </div>
+      <input className="capField capWhy" placeholder="What caught you? (optional)" value={cap.why} onChange={set("why")} aria-label="What caught you?" />
+    </div>
   );
 }
