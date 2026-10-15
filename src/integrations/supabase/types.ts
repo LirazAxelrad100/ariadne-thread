@@ -14,7 +14,137 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      annotations: {
+        Row: {
+          created_at: string
+          end_offset: number
+          id: string
+          item_id: string
+          note: string | null
+          quote: string
+          start_offset: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          end_offset: number
+          id?: string
+          item_id: string
+          note?: string | null
+          quote: string
+          start_offset: number
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          end_offset?: number
+          id?: string
+          item_id?: string
+          note?: string | null
+          quote?: string
+          start_offset?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "annotations_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      items: {
+        Row: {
+          author_me: boolean
+          body: string
+          created_at: string
+          id: string
+          import_key: string | null
+          is_synthesis: boolean
+          item_date: string
+          source_label: string | null
+          source_url: string | null
+          synthesis: Json | null
+          title: string | null
+          translated_from: string | null
+          type: string
+          updated_at: string
+          user_id: string
+          why: string | null
+          writer: string | null
+        }
+        Insert: {
+          author_me?: boolean
+          body?: string
+          created_at?: string
+          id?: string
+          import_key?: string | null
+          is_synthesis?: boolean
+          item_date?: string
+          source_label?: string | null
+          source_url?: string | null
+          synthesis?: Json | null
+          title?: string | null
+          translated_from?: string | null
+          type?: string
+          updated_at?: string
+          user_id?: string
+          why?: string | null
+          writer?: string | null
+        }
+        Update: {
+          author_me?: boolean
+          body?: string
+          created_at?: string
+          id?: string
+          import_key?: string | null
+          is_synthesis?: boolean
+          item_date?: string
+          source_label?: string | null
+          source_url?: string | null
+          synthesis?: Json | null
+          title?: string | null
+          translated_from?: string | null
+          type?: string
+          updated_at?: string
+          user_id?: string
+          why?: string | null
+          writer?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
