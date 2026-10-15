@@ -133,13 +133,13 @@ function WriteView() {
     saveTimer.current = window.setTimeout(flush, 1000);
   }
 
-  // 60s idle timer: runs only while there is text, pauses while the tab is hidden.
+  // 60s idle timer: runs while there is text, also while the tab is in the background.
   useEffect(() => {
     const t = window.setInterval(() => {
       const now = Date.now();
       const dt = now - lastTick.current;
       lastTick.current = now;
-      if (document.hidden || !draft.current.body.trim()) return;
+      if (!draft.current.body.trim()) return;
       idleLeft.current -= dt;
       if (idleLeft.current <= 0) close();
     }, 1000);
