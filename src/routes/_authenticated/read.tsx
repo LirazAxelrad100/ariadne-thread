@@ -52,7 +52,9 @@ function ReadView() {
   }
 
   return (
-    <main className="stream" ref={streamRef}>
+    // React reuses Write's <main> node here and keeps its scroll position,
+    // so reset it the moment the node attaches, before anything paints.
+    <main className="stream" ref={(el) => { streamRef.current = el; el?.scrollTo({ top: 0 }); }}>
       <div className="inner">
         {groupByDay(shown).map((g) => (
           <section key={g.key}>
