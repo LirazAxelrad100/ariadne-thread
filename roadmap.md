@@ -3,12 +3,10 @@
 ## Done
 - Step 1 — App shell & auth: Cloud on, Google sign-in, shared header (Write/Read tabs, account menu, sign-out), owner-scoped tables with RLS. Verified: sign-in, refresh persistence, view switching, sign-out.
 - Step 2 — Write view: writing box pinned to the bottom, autosave ~1s after typing stops, notes saved as items type "note", auto-close on Esc / 60s idle / navigating away, blank notes never saved, browser draft backup. Lists render live while typing: "- " or "* " becomes a 5px soft grey-blue dot hanging left, second level an outline ring, "1. " a mono number in soft grey, Tab/Shift+Tab nest and unnest with the cursor staying put, Enter continues a list, Enter on an empty item ends or steps out, pasted text stays plain. Verified by the user.
+- Step 3 — Read timeline: built from the design picture (dots + times, full notes, day headings like "Wednesday · 14 October", captures clamped to 4 lines with Expand, AI byline "AI · Synthesis of N items", Synthesize gated at 5 entries, month arrows and entry count). Oldest first within the month and inside each day; opens at the top on the oldest entry; switching Write/Read no longer jumps (mode + header advance only once the next route commits, and Read's list never inherits Write's scroll). Verified by the user.
 
 ## Waiting on user
 - None.
-
-## In progress
-- Step 3 — Read timeline: built from the design picture (dots + times, day headings, captures clamped to 4 lines with Expand, Synthesize gated at 5 entries, month arrows). Read now always opens at the top (window scroll restore switched off); awaiting the user's confirmation.
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
 1. Marks & comments — text-lock after the first mark.
