@@ -59,10 +59,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           <>
             <span className="barTitle">Read</span>
             <nav className="monthNav" aria-label="Month">
-              <Link to="/read" search={{ m: older }} className="mArrow" aria-label="Previous month"
+              <Link to="/read" search={older ? { m: older } : {}} className="mArrow" aria-label="Previous month"
                 disabled={!older} style={!older ? { opacity: 0.3, pointerEvents: "none" } : undefined}>‹</Link>
               <span className="mLabel">{monthLabel(month)}</span>
-              <Link to="/read" search={{ m: newer }} className="mArrow" aria-label="Next month"
+              <Link to="/read" search={newer ? { m: newer } : {}} className="mArrow" aria-label="Next month"
                 disabled={!newer} style={!newer ? { opacity: 0.3, pointerEvents: "none" } : undefined}>›</Link>
             </nav>
             <span className="mono">{count} {count === 1 ? "entry" : "entries"}</span>

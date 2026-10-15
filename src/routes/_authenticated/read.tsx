@@ -7,7 +7,7 @@ type Search = { m?: string };
 
 export const Route = createFileRoute("/_authenticated/read")({
   validateSearch: (s: Record<string, unknown>): Search =>
-    typeof s.m === "string" && /^\d{4}-\d{2}$/.test(s.m) ? { m: s.m } : {},
+    typeof s["m"] === "string" && /^\d{4}-\d{2}$/.test(s["m"]) ? { m: s["m"] } : {},
   head: () => ({
     meta: [
       { title: "Read · Ariadne’s Thread" },
