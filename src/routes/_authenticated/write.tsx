@@ -203,8 +203,8 @@ function continueBullet(e: React.KeyboardEvent) {
   }
   if (!m) return;
   e.preventDefault();
-  const [, indent, marker, rest] = m;
-  if (!rest.trim()) {
+  const [, indent = "", marker = "-", rest] = m;
+  if (!(rest ?? "").trim()) {
     // Empty item: end the list (or step out one level).
     const out = indent.length >= 2 ? indent.slice(2) + marker + " " : "";
     setText(el, text.slice(0, start) + out + text.slice(end), start + out.length);

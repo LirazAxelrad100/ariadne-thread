@@ -43,7 +43,7 @@ export function hhmm(d: Date | string) {
   return new Date(d).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 }
 
-export type ListItem = { text: string; level: number; n?: number };
+export type ListItem = { text: string; level: number; n?: number | undefined };
 export type Block = { kind: "p"; text: string } | { kind: "ul" | "ol"; items: ListItem[] };
 
 /** Minimal markdown: blank-line paragraphs, "- " / "* " bullets, "1. " numbered, two-space indent = second level. */
@@ -58,10 +58,10 @@ export function toBlocks(text: string): Block[] {
       const m = line.match(/^(\s*)([-*•]|\d+\.)\s+(.*)$/);
       if (m) {
         flushP();
-        const kind = /\d/.test(m[2]) ? "ol" : "ul";
+        const kind = /\d/.test((m[2] ?? "")) ? "ol" : "ul";
         if (list && list.kind !== kind) flushL();
         if (!list) list = { kind, items: [] };
-        list.items.push({ text: m[3] ?? "", level: m[1].length >= 2 ? 1 : 0, n: kind === "ol" ? parseInt(m[2]) : undefined });
+        list.items.push({ text: m[3] ?? "", level: (m[1] ?? "").length >= 2 ? 1 : 0, n: kind === "ol" ? parseInt((m[2] ?? "")) : undefined });
       } else if (line.trim()) { flushL(); para.push(line); }
     }
     flushP(); flushL();
