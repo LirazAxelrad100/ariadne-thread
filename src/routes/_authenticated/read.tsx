@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import { Entry } from "@/components/Entry";
 import { groupByDay, itemsQuery, monthKey } from "@/lib/items";
 
