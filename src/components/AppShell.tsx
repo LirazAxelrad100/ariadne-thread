@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate, useRouteContext } from "@tanstack/react-router";
+import { Link, useNavigate, useRouteContext, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { itemsQuery, monthKey, monthLabel, SYNTH_MIN } from "@/lib/items";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -21,7 +21,10 @@ function formatWriting(d: Date) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { pathname, search } = useLocation();
+  // resolvedLocation only advances once the next route has committed, so the
+  // header and body mode stay in sync with the view still on screen — no
+  // half-switched frame while the next view loads.
+  const { pathname, search } = useRouterState({ select: (s) => s.resolvedLocation });
   const view: "write" | "read" = pathname.startsWith("/write") ? "write" : "read";
   const isItem = pathname.startsWith("/item");
   const now = useNow();
