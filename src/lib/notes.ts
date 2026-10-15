@@ -53,7 +53,7 @@ export function toBlocks(text: string): Array<{ kind: "p"; text: string } | { ki
     const flushL = () => { if (list.length) blocks.push({ kind: "ul", items: list }); list = []; };
     for (const line of chunk.split("\n")) {
       const m = line.match(/^\s*[-*•]\s+(.*)$/);
-      if (m) { flushP(); list.push(m[1]); } else if (line.trim()) { flushL(); para.push(line); }
+      if (m) { flushP(); list.push(m[1] ?? ""); } else if (line.trim()) { flushL(); para.push(line); }
     }
     flushP(); flushL();
   }
