@@ -5,6 +5,7 @@
 - Step 2 — Write view: writing box pinned to the bottom, autosave ~1s after typing stops, notes saved as items type "note", auto-close on Esc / 60s idle / navigating away, blank notes never saved, browser draft backup. Lists render live while typing: "- " or "* " becomes a 5px soft grey-blue dot hanging left, second level an outline ring, "1. " a mono number in soft grey, Tab/Shift+Tab nest and unnest with the cursor staying put, Enter continues a list, Enter on an empty item ends or steps out, pasted text stays plain. Verified by the user.
 - Step 3 — Read timeline: built from the design picture (dots + times, full notes, day headings like "Wednesday · 14 October", captures clamped to 4 lines with Expand, AI byline "AI · Synthesis of N items", Synthesize gated at 5 entries, month arrows and entry count). Oldest first within the month and inside each day; opens at the top on the oldest entry; switching Write/Read no longer jumps (mode + header advance only once the next route commits, and Read's list never inherits Write's scroll). Verified by the user.
 - Step 4 — Marks & comments: select text in an opened item and a dark popup offers Mark (amber highlight) and Comment (highlight plus a field under that paragraph; Enter saves it as a grey italic "↳ Liraz" line, no border or timestamp). Clicking a mark offers Edit comment and Delete mark. Body text locks once the first mark exists — reading and annotating only, with the reason shown. Marks and comments also show in the Read timeline and work inside the writing box before a note is saved (verified in a test browser: mark, comment, reload persistence). Back arrow returns to Read. Verified by the user.
+- Rail alignment fix: dot, time and first line of every entry share one centre line in both views (and on the composer's live dot/time) via a shared `--l1` variable (28.4px Write, 30.3px Read/item; mobile 25.5/27.1). Byline, capture title and lock line get the same first-line line-height; lock line sits 6px above the body.
 
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
@@ -16,6 +17,9 @@
 
 ## Still not supplied
 - `ariadne-base.css` values are in `src/ariadne.css`, but the logo lockup/header mark SVG source, screens 01–11, and `seed.json` from the brief have not been uploaded.
+
+## Landing page steps (apply when the real landing is built — current front page is a stand-in with no steps)
+- Step label line-height: 20px; step number top: 0, line-height: 20px; step dot top: 5.5px.
 
 ## Extra, beyond the original Step 4
 - Marks & comments inside the Write box before saving (Enter continues below a comment line).
