@@ -52,7 +52,9 @@ function ReadView() {
   }
 
   return (
-    <main className="stream" ref={streamRef}>
+    // key forces a fresh node: React would otherwise reuse Write's <main>
+    // and carry its scrolled-down position into Read.
+    <main className="stream" key={`read-${month}`} ref={streamRef}>
       <div className="inner">
         {groupByDay(shown).map((g) => (
           <section key={g.key}>
