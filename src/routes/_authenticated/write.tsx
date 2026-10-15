@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from "react";
 import { fetchTodayNotes, hhmm, INCOMING_KEY, saveNote, type CaptureMeta, type Incoming, type NoteRow } from "@/lib/notes";
 import { annotationsQuery } from "@/lib/marks";
 import { MarkedBody, type MarkActions } from "@/components/MarkedBody";
@@ -288,7 +288,7 @@ function TodayNote({ note }: { note: NoteRow }) {
 }
 
 function CaptureFields({ cap, onChange }: { cap: CaptureMeta; onChange: (c: CaptureMeta) => void }) {
-  const set = (k: keyof CaptureMeta) => (e: React.ChangeEvent<HTMLInputElement>) =>
+  const set = (k: keyof CaptureMeta) => (e: ChangeEvent<HTMLInputElement>) =>
     onChange({ ...cap, [k]: k === "author_me" ? e.target.checked : e.target.value });
   return (
     <div className="capFields">
