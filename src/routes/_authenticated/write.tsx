@@ -133,17 +133,31 @@ function WriteView() {
     saveTimer.current = window.setTimeout(flush, 1000);
   }
 
-  // 60s idle timer: runs only while there is text, pauses while the tab is hidden.
+  // 60s idle timer: runs while there is text, also while the tab is in the background.
   useEffect(() => {
     const t = window.setInterval(() => {
       const now = Date.now();
       const dt = now - lastTick.current;
       lastTick.current = now;
-      if (document.hidden || !draft.current.body.trim()) return;
+      if (!draft.current.body.trim()) return;
       idleLeft.current -= dt;
       if (idleLeft.current <= 0) close();
     }, 1000);
     return () => window.clearInterval(t);
+  }, [close]);
+
+  // Esc closes the note from anywhere on the page (the box, the capture fields, or nowhere in particular).
+  // A comment being written handles its own Esc.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape" || e.defaultPrevented) return;
+      if ((e.target as HTMLElement | null)?.closest?.(".annotInput")) return;
+      e.preventDefault();
+      (document.activeElement as HTMLElement | null)?.blur?.();
+      void close();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [close]);
 
   // Leaving Write closes the note.
@@ -181,7 +195,9 @@ function WriteView() {
 
   const actions: MarkActions = {
     saveBody: async (body) => {
+      // Keep the box's text in step with the text the mark's offsets are counted in.
       draft.current.body = body;
+      setBoxBody(body);
       persistLocal();
       await flush();
     },
@@ -230,13 +246,7 @@ function WriteView() {
           <div
             onPointerDown={() => { idleLeft.current = IDLE_MS; }}
             onInput={() => { idleLeft.current = IDLE_MS; }}
-            onKeyDown={(e) => {
-              idleLeft.current = IDLE_MS;
-              if (e.key === "Escape" && !(e.target as HTMLElement).closest(".annotInput")) {
-                e.preventDefault();
-                void close();
-              }
-            }}
+            onKeyDown={() => { idleLeft.current = IDLE_MS; }}
           >
             <MarkedBody
               body={boxBody}
