@@ -115,7 +115,9 @@ function WriteView() {
     if (e.key === "Escape") {
       e.preventDefault();
       void close();
+      return;
     }
+    continueBullet(e);
   }
 
   return (
