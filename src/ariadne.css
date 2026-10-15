@@ -1,0 +1,897 @@
+/* Ariadne's Thread — base stylesheet.
+   Taken from the Diary app's visual design "3g" (style.css), unchanged except:
+   - English, left to right: set <html lang="en" dir="ltr">. Every rule uses
+     logical properties (inline-start / inline-end), so nothing else changes.
+   - Fonts: Space Grotesk for everything (no Hebrew face needed),
+     JetBrains Mono for times, counts and comments.
+   - New, marked "ARIADNE" below: header toggle, logo, marks, comments,
+     selection popup, lock line, captures, synthesis.
+   - Removed: search field, sync button, password sign-in screen (not in v1).
+   Use these values as the source of truth; re-express them in Tailwind or
+   components as needed, but keep the numbers. */
+
+:root {
+  /* colour */
+  --paper:          #f0f3f7;   /* page background */
+  --surface:        #e7ecf3;   /* composer fill */
+  --surface-border: #d3dbe8;   /* composer border */
+  --white:          #ffffff;   /* input fill */
+  --ink:            #2e2822;   /* primary text, primary button fill */
+  --ink-read:       #332c25;   /* reading body text */
+  --ink-recede:     #5c5348;   /* past-session text while writing */
+  --meta:           #96684f;   /* times, counts, month, day labels — never a control */
+  --meta-soft:      #a8887a;   /* "saved" caption, placeholder */
+  --rail:           #dbe2ec;   /* thread line, dividers */
+  --dot:            #8a93a1;   /* session dots */
+  --accent-live:    #5c6b7d;   /* active session dot, time, caret */
+  --hairline:       #dfe5ee;   /* header border */
+  --control-border: #cfd8e3;   /* secondary button border */
+  --danger:         #c0392b;
+  /* ARIADNE */
+  --mark-amber:     #f4e3b8;   /* marked passage */
+  --logo-dot:       #a8785f;   /* logo end dot, synthesis dot on the rail */
+  --selection:      rgba(92, 107, 125, .22);
+
+  /* type */
+  --font-ui:   "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* the thread rail gutter — the one breakpoint-sensitive measurement */
+  --gutter: 96px;
+}
+
+* { box-sizing: border-box; }
+
+/* The app is exactly one viewport tall and scrolls inside .stream, so the
+   document itself must never scroll (iOS keyboard bugs otherwise). */
+html, body { height: 100%; margin: 0; overflow: hidden; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: var(--app-height, 100dvh);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 16.5px;
+  font-weight: 300;
+  line-height: 1.72;
+  -webkit-text-size-adjust: 100%;
+}
+
+::selection { background: var(--selection); color: var(--ink); }
+
+/* ---------- top bar ---------- */
+
+.topbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding: 14px 30px;
+  padding-top: max(14px, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--hairline);
+  background: var(--paper);
+}
+
+.spacer { flex: 1 1 0; min-width: 0; }
+
+.headDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--dot);
+  margin-inline-end: 3px;
+}
+
+.barTitle {
+  flex: none;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-inline-end: 3px;
+}
+
+.meta {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--meta);
+  white-space: nowrap;
+}
+
+/* ARIADNE — logo lockup */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-inline-end: 14px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.logo svg { width: 26px; height: 26px; flex: none; }
+.logo span { font-size: 21px; font-weight: 500; letter-spacing: -.01em; }
+
+/* ARIADNE — small vertical divider between header groups */
+.barSep { flex: none; width: 1px; height: 22px; margin-inline: 6px; background: var(--rail); }
+
+/* ARIADNE — Write / Read toggle (replaces the diary's Read / Write buttons) */
+.viewNav { display: flex; gap: 4px; }
+.viewNav a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 8px;
+  color: var(--ink-recede);
+  font-size: 15px;
+  font-weight: 400;
+  text-decoration: none;
+}
+.viewNav a:hover { color: var(--ink); }
+.viewNav a[aria-current="page"] { color: var(--ink); font-weight: 500; }
+.viewNav a[aria-current="page"]::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-live);
+}
+
+/* ARIADNE — account button (opens the menu with "Sign out") */
+.account {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+/* ---------- month switcher (Read view) ---------- */
+
+.monthNav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-inline-end: 3px;
+}
+
+.monthNav[hidden] { display: none; }
+
+.mArrow {
+  padding: 7px 9px;
+  margin: -7px -5px;
+  border: 0;
+  background: none;
+  color: var(--meta);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.mArrow:hover:not(:disabled) { color: var(--ink); }
+.mArrow:disabled { opacity: .3; cursor: default; }
+
+/* The month name opens the strip. Plain text; a soft tint on hover / while
+   open is the only hint. */
+.mLabel {
+  padding: 2px 7px;
+  margin: -2px -7px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--meta);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.mLabel:hover,
+.mLabel[aria-expanded="true"] { background-color: var(--surface); }
+.mLabel[aria-expanded="true"] { color: var(--ink); }
+
+/* ---------- month strip ---------- */
+
+/* Its own full-width row at the bottom of the header. Only months that have
+   entries, grouped by year, oldest at the start (left in LTR). */
+.monthStrip {
+  order: 20;
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding-top: 6px;
+}
+
+.monthStrip[hidden] { display: none; }
+
+.msYear {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--meta-soft);
+  padding-inline: 6px;
+}
+
+.msSep {
+  width: 1px;
+  height: 22px;
+  margin-inline: 6px;
+  background: var(--rail);
+}
+
+.msMonth {
+  min-width: 40px;
+  padding: 4px 7px 9px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--ink-recede);
+  cursor: pointer;
+  position: relative;
+}
+
+.msMonth:hover { color: var(--ink); }
+
+.msMonth[aria-current="true"] { background: var(--surface); color: var(--ink); }
+.msMonth[aria-current="true"]::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 3px;
+  inset-inline-start: calc(50% - 2px);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent-live);
+}
+
+/* ---------- controls ---------- */
+
+/* Outlined button: Synthesize, Sign in, Try again (secondary). */
+.btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--control-border);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.btn:hover { border-color: var(--meta-soft); }
+
+/* Primary button: Start, Delete (in the confirm). */
+.btn.primary {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn.primary:hover { background: #1c2430; border-color: #1c2430; }
+
+.iconBtn {
+  flex: none;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--meta-soft);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.iconBtn:hover { color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--meta-soft);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------- menu ---------- */
+
+.menu {
+  position: absolute;
+  top: 56px;
+  inset-inline-end: 16px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  width: 240px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 8px 28px rgba(28, 44, 70, .14);
+}
+
+.menu[hidden] { display: none; }
+
+.menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 400;
+  text-align: start;
+  cursor: pointer;
+}
+
+.menu button:hover { background: var(--paper); }
+
+/* ---------- stream ---------- */
+
+.stream {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 30px 0;
+  scroll-padding-bottom: 40px;
+}
+
+.inner {
+  max-width: 660px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+body.mode-reading .inner,
+body.mode-item .inner { max-width: 680px; gap: 22px; }
+
+/* The thread rail. In LTR it sits on the left; dots and times read first. */
+.thread {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-inline-start: var(--gutter);
+  border-inline-start: 1px solid var(--rail);
+}
+
+/* While writing, earlier sessions of today recede — but come back on hover. */
+body.mode-writing .thread {
+  gap: 18px;
+  opacity: .55;
+  transition: opacity .2s ease;
+}
+
+body.mode-writing .thread:hover,
+body.mode-writing .thread:focus-within { opacity: 1; }
+
+.entry {
+  position: relative;
+  cursor: text;
+}
+
+body.mode-reading .entry { cursor: pointer; }
+
+.entry .dot {
+  position: absolute;
+  inset-inline-start: calc(var(--gutter) * -1 - 5px);
+  top: 7px;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--dot);
+}
+
+/* ARIADNE — a synthesis result gets the logo's warm dot on the rail */
+.entry.synthesis .dot { background: var(--logo-dot); }
+
+.entry .time {
+  position: absolute;
+  inset-inline-start: calc(var(--gutter) * -1 + 12px);
+  top: 1px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--meta);
+}
+
+body.mode-writing .entry .body { color: var(--ink-recede); }
+
+body.mode-reading .entry .body,
+body.mode-item .entry .body {
+  font-size: 17px;
+  line-height: 1.78;
+  color: var(--ink-read);
+}
+
+.entry .body p  { margin: 0 0 .7em; }
+.entry .body p:last-child { margin-bottom: 0; }
+.entry .body ul { margin: 0 0 .7em; padding-inline-start: 1.3em; }
+.entry .body ul:last-child { margin-bottom: 0; }
+
+/* day divider — label, then a hairline running to the edge */
+.dayDivider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.dayDivider span {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  color: var(--meta);
+  white-space: nowrap;
+}
+
+.dayDivider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rail);
+}
+
+.empty {
+  margin-top: 12vh;
+  color: var(--meta-soft);
+  font-size: 15px;
+  text-align: center;
+}
+
+.editor {
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  resize: none;
+  overflow: hidden;
+}
+
+.editor:focus { outline: none; }
+
+/* Quiet text actions under an entry: Delete, Save, Cancel */
+.entryTools {
+  display: flex;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.entryTools button {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--meta-soft);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.entryTools button:hover { color: var(--ink); }
+.entryTools .danger:hover { color: var(--danger); }
+
+/* ---------- ARIADNE: item view ---------- */
+
+/* Back arrow + day label row at the top of a full-screen item. */
+.itemTop {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.itemTop .back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-inline-start: -12px;
+  border-radius: 8px;
+  color: var(--ink-recede);
+}
+
+.itemTop .back:hover { color: var(--ink); background: var(--surface); }
+
+/* Writer line: "AI · Synthesis of 12 items", or a capture's writer · source */
+.byline {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--meta);
+}
+
+.capMeta {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-recede);
+}
+
+.capMeta a { color: var(--ink-recede); }
+.capMeta a:hover { color: var(--ink); }
+
+/* ARIADNE — captures in the Read timeline.
+   Notes and syntheses show in full. Short captures (~120 words or less) too.
+   Long captures: title, writer line, first 4 lines, then each marked passage
+   with its comment between "…", the "What caught me" line, and an "Expand" link
+   (a text link, not a button or dropdown) that shows the full text in place
+   (it becomes "Collapse"). */
+.capTitle {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.clamp4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.caught .who { font-family: var(--font-mono); font-size: 11.5px; color: var(--meta); }
+.caught { margin-top: 14px; padding-inline-start: 22px; line-height: 1.6; }
+.caught .text { font-family: var(--font-mono); font-style: italic; font-size: 13px; color: var(--ink-recede); }
+
+.moreRow { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; }
+
+.moreBtn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-recede);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 400;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.moreBtn:hover { color: var(--ink); }
+
+/* Read timeline: a little more air between entries than the diary,
+   because entries now carry marks, comments and captures. */
+body.mode-reading .thread { gap: 30px; }
+
+/* ---------- ARIADNE: marks and comments ---------- */
+
+mark,
+.markA {
+  background: var(--mark-amber);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 0 2px;
+  cursor: pointer;
+}
+
+/* Overlapping marks: nested marks read a little deeper. */
+mark mark { background: #ecd394; }
+
+/* A comment sits directly under the paragraph holding its mark.
+   No box, no border: just the indent and the change of font. */
+.annot {
+  margin: 8px 0 0;
+  padding-inline-start: 22px;
+  line-height: 1.6;
+}
+
+.annot .who {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--meta);
+}
+
+.annot .who::before { content: "↳ "; }
+
+.annot .text {
+  font-family: var(--font-mono);
+  font-style: italic;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-recede);
+}
+
+/* Writing a comment: same place, same font. */
+.annotInput {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--meta-soft);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  caret-color: var(--accent-live);
+  font-family: var(--font-mono);
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: none;
+}
+
+.annotInput:focus { outline: none; }
+
+/* Shown once the first mark is placed. */
+.lockLine {
+  margin: 0 0 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--meta-soft);
+}
+
+/* Selection popup: above the selected text, in Write and in the item view.
+   Clicking an existing mark opens the same popup with Edit comment / Delete mark. */
+.selPop {
+  position: absolute;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--ink);
+  box-shadow: 0 8px 28px rgba(28, 44, 70, .14);
+}
+
+.selPop::after {
+  content: "";
+  position: absolute;
+  inset-block-end: -5px;
+  inset-inline-start: calc(50% - 5px);
+  width: 10px;
+  height: 10px;
+  background: var(--ink);
+  transform: rotate(45deg);
+}
+
+.selPop button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--paper);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.selPop button:hover { background: rgba(240, 243, 247, .1); }
+
+.selPop .sw { width: 10px; height: 10px; border-radius: 2px; background: var(--mark-amber); }
+.selPop .sep { width: 1px; height: 18px; background: rgba(240, 243, 247, .2); }
+
+/* ---------- ARIADNE: synthesis result ---------- */
+
+.synth h2 {
+  margin: 26px 0 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.synth h2:first-of-type { margin-top: 22px; }
+
+/* Sources of a synthesis point: "From <first words of note…> · <capture title>".
+   The [1]..[N] numbers are internal to the AI check and never shown. */
+.from {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--ink-recede);
+}
+.from a { color: var(--ink-recede); text-decoration: underline; }
+.from a:hover { color: var(--ink); }
+.from .deleted { color: var(--meta-soft); }
+
+/* ---------- composer ---------- */
+
+.composerWrap {
+  flex: none;
+  padding: 14px 30px 26px;
+  padding-bottom: max(26px, env(safe-area-inset-bottom));
+  background: var(--paper);
+}
+
+body.mode-reading .composerWrap,
+body.mode-item .composerWrap { display: none; }
+
+/* The rail continues behind the composer, thicker, to say "this is live". */
+.composerRail {
+  position: relative;
+  max-width: 660px;
+  margin: 0 auto;
+  padding-inline-start: var(--gutter);
+  border-inline-start: 2px solid var(--dot);
+}
+
+.liveDot {
+  position: absolute;
+  inset-inline-start: -6px;
+  top: 7px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--accent-live);
+}
+
+.liveTime {
+  position: absolute;
+  inset-inline-start: 14px;
+  top: 1px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--accent-live);
+}
+
+/* ARIADNE: marks and comments work inside the composer before the note is
+   saved, so it must be a rich-text field (contenteditable / small editor),
+   not a plain textarea. Keep exactly this look.
+
+   AUTOSAVE (no save button anywhere):
+   - save ~1s after typing stops, and immediately on close; local first, then sync
+   - .status shows "Saved HH:MM · Esc to close the note" (Esc hint hidden on mobile)
+   - the note closes on Esc, leaving Write, or 60s without typing; the timer runs
+     only while the box has text and pauses while the tab is hidden
+   - on close: the note moves up into today's faded list, the box empties,
+     .liveTime resets to now
+   - clearing all the text deletes the note
+   - marks and comments in the box save with the note */
+.composer {
+  display: block;
+  width: 100%;
+  min-height: min(196px, calc(var(--app-height, 100dvh) * 0.30));
+  max-height: calc(var(--app-height, 100dvh) * 0.52);
+  padding: 16px 18px;
+  border: 1px solid var(--surface-border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  caret-color: var(--accent-live);
+  font: inherit;
+  font-size: 16.5px;
+  font-weight: 300;
+  line-height: 1.72;
+  resize: none;
+  overflow-y: auto;
+  box-shadow: 0 6px 18px rgba(28, 44, 70, .07);
+}
+
+.composer:focus {
+  outline: none;
+  border-color: var(--meta-soft);
+}
+
+.status {
+  margin: 9px 0 0;
+  min-height: 1.2em;
+  color: var(--meta-soft);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.status .escHint { white-space: nowrap; }
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: .95em;
+}
+
+/* ---------- narrow screens ---------- */
+
+@media (max-width: 720px) {
+  :root { --gutter: 62px; }
+
+  body { font-size: 15px; line-height: 1.7; }
+
+  .topbar { padding: 10px 20px 12px; padding-top: max(10px, env(safe-area-inset-top)); }
+
+  .barTitle { font-size: 14.5px; }
+  .meta { font-size: 11px; }
+  .logo svg { width: 24px; height: 24px; }
+  .logo span { font-size: 19px; }
+
+  .monthNav {
+    order: 10;
+    flex-basis: 100%;
+    justify-content: center;
+    padding: 6px 0 0;
+    margin: 0;
+  }
+
+  .mLabel {
+    font-size: 14px;
+    border: 9px solid transparent;
+    margin: -11px -16px;
+    background-clip: padding-box;
+  }
+  .monthStrip { order: 11; }
+  .msMonth { min-height: 44px; min-width: 48px; font-size: 14px; }
+
+  .btn { min-height: 44px; padding-block: 5px; font-size: 13px; padding-inline: 13px; }
+  .mArrow, .iconBtn { min-width: 44px; min-height: 44px; }
+  .account { width: 44px; height: 44px; }
+  .viewNav a { min-height: 44px; }
+
+  .stampTime,
+  .countWriting,
+  .countReading { display: none; }
+
+  .stream { padding: 18px 26px 0; }
+  body.mode-reading .inner,
+  body.mode-item .inner { gap: 18px; }
+
+  .thread { gap: 18px; }
+  .entry .dot { top: 6px; width: 8px; height: 8px; inset-inline-start: calc(var(--gutter) * -1 - 5px); }
+  .entry .time { top: 0; font-size: 11px; inset-inline-start: calc(var(--gutter) * -1 + 10px); }
+
+  body.mode-reading .entry .body,
+  body.mode-item .entry .body { font-size: 15.5px; line-height: 1.75; }
+
+  .dayDivider span { font-size: 12px; }
+
+  .composerWrap { padding: 12px 20px 22px; padding-bottom: max(22px, env(safe-area-inset-bottom)); }
+  .composer { padding: 14px 15px; line-height: 1.7; }
+
+  /* On a phone the composer never changes height: a box that resizes under
+     your hands is worse than one that scrolls. */
+  .composer { min-height: 232px; max-height: 232px; }
+  .liveTime { inset-inline-start: 12px; top: 0; font-size: 11px; }
+  .liveDot { top: 6px; }
+  .status { font-size: 10.5px; margin-top: 8px; }
+  .status .escHint { display: none; }
+
+  /* iOS zooms the page when a field under 16px takes focus and does not
+     zoom back out. Editable fields stay at 16px, always. */
+  .composer,
+  .editor,
+  .annotInput,
+  input,
+  textarea { font-size: 16px; }
+}
+
+/* Below ~380px keep the rail — it carries the identity — and let the text
+   column take the squeeze instead. */
+@media (max-width: 380px) {
+  .topbar { padding-inline: 16px; }
+  .stream { padding-inline: 22px; }
+  .composerWrap { padding-inline: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
