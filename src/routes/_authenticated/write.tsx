@@ -32,7 +32,7 @@ function WriteView() {
   const { data: allAnnots = [] } = useQuery(annotationsQuery());
 
   const draft = useRef<Draft>({ id: null, body: "", startedAt: new Date().toISOString() });
-  const saving = useRef<Promise<void>>(Promise.resolve());
+  const saving = useRef<Promise<string | null>>(Promise.resolve(null));
   const saveTimer = useRef<number | undefined>(undefined);
   const idleLeft = useRef(IDLE_MS);
   const lastTick = useRef(Date.now());
