@@ -8,7 +8,6 @@ import { InfoDialog, SUPPORT, type InfoDialogKind } from "@/components/SiteFoote
 import { LogoMark, ThreadIcon } from "@/components/Logo";
 import { signOut } from "@/lib/auth";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
-import { demoModeQueryOptions } from "@/lib/demo";
 
 function useNow() {
   const [now, setNow] = useState(() => new Date());
@@ -34,7 +33,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isItem = pathname.startsWith("/item");
   const now = useNow();
   const { user } = useRouteContext({ from: "/_authenticated" });
-  const { data: demoMode } = useQuery(demoModeQueryOptions(user?.id));
   const queryClient = useQueryClient();
   const { data: items = [] } = useQuery(itemsQuery());
 
@@ -43,14 +41,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     document.body.classList.add(cls);
     return () => document.body.classList.remove(cls);
   }, [view, isItem]);
-
-  // The landing page's demo account is read-only: the database already blocks
-  // every write, so the controls that would fail are simply not shown.
-  useEffect(() => {
-    if (!demoMode) return;
-    document.body.classList.add("mode-demo");
-    return () => document.body.classList.remove("mode-demo");
-  }, [demoMode]);
 
   const months = [...new Set(items.map((i) => monthKey(i.item_date)))]; // newest first
   const m = (search as { m?: string }).m;
@@ -115,7 +105,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <>
       <header className="topbar" ref={headerRef}>
-        <Link to={demoMode ? "/read" : "/write"} className="logo">
+        <Link to="/write" className="logo">
           <LogoMark />
           <span>Ariadne’s Thread</span>
         </Link>
@@ -157,12 +147,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             {synth.state === "loading" && <span className="btnDot" aria-hidden="true" />}
           </button>
         )}
-        {demoMode
-          ? <button type="button" className="viewBtn"
-              onClick={async () => { await signOut(queryClient); navigate({ to: "/", replace: true }); }}>
-              Leave the demo
-            </button>
-          : view === "write"
+        {view === "write"
           ? <Link to="/read" className="viewBtn">Read</Link>
           : <Link to="/write" className="viewBtn">Write</Link>}
         <AccountMenu />
