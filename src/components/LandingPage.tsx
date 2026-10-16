@@ -54,11 +54,6 @@ export function LandingPage() {
               </div>
             </div>
             {actions}
-            {demoErr && (
-              <p className="landNote" role="status">
-                Couldn’t open the demo just now. You can sign in instead.
-              </p>
-            )}
           </section>
 
           <section className="landHow">
