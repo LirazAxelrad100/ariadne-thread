@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { INCOMING_KEY, type Incoming } from "@/lib/notes";
-import { fetchPage } from "@/lib/fetchPage.functions";
+import { enrich, readShared } from "@/lib/share";
 
 export const Route = createFileRoute("/capture")({
   head: () => ({
@@ -28,27 +28,6 @@ function stash(d: Partial<Incoming> & { pending?: boolean }) {
     ...(d.pending ? { pending: true } : {}),
   };
   localStorage.setItem(INCOMING_KEY, JSON.stringify(inc));
-}
-
-/** A shared or pasted link: phones send it as ?url=, ?text= or both (Android
- * often puts the link inside text). Pull the link out; any other text is the
- * passage the reader selected. */
-export function readShared(q: URLSearchParams) {
-  const rawText = (q.get("text") ?? "").trim();
-  let url = (q.get("url") ?? "").trim();
-  let text = rawText;
-  if (!url) {
-    const m = rawText.match(/https?:\/\/\S+/);
-    if (m) { url = m[0]; text = rawText.replace(m[0], "").trim(); }
-  }
-  return { url, text, title: (q.get("title") ?? "").trim() };
-}
-
-/** Fill in title/writer/text from the page itself. The reader's own selection wins over the whole article. */
-export async function enrich(s: { url: string; text: string; title: string }): Promise<Incoming> {
-  let page = { url: s.url, title: "", writer: "", text: "" };
-  try { page = await fetchPage({ data: { url: s.url } }); } catch { /* keep the link alone */ }
-  return { url: s.url, title: page.title || s.title, writer: page.writer, text: s.text || page.text };
 }
 
 /** Landing spot for the bookmarklet, Share to Ariadne and Paste a link:
