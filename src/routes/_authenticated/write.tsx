@@ -369,7 +369,7 @@ function TodayNote({ note }: { note: NoteRow }) {
   }
 
   return (
-    <article className="entry" style={{ cursor: "pointer" }} onClick={() => { if (!editing) navigate({ to: "/item/$id", params: { id: note.id } }); }}>
+    <article className="entry" style={{ cursor: "pointer" }} onClick={() => { if (!editing) navigate({ to: "/item/$id", params: { id: note.id }, search: { from: "write" } }); }}>
       <span className="dot" />
       <span className="time">{hhmm(note.item_date)}</span>
       {editing ? (
