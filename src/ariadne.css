@@ -1149,7 +1149,8 @@ body.mode-item .composerWrap { display: none; }
 .landPause { align-self: flex-start; margin-top: 14px; background: none; border: 0; padding: 0; font: inherit; font-size: 13px; color: var(--ink-recede); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
 .landShot { height: 480px; border-radius: 14px; border: 1px solid var(--rail); background: var(--surface); box-shadow: 0 8px 28px rgba(28, 44, 70, .14); overflow: hidden; display: flex; align-items: center; justify-content: center; }
-.landShot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.landShot { align-items: flex-start; }
+.landShot img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
 .landShotPh { font-family: var(--font-mono); font-size: 12px; color: var(--meta-soft); }
 .landShotMini { display: none; }
 
@@ -1234,3 +1235,10 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
   .landStep { height: auto !important; }
   .landStepBm { display: none; }
 }
+
+/* Landing picture header: logo + view name, covers the cropped app header */
+.landShot { position: relative; }
+.landShotBar { position: absolute; inset: 0 0 auto 0; height: 50px; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: var(--paper); border-bottom: 1px solid var(--rail); z-index: 1; }
+.landShotBar svg { width: 22px; height: 22px; flex-shrink: 0; }
+.landShotBarSep { width: 1px; height: 18px; background: var(--rail); }
+.landShotBarName { font-size: 14px; font-weight: 500; color: var(--ink); }

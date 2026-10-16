@@ -155,6 +155,11 @@ export function LandingPage() {
               </div>
 
               <div className="landShot">
+                <div className="landShotBar" aria-hidden="true">
+                  <LogoMark />
+                  <span className="landShotBarSep" />
+                  <span className="landShotBarName">{step.name}</span>
+                </div>
                 {step.shot ? (
                   <img src={step.shot} alt={step.alt} />
                 ) : (

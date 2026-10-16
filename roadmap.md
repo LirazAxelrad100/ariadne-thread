@@ -52,3 +52,4 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - Fixed: LinkedIn captures — writer name now comes from the article's own data (LinkedIn has no author meta tag), and the title no longer repeats inside the text. Verified on the Brodsky article. Avatar-reload report not reproducible; likely the preview refreshing as the fix landed.
 
 - [ ] Landing screenshots: header cut off at the sides — choose fix (remove header / reshoot narrower)
+- [ ] Landing pictures: replace cut header with logo + view name strip
