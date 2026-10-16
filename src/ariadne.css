@@ -1222,8 +1222,8 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
   .landClose { padding: 7vh 0 6vh; }
   .landClose h2 { font-size: 30px; }
   .landClose p { font-size: 17px; }
-  .landFoot { flex-direction: column; gap: 8px; }
-  .landFoot span { white-space: nowrap; }
+  .landFootRow { flex-direction: column; gap: 8px; }
+  .landFootRow span { white-space: nowrap; }
 }
 
 /* ---------- landing: bookmarklet inside carousel step 02 ---------- */
