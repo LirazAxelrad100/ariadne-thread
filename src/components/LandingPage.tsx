@@ -140,7 +140,7 @@ export function LandingPage() {
             {actions}
           </section>
 
-          <SiteFooter />
+          <SiteFooter credit />
         </div>
       </main>
     </>
