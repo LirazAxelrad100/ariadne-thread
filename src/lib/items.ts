@@ -18,8 +18,8 @@ export type Item = {
 
 const COLS = "id, type, is_synthesis, title, body, source_url, source_label, writer, why, author_me, synthesis, item_date";
 
-/** Spec: Synthesize needs at least this many items. */
-export const SYNTH_MIN = 5;
+/** Synthesize needs at least this many items before it has anything to connect. */
+export const SYNTH_MIN = 3;
 
 export const itemsQuery = () =>
   queryOptions({
