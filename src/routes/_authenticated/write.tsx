@@ -51,6 +51,14 @@ function WriteView() {
   // Once something is written, the first-visit intro stays gone — even in the
   // moment between closing the note and the saved list arriving.
   const [wrote, setWrote] = useState(false);
+  // The judges' demo account has history but no notes today: show the
+  // first-steps intro on an empty day so Write never greets them blank.
+  const [isDemo, setIsDemo] = useState(false);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setIsDemo(data.session?.user.email === "demo@ariadne-thread.app");
+    });
+  }, []);
 
   const persistLocal = () => localStorage.setItem(DRAFT_KEY, JSON.stringify(draft.current));
 
@@ -245,7 +253,7 @@ function WriteView() {
     <>
       <main className="stream" ref={streamRef}>
         <div className="inner">
-          {itemsLoaded && allItems.length === 0 && !boxBody && !boxId && !wrote && (
+          {itemsLoaded && (allItems.length === 0 || (isDemo && notes.length === 0)) && !boxBody && !boxId && !wrote && (
             <div className="firstSteps">
               <svg className="fsThread" viewBox="0 0 900 120" aria-hidden="true">
                 <path d="M 0 118 C 50 120, 105 103, 150 100 C 240 94, 360 42, 450 40 C 540 38, 660 106, 750 100 C 785 98, 822 66, 842 46" fill="none" />
