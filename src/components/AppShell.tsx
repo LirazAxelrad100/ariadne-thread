@@ -7,6 +7,7 @@ import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { LogoMark, ThreadIcon } from "@/components/Logo";
 import { signOut } from "@/lib/auth";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
+import { demoModeQueryOptions } from "@/lib/demo";
 
 function useNow() {
   const [now, setNow] = useState(() => new Date());
@@ -31,6 +32,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const view: "write" | "read" = pathname.startsWith("/write") ? "write" : "read";
   const isItem = pathname.startsWith("/item");
   const now = useNow();
+  const { user } = useRouteContext({ from: "/_authenticated" });
+  const { data: demoMode } = useQuery(demoModeQueryOptions(user?.id));
   const { data: items = [] } = useQuery({ ...itemsQuery(), enabled: view === "read" });
 
   useEffect(() => {
@@ -38,6 +41,14 @@ export function AppShell({ children }: { children: ReactNode }) {
     document.body.classList.add(cls);
     return () => document.body.classList.remove(cls);
   }, [view, isItem]);
+
+  // The landing page's demo account is read-only: the database already blocks
+  // every write, so the controls that would fail are simply not shown.
+  useEffect(() => {
+    if (!demoMode) return;
+    document.body.classList.add("mode-demo");
+    return () => document.body.classList.remove("mode-demo");
+  }, [demoMode]);
 
   const months = [...new Set(items.map((i) => monthKey(i.item_date)))]; // newest first
   const m = (search as { m?: string }).m;
