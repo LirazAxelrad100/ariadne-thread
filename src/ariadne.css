@@ -1034,38 +1034,28 @@ body.mode-item .composerWrap { display: none; }
   }
 }
 
-/* ARIADNE — while Synthesize runs, the page itself answers: the entries grey
-   out, and a warm dot breaks off the button and runs down the rail, over the
-   text, until the result arrives. */
-body.synthesizing .stream .inner {
-  opacity: 0.3;
-  transition: opacity 0.6s ease;
-}
-.stream .inner { transition: opacity 0.6s ease; }
-
-.railRunner {
-  position: fixed;
-  z-index: 40;
-  width: 10px;
-  height: 10px;
+/* ARIADNE — while Synthesize runs, the motion stays inside the button: the
+   label greys out and a warm dot rides the icon's curve, then keeps the same
+   wave going over the word "Synthesize", and travels back. */
+.btn.synthBusy { position: relative; }
+.btn.synthBusy .btnLabel { opacity: 0.35; transition: opacity 0.3s ease; }
+.btnDot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
   border-radius: 999px;
   background: var(--logo-dot);
-  left: max(25.5px, calc((100vw - 680px) / 2 - 5px));
-  top: 64px;
   pointer-events: none;
-  animation: tRun 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  offset-path: path("M16.3 19.1 C18.7 19.1 17.5 12.7 20.1 12.7 C22.5 12.7 21.6 17.9 23.9 17.3 C25.4 17 25.1 12.1 26 11.2 C30 7 32 20 38 20 C44 20 42 9 50 9 C58 9 56 20 64 20 C72 20 70 9 78 9 C86 9 84 20 92 20 C100 20 98 10 106 10 C111 10 112 14 114 15");
+  animation: tBtn 3.4s ease-in-out infinite alternate;
 }
-@keyframes tRun {
-  0%   { top: 64px;                opacity: 0; transform: scale(0.6); }
-  8%   {                           opacity: 1; transform: scale(1); }
-  46%  {                                      transform: scale(1.25); }
-  54%  {                                      transform: scale(1); }
-  88%  { top: calc(100vh - 60px);  opacity: 1; }
-  100% { top: calc(100vh - 40px);  opacity: 0; transform: scale(0.6); }
-}
-@media (max-width: 760px) {
-  .railRunner { left: 17.5px; width: 9px; height: 9px; }
+@keyframes tBtn {
+  0%   { offset-distance: 0%; }
+  100% { offset-distance: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .railRunner { animation: tPulse 1.6s ease-in-out infinite; top: 96px; }
+  .btnDot { animation: tPulse 1.6s ease-in-out infinite alternate; }
 }

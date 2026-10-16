@@ -82,8 +82,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [synth, setSynth] = useState<{ state: "idle" | "loading" | "few" | "error"; message?: string | null }>({ state: "idle" });
   useEffect(() => { if (view !== "read") setSynth({ state: "idle" }); }, [view]);
 
-  const running = view === "read" && synth.state === "loading";
-
   async function onSynthesize() {
     if (synth.state === "loading") return;
     if (items.filter((i) => !i.is_synthesis).length < SYNTH_MIN) { setSynth({ state: "few" }); return; }
