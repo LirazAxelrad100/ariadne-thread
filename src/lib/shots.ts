@@ -27,7 +27,7 @@ export const STEPS: Step[] = [
     name: "Capture",
     copy: "Read something that inspires you? Capture it in one click.",
     shot: shotCapture.url,
-    alt: "An article with a passage selected, captured into Ariadne’s Thread.",
+    alt: "A captured passage arriving in the writing box, with its title, writer and link filled in.",
   },
   {
     n: "03",
