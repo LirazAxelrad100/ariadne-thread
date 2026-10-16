@@ -117,7 +117,9 @@ function WriteView() {
       const inc = localStorage.getItem(INCOMING_KEY);
       if (!inc) return;
       try {
-        const c = JSON.parse(inc) as Incoming;
+        let c = JSON.parse(inc) as Incoming & { pending?: boolean };
+        // Shared while signed out: fetch the page now that there's a session.
+        if (c.pending && c.url) c = await enrich({ url: c.url, text: c.text, title: c.title });
         if (draft.current.body.trim()) await close();
         const meta: CaptureMeta = { ...EMPTY_CAP, title: c.title || "", source_url: c.url || "", writer: c.writer || "" };
         draft.current = { id: null, body: (c.text || "").trim(), startedAt: new Date().toISOString(), cap: meta };
@@ -305,6 +307,9 @@ function WriteView() {
             <span className="escHint"> · Esc to close the {cap ? "capture" : "note"}</span>
             {!cap && !(allItems.length === 0 && !boxBody) && (
               <> · <button type="button" className="capToggle" onClick={() => setCap({ ...EMPTY_CAP })}>Pasting something you read? Add its source</button></>
+            )}
+            {!cap && !boxBody && (
+              <span className="pasteLinkWrap"> · <PasteLink /></span>
             )}
           </p>
         </div>
