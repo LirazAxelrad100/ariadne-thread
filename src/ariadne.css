@@ -1541,3 +1541,26 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 .helpLine .escHint { white-space: nowrap; }
 .moreRow .mono { font-family: var(--font-mono); font-size: 11.5px; color: #96684F; }
 @media (max-width: 720px) { .helpLine { font-size: 10.5px; margin-top: 8px; } .helpLine .escHint { display: none; } }
+
+/* Sign-in page */
+.authPage { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
+.authCenter { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 0; }
+.authCol { width: 380px; max-width: calc(100% - 32px); display: flex; flex-direction: column; align-items: center; text-align: center; }
+.authHead { font-family: "Space Grotesk", sans-serif; font-size: 30px; font-weight: 400; letter-spacing: -0.015em; margin: 18px 0 8px; color: #2E2822; }
+.authLead { font-size: 16px; font-weight: 300; color: #5C5348; line-height: 1.5; margin: 0 0 30px; }
+.authGoogle, .authSubmit { width: 100%; height: 48px; border-radius: 8px; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.authGoogle { background: #2E2822; color: #F0F3F7; border: 0; }
+.authSubmit { background: transparent; border: 1px solid #CFD8E3; color: #2E2822; }
+.authSubmit:hover { background: #E7ECF3; }
+.authOr { width: 100%; display: flex; align-items: center; gap: 12px; margin: 26px 0 22px; font-size: 13px; color: #5C5348; }
+.authOr::before, .authOr::after { content: ""; flex: 1; height: 1px; background: #DBE2EC; }
+.authForm { width: 100%; display: flex; flex-direction: column; gap: 14px; text-align: left; }
+.authField { display: flex; flex-direction: column; gap: 6px; }
+.authField label { font-size: 13px; font-weight: 500; color: #5C5348; }
+.authField input { width: 100%; height: 44px; padding: 0 14px; border: 1px solid #CFD8E3; border-radius: 8px; background: #F7F9FB; font: inherit; font-size: 15px; color: #2E2822; outline: none; box-sizing: border-box; }
+.authField input:focus { border-color: #5C6B7D; box-shadow: 0 0 0 2px rgba(92,107,125,.2); }
+.authField input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #F7F9FB inset; -webkit-text-fill-color: #2E2822; }
+.authErr { font-size: 13px; color: #5C5348; margin: 0; }
+.authJudge { margin: 22px 0 0; font-size: 12.5px; color: #A8887A; line-height: 1.5; }
+.authPage .landFoot { width: calc(100% - 48px); max-width: 1120px; margin: 0 auto; }
+@media (max-width: 640px) { .authField input { font-size: 16px; } }
