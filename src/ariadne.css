@@ -1041,7 +1041,7 @@ body.mode-item .composerWrap { display: none; }
 .capGrow .capInput { grid-area: 1 / 1; width: 100%; }
 .capGrow .capInput[readonly] { cursor: default; text-decoration-color: transparent; }
 .capSep { color: #a8a29a; }
-.capUrl { flex: 1; }
+.capUrl { flex: 1 1 160px; }
 .capHost {
   padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: text;
   text-decoration: underline 1px var(--control-border); text-underline-offset: 3px;
@@ -1059,7 +1059,7 @@ body.mode-item .composerWrap { display: none; }
 .capWhyRow { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--surface-border); }
 .capWhyLabel { flex: none; font-family: var(--font-mono); font-size: 12px; color: var(--meta); }
 .capWhy { flex: 1; font-family: var(--font-mono); font-style: italic; font-size: 13.5px; color: var(--ink-read); }
-.capStatus .voice > .capToggle { color: var(--ink-recede); }
+.status.capStatus .capToggle { color: var(--ink-recede); }
 .capToggle { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
 .bmInstall { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
 .btn.bmButton { height: 44px; padding: 0 18px; cursor: grab; text-decoration: none; font-size: 14px; font-weight: 500; white-space: nowrap; }
