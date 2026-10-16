@@ -30,22 +30,45 @@ function AuthPage() {
 
   useEffect(() => {
     const returning = /access_token|code=|error=/.test(window.location.hash + window.location.search);
-    let fallback: ReturnType<typeof setTimeout> | undefined;
+    let settled = false;
+    const show = () => { if (settled) return; settled = true; setChecking(false); };
+    // However long the server check below takes, the form always appears.
+    const neverBlank = setTimeout(show, returning ? 4000 : 1200);
     // Drop anything cached while signed out (empty lists), so Write never
     // shows the first-visit picture before this account's notes arrive.
     const enter = () => {
+      if (settled) return;
+      settled = true;
       queryClient.clear();
       navigate({ to: "/write", replace: true });
     };
+    // A stored login can belong to an account that no longer exists (the
+    // landing-page demo we removed). Ask the server before sending them on:
+    // the guard on /write throws them straight back here, so an unverified
+    // auto-enter bounces /auth ⇄ /write forever on a blank screen.
+    let verify: Promise<void> | undefined;
+    const check = () => {
+      verify ??= (async () => {
+        const { data: me, error } = await supabase.auth.getUser();
+        if (!error && me.user) return enter();
+        // Flaky network is not a dead login: show the form but keep the
+        // session, so a reload can still get them in.
+        if (!error || error.name !== "AuthRetryableFetchError") {
+          await supabase.auth.signOut();
+          queryClient.clear();
+        }
+        show();
+      })();
+      return verify;
+    };
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) enter();
-      else if (returning) fallback = setTimeout(() => setChecking(false), 4000);
-      else setChecking(false);
+      if (data.session) void check();
+      else show();
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (session) enter();
+      if (session) void check();
     });
-    return () => { sub.subscription.unsubscribe(); if (fallback) clearTimeout(fallback); };
+    return () => { sub.subscription.unsubscribe(); clearTimeout(neverBlank); };
   }, [navigate, queryClient]);
 
   async function onSignIn() {

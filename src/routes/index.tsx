@@ -19,11 +19,26 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/write", replace: true });
-    });
-  }, [navigate]);
+    let alive = true;
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session || !alive) return;
+      // Only go on if the server still knows this account. A login left over
+      // from one we removed would bounce off /write straight back here.
+      const { data: me, error } = await supabase.auth.getUser();
+      if (error || !me.user) {
+        if (!error || error.name !== "AuthRetryableFetchError") {
+          await supabase.auth.signOut();
+          queryClient.clear();
+        }
+        return;
+      }
+      if (alive) navigate({ to: "/write", replace: true });
+    })();
+    return () => { alive = false; };
+  }, [navigate, queryClient]);
 
   return <LandingPage />;
 }
