@@ -6,8 +6,7 @@ const PUBLIC_ORIGIN = "https://ariadne-thread.lovable.app";
 
 /** Draggable "Capture to Ariadne" button. React blocks javascript: hrefs, so
  * the bookmarklet code is set on the element directly after mount.
- * `compact` is the smaller first-steps variant: shorter button, and the
- * "Desktop browsers only." note moves into the tooltip. `inline` is the
+ * `compact` is the smaller first-steps variant: shorter button. `inline` is the
  * smallest, landing-carousel variant: button and hint on one line. */
 export function BookmarkletLink({ compact = false, inline = false }: { compact?: boolean; inline?: boolean } = {}) {
   const ref = useRef<HTMLAnchorElement>(null);
