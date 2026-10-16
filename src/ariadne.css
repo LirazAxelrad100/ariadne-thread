@@ -1001,18 +1001,58 @@ body.mode-item .composerWrap { display: none; }
 }
 
 /* ---------- capture in the writing box (Step 5) ---------- */
-.capFields { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-.capRow { display: flex; gap: 6px; align-items: center; }
-.capField {
-  flex: 1; min-width: 0; height: 32px; padding: 0 10px;
-  border: 1px solid var(--surface-border); border-radius: 8px;
-  background: var(--white); color: var(--ink); font: inherit; font-size: 14px; font-weight: 300;
+/* Every capture detail lives inside the box, laid out like a capture entry in Read. */
+.capBox {
+  padding: 16px 18px 14px;
+  border: 1px solid var(--meta-soft);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 6px 18px rgba(28, 44, 70, .07);
 }
-.capField:focus { outline: none; border-color: var(--meta-soft); }
-.capField::placeholder { color: var(--meta-soft); }
-.capFieldTitle { font-weight: 500; }
-.capWhy { font-family: var(--font-mono); font-style: italic; font-size: 13px; }
-.capMine { flex: none; font-size: 12px; color: var(--ink-recede); display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+.capBox .composer.capText {
+  min-height: 0; max-height: 250px; padding: 0;
+  border: 0; border-radius: 0; background: transparent; box-shadow: none;
+}
+.capTextWrap { position: relative; }
+.capTextWrap[data-more]::after {
+  content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 56px; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(231, 236, 243, 0), var(--surface));
+}
+.capHead { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--surface-border); }
+.capInput {
+  min-width: 0; padding: 0; border: 0; border-radius: 0; background: transparent;
+  font: inherit; color: inherit; caret-color: var(--accent-live);
+  text-decoration: underline 1px transparent; text-underline-offset: 3px;
+}
+.capInput:hover, .capInput:focus { outline: none; text-decoration-color: var(--accent-live); }
+.capInput::placeholder { color: #a8a29a; }
+.capTitle { display: block; width: 100%; font-size: 19px; font-weight: 500; line-height: 1.35; color: var(--ink); }
+.capMeta { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; font-size: 13.5px; color: var(--ink-recede); }
+/* Writer sizes to its text: the span carries the value, the input overlays it. */
+.capGrow { display: inline-grid; min-width: 3ch; }
+.capGrow::after { content: attr(data-value); visibility: hidden; white-space: pre; grid-area: 1 / 1; }
+.capGrow .capInput { grid-area: 1 / 1; width: 100%; }
+.capGrow .capInput[readonly] { cursor: default; text-decoration-color: transparent; }
+.capSep { color: #a8a29a; }
+.capUrl { flex: 1; }
+.capHost {
+  padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: text;
+  text-decoration: underline 1px var(--control-border); text-underline-offset: 3px;
+}
+.capHost:hover, .capHost:focus-visible { outline: none; text-decoration-color: var(--accent-live); }
+.capMine { margin-inline-start: auto; flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-recede); white-space: nowrap; cursor: pointer; }
+.capMine input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.capCheck { width: 14px; height: 14px; border: 1px solid var(--control-border); border-radius: 4px; display: inline-grid; place-items: center; }
+.capMine input:checked + .capCheck { background: var(--accent-live); border-color: var(--accent-live); }
+.capMine input:checked + .capCheck::after {
+  content: ""; width: 7px; height: 4px; margin-top: -2px;
+  border-inline-start: 1.5px solid var(--white); border-bottom: 1.5px solid var(--white); transform: rotate(-45deg);
+}
+.capMine input:focus-visible + .capCheck { outline: 2px solid var(--accent-live); outline-offset: 2px; }
+.capWhyRow { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--surface-border); }
+.capWhyLabel { flex: none; font-family: var(--font-mono); font-size: 12px; color: var(--meta); }
+.capWhy { flex: 1; font-family: var(--font-mono); font-style: italic; font-size: 13.5px; color: var(--ink-read); }
+.capStatus .voice > .capToggle { color: var(--ink-recede); }
 .capToggle { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
 .bmInstall { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
 .btn.bmButton { height: 44px; padding: 0 18px; cursor: grab; text-decoration: none; font-size: 14px; font-weight: 500; white-space: nowrap; }
