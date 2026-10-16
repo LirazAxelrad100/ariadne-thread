@@ -275,6 +275,12 @@ function WriteView() {
         </div>
       </main>
       <div className="composerWrap">
+        {demoMode ? (
+          <p className="demoNote">
+            The demo is read-only — nothing here can be changed. Open Read to follow the
+            thread, and press Synthesize to see what the AI finds.
+          </p>
+        ) : (
         <div className="composerRail">
           <span className="liveDot" />
           <span className="liveTime">{hhmm(liveTime)}</span>
@@ -302,6 +308,7 @@ function WriteView() {
             )}
           </p>
         </div>
+        )}
       </div>
     </>
   );
