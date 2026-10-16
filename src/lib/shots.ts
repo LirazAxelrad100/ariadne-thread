@@ -52,6 +52,13 @@ export const STEPS: Step[] = [
   },
 ];
 
+// The five short lines shown in the footer's "How it works" pop-up.
+// Footer copy lives here — edit it without touching the carousel above.
+export const FOOTER_LINES: { name: string; line: string }[] = STEPS.map((s) => ({
+  name: s.name,
+  line: s.copy,
+}));
+
 // How long each step holds before the carousel moves on. Synthesize gets
 // longer so the finding can actually be read.
 export const DURATIONS = [7000, 6500, 7500, 6000, 10000];
