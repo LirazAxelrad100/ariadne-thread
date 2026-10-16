@@ -103,7 +103,7 @@ export type MarkActions = {
  * (only while it has no marks).
  */
 export function MarkedBody({
-  body, annots, className = "body", plain = true, editable = false, actions, onEdit, synth = false, known,
+  body, annots, className = "body", plain = true, editable = false, actions, onEdit, synth = false, known, placeholder,
 }: {
   body: string;
   annots: Annot[];

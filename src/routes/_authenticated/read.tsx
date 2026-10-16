@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLayoutEffect, useRef } from "react";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Entry } from "@/components/Entry";
 import { groupByDay, itemsQuery, monthKey, monthNames } from "@/lib/items";
 import { annotationsQuery } from "@/lib/marks";
+import { loadDemoItems } from "@/lib/notes";
 
 type Search = { m?: string };
 
@@ -32,6 +33,8 @@ function ReadView() {
   const { data: annots } = useSuspenseQuery(annotationsQuery());
   const { m } = Route.useSearch();
   const navigate = useNavigate();
+  const qc = useQueryClient();
+  const [loadingDemo, setLoadingDemo] = useState(false);
   const month = m ?? (items[0] ? monthKey(items[0].item_date) : monthKey(new Date()));
   // Read runs oldest → newest, top to bottom (user rule); items arrive newest-first.
   const shown = items.filter((i) => monthKey(i.item_date) === month).reverse();
@@ -54,14 +57,28 @@ function ReadView() {
   if (!items.length) {
     return (
       <main className="stream">
-        <div className="inner" style={{ alignItems: "center", textAlign: "center", paddingTop: "12vh" }}>
-          <p style={{ margin: 0, fontSize: 17, fontWeight: 300 }}>Nothing to read yet.</p>
-          <p style={{ margin: "4px 0 0", fontSize: 15, color: "var(--ink-recede)" }}>
-            Your notes and captures will gather here, day by day.
-          </p>
-          <p style={{ marginTop: 14, fontSize: 15 }}>
-            <Link to="/write" style={{ color: "var(--ink)" }}>Write your first thought</Link>
-          </p>
+        <div className="inner emptyState">
+          <p className="emptyTitle">Nothing to read yet.</p>
+          <p className="emptySub">Your notes and captures will gather here, day by day.</p>
+          <div className="emptyActions">
+            <Link to="/write" className="btn emptyBtn">Write your first thought</Link>
+            <button
+              type="button"
+              className="btn emptyBtn"
+              disabled={loadingDemo}
+              onClick={async () => {
+                setLoadingDemo(true);
+                try {
+                  await loadDemoItems();
+                  await qc.invalidateQueries({ queryKey: ["items"] });
+                } finally {
+                  setLoadingDemo(false);
+                }
+              }}
+            >
+              {loadingDemo ? "Bringing them in…" : "Explore the demo entries"}
+            </button>
+          </div>
         </div>
       </main>
     );
