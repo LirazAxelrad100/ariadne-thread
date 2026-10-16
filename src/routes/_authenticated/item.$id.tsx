@@ -47,7 +47,7 @@ function ItemView() {
       if (e.key !== "Escape") return;
       const t = e.target as HTMLElement;
       if (t.closest(".annotInput")) return;
-      navigate({ to: "/read" });
+      navigate({ to: backTo });
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
