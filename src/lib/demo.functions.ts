@@ -27,3 +27,20 @@ export const startDemoSession = createServerFn({ method: "POST" }).handler(
     return { ok: true, access_token: s.access_token, refresh_token: s.refresh_token };
   },
 );
+
+// The sign-in page arrives with the judges' demo account filled in. The real
+// password stays server-side (DEMO_JUDGE_PASSWORD); the page only shows dots.
+export const startJudgeSession = createServerFn({ method: "POST" }).handler(
+  async (): Promise<DemoSession> => {
+    const password = process.env["DEMO_JUDGE_PASSWORD"];
+    if (!password) return { ok: false };
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin.auth.signInWithPassword({
+      email: "demo@ariadne-thread.app",
+      password,
+    });
+    const s = data.session;
+    if (error || !s) return { ok: false };
+    return { ok: true, access_token: s.access_token, refresh_token: s.refresh_token };
+  },
+);
