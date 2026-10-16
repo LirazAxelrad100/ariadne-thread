@@ -69,7 +69,7 @@ export const FOOTER_LINES: { name: string; line: string }[] = [
   },
   {
     name: "04 · Read",
-    line: "A single chronological stream of everything you have written and clipped, oldest to newest.",
+    line: "A single chronological stream of everything you have written and clipped, oldest to newest. Longer articles are shortened on the stream; tap Expand to view the full text.",
   },
   {
     name: "05 · Synthesize with AI",
