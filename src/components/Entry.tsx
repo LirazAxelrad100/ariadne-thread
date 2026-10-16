@@ -10,7 +10,7 @@ const SHORT_CAPTURE = 120;
 
 /** One timeline entry, as in the Read design. `full` = item view (no cut). */
 export function Entry({
-  item, full = false, onOpen, annots = [], actions, editable = false, onEdit,
+  item, full = false, onOpen, annots = [], actions, editable = false, onEdit, hint,
 }: {
   item: Item;
   full?: boolean;
@@ -19,6 +19,7 @@ export function Entry({
   actions?: MarkActions;
   editable?: boolean;
   onEdit?: (body: string) => void;
+  hint?: string | undefined;
 }) {
   const [expanded, setExpanded] = useState(false);
   const isCapture = item.type === "capture";
@@ -41,6 +42,7 @@ export function Entry({
     <article className={`entry${item.is_synthesis ? " synthesis" : ""}`} onClick={onOpen}>
       <span className="dot" />
       <span className="time">{hhmm(item.item_date)}</span>
+      {full && hint ? <div className="gutterHint">{hint}</div> : null}
       {item.is_synthesis && (
         <div className="byline">AI{synthCount ? ` · Synthesis of ${synthCount} items` : " · Synthesis"}</div>
       )}
