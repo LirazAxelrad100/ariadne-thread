@@ -224,7 +224,9 @@ function AccountMenu() {
   async function onSignOut() {
     setOpen(false);
     await signOut(queryClient);
-    navigate({ to: "/auth", replace: true });
+    // Back to the landing page, not the sign-in form: leaving the app should
+    // read as leaving, and the landing carries the way back in.
+    navigate({ to: "/", replace: true });
   }
 
   return (
