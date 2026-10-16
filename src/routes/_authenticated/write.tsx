@@ -300,7 +300,7 @@ function WriteView() {
               editable
               actions={actions}
               onEdit={onEdit}
-              placeholder="What's an idea you couldn't stop thinking about today?"
+              placeholder="What couldn't you stop thinking about today?"
             />
           </div>
           {cap && <CaptureFields cap={cap} onChange={setCap} />}
@@ -316,9 +316,6 @@ function WriteView() {
             {" · "}
             {savedAt ? <>Saved <span className="mono">{savedAt}</span></> : "Saves as you type"}
             <span className="escHint"> · Esc to close the {cap ? "capture" : "note"}</span>
-            {!cap && !(allItems.length === 0 && !boxBody) && (
-              <> · <button type="button" className="capToggle" onClick={() => setCap({ ...EMPTY_CAP })}>Pasting something you read? Add its source</button></>
-            )}
             {!cap && !boxBody && (
               <span className="pasteLinkWrap"> · <PasteLink /></span>
             )}
