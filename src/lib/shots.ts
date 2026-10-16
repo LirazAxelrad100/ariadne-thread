@@ -52,12 +52,45 @@ export const STEPS: Step[] = [
   },
 ];
 
-// The five short lines shown in the footer's "How it works" pop-up.
+// The lines shown in the footer's "How it works" pop-up.
 // Footer copy lives here — edit it without touching the carousel above.
-export const FOOTER_LINES: { name: string; line: string }[] = STEPS.map((s) => ({
-  name: s.name,
-  line: s.copy,
-}));
+export const FOOTER_LINES: { name: string; line: string }[] = [
+  {
+    name: "01 · Write & Speak",
+    line: "Jot down a thought as it comes. Prefer speaking? Tap Speak below the box—your words transcribe directly into text as you talk. No audio files are kept.",
+  },
+  {
+    name: "02 · Capture & the Bookmarklet",
+    line: "Drag the Capture to Ariadne button to your browser’s bookmarks bar. When an article inspires you, select a passage and click the bookmarklet. The text lands in your Write view with the author and source filled in. You can then mark sections and add comments.",
+  },
+  {
+    name: "03 · Mark & Comment",
+    line: "Highlight any phrase in a note or capture to mark it. Add a comment underneath to save your own reflection while it’s fresh.",
+  },
+  {
+    name: "04 · Read",
+    line: "A single chronological stream of everything you have written and clipped, oldest to newest.",
+  },
+  {
+    name: "05 · Synthesize with AI",
+    line: "Once you have at least three notes, tap Synthesize. Ariadne reads across your thoughts and comments to reveal recurring themes, unexpected connections, contradictions, and open questions—always citing the exact notes they came from.",
+  },
+];
+
+export const FOOTER_MOBILE_LINES: { name: string; line: string }[] = [
+  {
+    name: "Capture on iPhone",
+    line: "Copy the article link, open Ariadne, and tap Paste a link in Write.",
+  },
+  {
+    name: "Capture on Android",
+    line: "From any browser page, tap Share and pick Ariadne’s Thread.",
+  },
+  {
+    name: "Record",
+    line: "Tap Speak underneath the writing box or captured note, talk naturally, and watch the text appear sentence by sentence.",
+  },
+];
 
 // How long each step holds before the carousel moves on. Synthesize gets
 // longer so the finding can actually be read.
