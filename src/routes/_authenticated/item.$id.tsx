@@ -8,9 +8,10 @@ import { dayLabel, itemQuery } from "@/lib/items";
 import { annotationsQuery } from "@/lib/marks";
 
 export const Route = createFileRoute("/_authenticated/item/$id")({
-  validateSearch: (search: Record<string, unknown>): { from?: "write" | "read" } => ({
-    from: search.from === "write" ? "write" : search.from === "read" ? "read" : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { from?: "write" | "read" } => {
+    const raw = search["from"];
+    return raw === "write" || raw === "read" ? { from: raw } : {};
+  },
   head: () => ({
     meta: [
       { title: "Entry · Ariadne’s Thread" },
