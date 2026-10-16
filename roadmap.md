@@ -77,3 +77,4 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [ ] Real microphone test by the user (desktop + phone) — checked only with a computer-voiced sample so far; tell me if phrases arrive too slowly or cut in the wrong places.
 - [ ] Publish so the live site carries the Speak button.
 - [x] Account menu: How it works, Privacy, Support
+- [x] Capture caption (16 Oct): now "Drag the button to your bookmarks bar." — 6px directly below the button with its left edge flush with the button's, in the account menu and the Write intro; measured at 900/1280/1440px wide, one line, no clash with the neighbouring column.
