@@ -15,7 +15,6 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CaptureRouteImport } from './routes/capture'
 import { Route as AuthenticatedReadRouteImport } from './routes/_authenticated/read'
 import { Route as AuthenticatedWriteRouteImport } from './routes/_authenticated/write'
-import { Route as ApiProvisionDemoRouteImport } from './routes/api/provision-demo'
 import { Route as AuthenticatedItemIdRouteImport } from './routes/_authenticated/item.$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -47,11 +46,6 @@ const AuthenticatedWriteRoute = AuthenticatedWriteRouteImport.update({
   path: '/write',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ApiProvisionDemoRoute = ApiProvisionDemoRouteImport.update({
-  id: '/api/provision-demo',
-  path: '/api/provision-demo',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedItemIdRoute = AuthenticatedItemIdRouteImport.update({
   id: '/item/$id',
   path: '/item/$id',
@@ -64,7 +58,6 @@ export interface FileRoutesByFullPath {
   '/capture': typeof CaptureRoute
   '/read': typeof AuthenticatedReadRoute
   '/write': typeof AuthenticatedWriteRoute
-  '/api/provision-demo': typeof ApiProvisionDemoRoute
   '/item/$id': typeof AuthenticatedItemIdRoute
 }
 export interface FileRoutesByTo {
@@ -73,7 +66,6 @@ export interface FileRoutesByTo {
   '/capture': typeof CaptureRoute
   '/read': typeof AuthenticatedReadRoute
   '/write': typeof AuthenticatedWriteRoute
-  '/api/provision-demo': typeof ApiProvisionDemoRoute
   '/item/$id': typeof AuthenticatedItemIdRoute
 }
 export interface FileRoutesById {
@@ -84,28 +76,13 @@ export interface FileRoutesById {
   '/capture': typeof CaptureRoute
   '/_authenticated/read': typeof AuthenticatedReadRoute
   '/_authenticated/write': typeof AuthenticatedWriteRoute
-  '/api/provision-demo': typeof ApiProvisionDemoRoute
   '/_authenticated/item/$id': typeof AuthenticatedItemIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/auth'
-    | '/capture'
-    | '/read'
-    | '/write'
-    | '/api/provision-demo'
-    | '/item/$id'
+  fullPaths: '/' | '/auth' | '/capture' | '/read' | '/write' | '/item/$id'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/auth'
-    | '/capture'
-    | '/read'
-    | '/write'
-    | '/api/provision-demo'
-    | '/item/$id'
+  to: '/' | '/auth' | '/capture' | '/read' | '/write' | '/item/$id'
   id:
     | '__root__'
     | '/'
@@ -114,7 +91,6 @@ export interface FileRouteTypes {
     | '/capture'
     | '/_authenticated/read'
     | '/_authenticated/write'
-    | '/api/provision-demo'
     | '/_authenticated/item/$id'
   fileRoutesById: FileRoutesById
 }
@@ -123,7 +99,6 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CaptureRoute: typeof CaptureRoute
-  ApiProvisionDemoRoute: typeof ApiProvisionDemoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -170,13 +145,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWriteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/api/provision-demo': {
-      id: '/api/provision-demo'
-      path: '/api/provision-demo'
-      fullPath: '/api/provision-demo'
-      preLoaderRoute: typeof ApiProvisionDemoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/item/$id': {
       id: '/_authenticated/item/$id'
       path: '/item/$id'
@@ -207,7 +175,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CaptureRoute: CaptureRoute,
-  ApiProvisionDemoRoute: ApiProvisionDemoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
