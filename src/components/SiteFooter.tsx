@@ -104,7 +104,7 @@ export function SiteFooter() {
           </span>
         </div>
         <p className="landCredit">
-          Sample article:{" "}
+          Article in the demo:{" "}
           <a href="https://substack.com/home/post/p-169790855" target="_blank" rel="noreferrer">
             “What If Anxiety Is a Habit, Not a Disorder?”
           </a>{" "}
