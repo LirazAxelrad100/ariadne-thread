@@ -25,15 +25,24 @@ export function SiteFooter() {
   return (
     <>
       <footer className="landFoot">
-        <span>Built at the SheBuilds Buildathon, October 2026</span>
-        <span className="landFootLinks">
-          <button ref={linkRef} type="button" className="landFootLink" onClick={() => setOpen(true)}>
-            Privacy
-          </button>
-          <a className="landFootLink" href={`mailto:${SUPPORT}`}>
-            Support
-          </a>
-        </span>
+        <div className="landFootRow">
+          <span>Built at the SheBuilds Buildathon, October 2026</span>
+          <span className="landFootLinks">
+            <button ref={linkRef} type="button" className="landFootLink" onClick={() => setOpen(true)}>
+              Privacy
+            </button>
+            <a className="landFootLink" href={`mailto:${SUPPORT}`}>
+              Support
+            </a>
+          </span>
+        </div>
+        <p className="landCredit">
+          Sample article:{" "}
+          <a href="https://substack.com/home/post/p-169790855" target="_blank" rel="noreferrer">
+            “What If Anxiety Is a Habit, Not a Disorder?”
+          </a>{" "}
+          by Judson Brewer, MD, PhD. All rights reserved.
+        </p>
       </footer>
       {open && (
         <div className="privBackdrop" onMouseDown={(e) => e.target === e.currentTarget && close()}>

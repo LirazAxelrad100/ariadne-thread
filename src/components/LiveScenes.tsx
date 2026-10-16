@@ -86,7 +86,7 @@ function CaptureScene({ t }: { t: number }) {
         </div>
         <div className="livePage">
           <h3>What If Anxiety Is a Habit, Not a Disorder?</h3>
-          <p className="liveByline">Jud Brewer</p>
+          <p className="liveByline">Judson Brewer, MD, PhD</p>
           <p>
             Here’s the question that I now ask every anxious patient, and that you can ask yourself:{" "}
             <span className="liveSel" data-on={sel ? "1" : undefined}>
@@ -161,7 +161,7 @@ function ReadScene({ t }: { t: number }) {
         <div className="liveRail">
           <Entry time="12:00">
             <p className="liveTitle">What If Anxiety Is a Habit, Not a Disorder?</p>
-            <p className="liveSrc">Jud Brewer · substack.com</p>
+            <p className="liveSrc">Judson Brewer, MD, PhD · substack.com</p>
             <p>… <mark>“What if your anxiety isn’t a disorder to be cured, but a habit to be changed?”</mark> …</p>
             <p className="liveComment">↳ Liraz <em>habits we can change, we have something to work with</em></p>
           </Entry>

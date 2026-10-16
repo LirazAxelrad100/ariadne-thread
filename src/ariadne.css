@@ -1166,8 +1166,10 @@ body.mode-item .composerWrap { display: none; }
 .landPrivacy p { margin: 0 0 14px; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--ink-recede); }
 .landPrivacy a { color: var(--ink-recede); text-decoration: underline; text-underline-offset: 3px; }
 
-.landFoot { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--rail); padding: 16px 0 26px; font-size: 12px; color: var(--meta-soft); }
+.landFoot { border-top: 1px solid var(--rail); padding: 16px 0 26px; font-size: 12px; color: var(--meta-soft); }
 .landFoot a { color: var(--meta-soft); text-decoration: underline; text-underline-offset: 3px; }
+.landFootRow { display: flex; justify-content: space-between; gap: 20px; }
+.landCredit { margin: 10px 0 0; font-size: 11.5px; font-weight: 300; line-height: 1.6; color: var(--meta-soft); }
 
 @media (max-width: 720px) {
   .landLock { flex-direction: column; gap: 16px; }
@@ -1220,8 +1222,8 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
   .landClose { padding: 7vh 0 6vh; }
   .landClose h2 { font-size: 30px; }
   .landClose p { font-size: 17px; }
-  .landFoot { flex-direction: column; gap: 8px; }
-  .landFoot span { white-space: nowrap; }
+  .landFootRow { flex-direction: column; gap: 8px; }
+  .landFootRow span { white-space: nowrap; }
 }
 
 /* ---------- landing: bookmarklet inside carousel step 02 ---------- */
