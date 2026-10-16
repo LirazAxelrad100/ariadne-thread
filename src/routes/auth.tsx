@@ -38,6 +38,15 @@ function AuthPage() {
     if (result.error) setError("Couldn’t sign in. Please try again.");
   }
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  async function onEmail(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (error) setError("Wrong email or password.");
+  }
+
   return (
     <>
       <header className="topbar" style={{ borderBottom: 0 }}>
@@ -56,6 +65,15 @@ function AuthPage() {
           <button className="btn primary" style={{ height: 48, paddingInline: 22, fontSize: 15 }} onClick={onSignIn}>
             Continue with Google
           </button>
+          <form
+            onSubmit={onEmail}
+            style={{ display: "flex", flexDirection: "column", gap: 10, width: 280, marginTop: 28 }}
+          >
+            <p style={{ margin: 0, fontSize: 14, color: "var(--ink-recede)" }}>Or sign in with email</p>
+            <input className="capField" type="email" placeholder="Email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ fontSize: 16 }} required />
+            <input className="capField" type="password" placeholder="Password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} style={{ fontSize: 16 }} required />
+            <button className="btn" type="submit" style={{ height: 44 }}>Sign in</button>
+          </form>
           {error && (
             <p style={{ marginTop: 14, fontSize: 14, color: "var(--ink-recede)" }}>{error}</p>
           )}
