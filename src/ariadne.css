@@ -1263,6 +1263,5 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 .landStep[data-on="1"] .landStepDot, .landSteps .landStep:last-child[data-on="1"] .landStepDot { background: var(--logo-dot); box-shadow: 0 0 0 5px rgba(168, 120, 95, .2); }
 .landStepNum, .landStepName { color: var(--meta-soft); }
 .landStep[data-on="1"] .landStepNum, .landStep[data-on="1"] .landStepName { color: var(--logo-dot); }
-.landHook { font-weight: 400; color: var(--ink); }
-.landClose p { font-weight: 400; color: var(--ink); }
+/* Hook and closing line reverted to the original 22px/300 --ink-recede (user: "like it was") */
 
