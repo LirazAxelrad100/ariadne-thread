@@ -58,7 +58,7 @@ function AuthPage() {
       verify ??= (async () => {
         try {
         const { data: me, error } = await supabase.auth.getUser();
-        if (!error && me.user) return enter();
+        if (!error && me.user) return enter(me.user.email);
         // Flaky network is not a dead login: show the form but keep the
         // session, so a reload can still get them in.
         if (!error || error.name !== "AuthRetryableFetchError") {
