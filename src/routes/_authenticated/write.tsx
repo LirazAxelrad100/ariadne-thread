@@ -293,10 +293,10 @@ function WriteView() {
           </p>
         ) : (
         <div className="composerRail">
-          <span className="liveDot" />
-          <span className="liveTime">{hhmm(liveTime)}</span>
+          <span className="nowDot" />
+          <span className="nowTime">{hhmm(liveTime)}</span>
           <div
-            className={cap ? "capBox" : undefined}
+            className={cap ? "writeBox capBox" : "writeBox"}
             onPointerDown={() => { idleLeft.current = IDLE_MS; }}
             onInput={() => { idleLeft.current = IDLE_MS; }}
             onKeyDown={() => { idleLeft.current = IDLE_MS; }}
@@ -320,19 +320,20 @@ function WriteView() {
                   onChange={(e) => setCap({ ...cap, why: e.target.value })} aria-label="What caught me" />
               </div>
             )}
-          </div>
-          <p className="status">
-            <VoiceButton
-              label={cap ? "Speak a comment" : "Speak"}
+            <div className="boxSpeak">
+              <VoiceButton
+              box
               onText={(t) => {
                 const c = draft.current.cap;
                 if (c) setCap({ ...c, why: c.why.trim() ? `${c.why.trim()} ${t}` : t });
                 else onEdit(draft.current.body.trim() ? `${draft.current.body.replace(/\s+$/, "")}\n\n${t}` : t);
               }}
             />
-            {" · "}
-            {savedAt ? <>Saved <span className="mono">{savedAt}</span></> : "Saves as you type"}
-            <span className="escHint"> · Esc to close the {cap ? "capture" : "note"}</span>
+            </div>
+          </div>
+          <p className="helpLine">
+            {savedAt ? <>Saved {savedAt}</> : "Saves as you type"}
+            <span className="escHint"> · Esc when you’re done</span>
             {!cap && !boxBody && (
               <span className="pasteLinkWrap"> · <PasteLink /></span>
             )}

@@ -1,3 +1,4 @@
+import { Mic } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createParser } from "eventsource-parser";
 import { supabase } from "@/integrations/supabase/client";
@@ -91,7 +92,7 @@ async function transcribe(file: File): Promise<string> {
 }
 
 /** Speak instead of typing: records, turns speech into text, hands the text over. Audio is never kept. */
-export function VoiceButton({ onText, label = "Speak" }: { onText: (t: string) => void; label?: string }) {
+export function VoiceButton({ onText, label = "Speak", box = false }: { onText: (t: string) => void; label?: string; box?: boolean }) {
   const [state, setState] = useState<"idle" | "rec">("idle");
   const [sec, setSec] = useState(0);
   const [pending, setPending] = useState(0);
@@ -136,6 +137,22 @@ export function VoiceButton({ onText, label = "Speak" }: { onText: (t: string) =
   }
 
   const mm = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
+  if (box) return (
+    <span className="voice">
+      {state === "idle" && pending > 0 && <span className="voiceBusy">Turning it into text…</span>}
+      {err && state === "idle" && !pending && <span className="voiceErr">{err}</span>}
+      {state === "idle" && !pending && (
+        <button type="button" className="speakBtn" onClick={start} onMouseDown={(e) => e.preventDefault()}>
+          <Mic size={14} aria-hidden />Speak
+        </button>
+      )}
+      {state === "rec" && (
+        <button type="button" className="speakBtn" onClick={stop} onMouseDown={(e) => e.preventDefault()} aria-label="Stop recording">
+          <span className="voiceDot" />Listening…
+        </button>
+      )}
+    </span>
+  );
   return (
     <span className="voice">
       {state === "idle" && !pending && <button type="button" className="capToggle" onClick={start} onMouseDown={(e) => e.preventDefault()}>{label}</button>}
