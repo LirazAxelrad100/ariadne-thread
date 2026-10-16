@@ -1378,3 +1378,28 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 @media (prefers-reduced-motion: reduce) { .voiceDot { animation: none; } }
 .voiceBusy { font-style: italic; }
 .voiceErr { color: var(--meta-soft); }
+
+/* ARIADNE — header alignment: every text item on one baseline; marks,
+   dividers and the avatar centred. Dots sit on the baseline and are lifted
+   to the middle of the lowercase letters. */
+.topbar { align-items: baseline; }
+.topbar .logo,
+.topbar .logo span,
+.topbar .barTitle,
+.topbar .meta,
+.topbar .mono,
+.topbar .monthNav,
+.topbar .mLabel,
+.topbar .mArrow,
+.topbar .viewNav a { line-height: 1; }
+.topbar .logo { align-items: baseline; }
+.topbar .logo svg { align-self: center; }
+.topbar .monthNav { align-items: baseline; }
+.topbar .viewNav { align-items: baseline; }
+.topbar .viewNav a { align-items: baseline; }
+.topbar .barSep,
+.topbar .account,
+.topbar .btn { align-self: center; }
+.topbar .account { margin: 0; position: relative; top: 0; display: block; }
+.topbar .headDot { align-self: baseline; transform: translateY(calc(4px - .25em * 15 / 15)); }
+.topbar .viewNav a[aria-current="page"]::before { align-self: baseline; transform: translateY(calc(3px - .25em)); }
