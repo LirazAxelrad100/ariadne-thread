@@ -715,6 +715,7 @@ mark mark { background: #ecd394; }
 
 /* The select-text hint lives in the gutter, under the time: always visible,
    however long the text, and it never pushes the body around. */
+.gutterHint .hintShort { display: none; }
 .gutterHint {
   position: absolute;
   inset-inline-start: calc(var(--gutter) * -1 + 12px);
