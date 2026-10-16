@@ -107,7 +107,7 @@ function ItemView() {
     <main className="stream">
       <div className="inner">
         <div className="itemTop">
-          <Link to="/read" className="back" aria-label="Back to Read">←</Link>
+          <Link to={backTo} search={backTo === "/write" ? { from: undefined } : { from: undefined }} className="back" aria-label="Back">{backTo === "/write" ? "←" : "←"}</Link>
           {item && <div className="dayDivider" style={{ flex: 1, marginBottom: 0 }}><span>{dayLabel(item.item_date)}</span></div>}
           {item && (
             <div className="itemDel">
