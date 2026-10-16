@@ -1,6 +1,7 @@
-import { createFileRoute, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute, useRouteContext, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from "react";
+import { enrich } from "@/lib/share";
 import { fetchTodayNotes, hhmm, INCOMING_KEY, saveNote, type CaptureMeta, type Incoming, type NoteRow } from "@/lib/notes";
 import { annotationsQuery } from "@/lib/marks";
 import { itemsQuery } from "@/lib/items";
@@ -117,7 +118,9 @@ function WriteView() {
       const inc = localStorage.getItem(INCOMING_KEY);
       if (!inc) return;
       try {
-        const c = JSON.parse(inc) as Incoming;
+        let c = JSON.parse(inc) as Incoming & { pending?: boolean };
+        // Shared while signed out: fetch the page now that there's a session.
+        if (c.pending && c.url) c = await enrich({ url: c.url, text: c.text, title: c.title });
         if (draft.current.body.trim()) await close();
         const meta: CaptureMeta = { ...EMPTY_CAP, title: c.title || "", source_url: c.url || "", writer: c.writer || "" };
         draft.current = { id: null, body: (c.text || "").trim(), startedAt: new Date().toISOString(), cap: meta };
@@ -306,6 +309,9 @@ function WriteView() {
             {!cap && !(allItems.length === 0 && !boxBody) && (
               <> · <button type="button" className="capToggle" onClick={() => setCap({ ...EMPTY_CAP })}>Pasting something you read? Add its source</button></>
             )}
+            {!cap && !boxBody && (
+              <span className="pasteLinkWrap"> · <PasteLink /></span>
+            )}
           </p>
         </div>
         )}
@@ -369,5 +375,25 @@ function CaptureFields({ cap, onChange }: { cap: CaptureMeta; onChange: (c: Capt
       </div>
       <input className="capField capWhy" placeholder="What caught you? (optional)" value={cap.why} onChange={set("why")} aria-label="What caught you?" />
     </div>
+  );
+}
+
+/** Phone capture: paste an article's link, the page comes in like a bookmarklet capture. */
+function PasteLink() {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [url, setUrl] = useState("");
+  const ok = /^https?:\/\/\S+\.\S+/.test(url.trim());
+  if (!open) return <button type="button" className="capToggle" onClick={() => setOpen(true)}>Paste a link</button>;
+  return (
+    <form className="pasteLink" onSubmit={(e) => {
+      e.preventDefault();
+      if (ok) navigate({ to: "/capture", search: { url: url.trim() } as never });
+    }}>
+      <input className="capField" autoFocus type="url" inputMode="url" placeholder="https://…" value={url}
+        aria-label="Article link" onChange={(e) => setUrl(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); setOpen(false); } }} />
+      <button type="submit" className="btn" disabled={!ok}>Capture</button>
+    </form>
   );
 }
