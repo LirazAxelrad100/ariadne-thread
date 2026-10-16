@@ -36,9 +36,10 @@ function AuthPage() {
     const neverBlank = setTimeout(show, returning ? 4000 : 1200);
     // Drop anything cached while signed out (empty lists), so Write never
     // shows the first-visit picture before this account's notes arrive.
+    let entered = false;
     const enter = () => {
-      if (settled) return;
-      settled = true;
+      if (entered) return;
+      entered = true; settled = true;
       queryClient.clear();
       navigate({ to: "/write", replace: true });
     };
@@ -49,6 +50,7 @@ function AuthPage() {
     let verify: Promise<void> | undefined;
     const check = () => {
       verify ??= (async () => {
+        try {
         const { data: me, error } = await supabase.auth.getUser();
         if (!error && me.user) return enter();
         // Flaky network is not a dead login: show the form but keep the
@@ -58,6 +60,7 @@ function AuthPage() {
           queryClient.clear();
         }
         show();
+        } finally { verify = undefined; }
       })();
       return verify;
     };
