@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { LogoMark } from "@/components/Logo";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
@@ -43,7 +42,10 @@ export function LandingPage() {
       setDemoErr(true);
       return;
     }
-    await supabase.auth.setSession(res.session as unknown as Session);
+    await supabase.auth.setSession({
+      access_token: res.access_token,
+      refresh_token: res.refresh_token,
+    });
     window.location.assign("/read");
   }
 

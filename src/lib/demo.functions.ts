@@ -8,7 +8,7 @@ import { createServerFn } from "@tanstack/react-start";
 const DEMO_EMAIL = "demo-visitor@ariadne-thread.app";
 
 export type DemoSession =
-  | { ok: true; session: Record<string, unknown> }
+  | { ok: true; access_token: string; refresh_token: string }
   | { ok: false };
 
 export const startDemoSession = createServerFn({ method: "POST" }).handler(
@@ -21,8 +21,9 @@ export const startDemoSession = createServerFn({ method: "POST" }).handler(
       email: DEMO_EMAIL,
       password,
     });
-    if (error || !data.session) return { ok: false };
+    const s = data.session;
+    if (error || !s) return { ok: false };
 
-    return { ok: true, session: data.session as unknown as Record<string, unknown> };
+    return { ok: true, access_token: s.access_token, refresh_token: s.refresh_token };
   },
 );
