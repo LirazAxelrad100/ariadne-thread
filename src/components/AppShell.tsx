@@ -35,6 +35,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const now = useNow();
   const { user } = useRouteContext({ from: "/_authenticated" });
   const { data: demoMode } = useQuery(demoModeQueryOptions(user?.id));
+  const queryClient = useQueryClient();
   const { data: items = [] } = useQuery(itemsQuery());
 
   useEffect(() => {
