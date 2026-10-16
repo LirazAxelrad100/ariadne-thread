@@ -13,7 +13,6 @@
 
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
-0. Re-test capture with the user after installing the updated bookmark: LinkedIn bullets and a Guardian piece are the known cases.
 
 1. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
 2. Synthesis — needs 5+ items, four sections, "From" source links.
