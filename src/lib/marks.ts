@@ -19,13 +19,14 @@ const LINE = /^(\s*)([-*•]|\d+\.)\s+(.*)$/;
 export type Seg = { b: number; r: number; len: number };
 
 /** Text runs of the body that appear in the rendered text, in order. */
-export function segments(body: string): Seg[] {
+export function segments(body: string, synth = false): Seg[] {
   const segs: Seg[] = [];
   let pos = 0;
   let r = 0;
   for (const line of body.split("\n")) {
+    if (synth && line.startsWith("From: [[")) { pos += line.length + 1; continue; }
     const m = line.match(LINE);
-    const text = m ? (m[3] ?? "") : line;
+    const text = synth && line.startsWith("## ") ? line.slice(3) : m ? (m[3] ?? "") : line;
     const start = pos + line.length - text.length;
     if (text.trim()) {
       segs.push({ b: start, r, len: text.length });

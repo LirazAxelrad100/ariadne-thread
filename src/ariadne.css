@@ -981,3 +981,16 @@ body.mode-item .composerWrap { display: none; }
   .capField { font-size: 16px; height: 36px; }
   .capRow { flex-wrap: wrap; }
 }
+
+/* ARIADNE — Synthesize states: one line under the header (brief). */
+.synthState {
+  flex: none;
+  margin: 0;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-size: 14px;
+  color: var(--ink-recede);
+}

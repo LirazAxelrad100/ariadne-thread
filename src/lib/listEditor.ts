@@ -5,7 +5,7 @@ const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 const LINE = /^(\s*)([-*•]|\d+\.)\s+(.*)$/;
 
 /** Plain text -> HTML with real nested <ul>/<ol>. Non-list lines become <div>s. */
-export function mdToHtml(text: string, plainLines = false): string {
+export function mdToHtml(text: string, plainLines = false, synth = false): string {
   let out = "";
   const stack: Array<"ul" | "ol"> = [];
   const close = (to: number) => { while (stack.length > to) out += `</li></${stack.pop()}>`; };
@@ -28,11 +28,20 @@ export function mdToHtml(text: string, plainLines = false): string {
       out += esc(m[3] ?? "");
     } else {
       close(0);
+      if (synth && line.startsWith("## ")) { out += `<h2>${esc(line.slice(3))}</h2>`; continue; }
+      if (synth && line.startsWith("From: [[")) { out += fromHtml(line); continue; }
       out += plainLines ? (line.trim() ? `<p>${esc(line)}</p>` : "") : `<div>${line ? esc(line) : "<br>"}</div>`;
     }
   }
   close(0);
   return out;
+}
+
+/** "From: [[id|label]] · [[id|label]]" -> the synthesis source line (not markable). */
+function fromHtml(line: string): string {
+  const links = [...line.matchAll(/\[\[([0-9a-f-]+)\|([^\]]*)\]\]/g)]
+    .map((m) => `<a href="/item/${m[1]}" data-item="${m[1]}">${esc(m[2] ?? "")}</a>`);
+  return `<p class="from" contenteditable="false">From ${links.join(" · ")}</p>`;
 }
 
 /** DOM of an editable box -> plain text. Empty list items are dropped. */

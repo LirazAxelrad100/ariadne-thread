@@ -1,5 +1,7 @@
 import { Link, useNavigate, useRouteContext, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { synthesize } from "@/lib/synthesize.functions";
 import { itemsQuery, monthKey, monthLabel, SYNTH_MIN } from "@/lib/items";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { LogoMark, ThreadIcon } from "@/components/Logo";
@@ -44,6 +46,28 @@ export function AppShell({ children }: { children: ReactNode }) {
   const older = idx >= 0 ? months[idx + 1] : undefined;
   const newer = idx > 0 ? months[idx - 1] : undefined;
   const count = items.filter((i) => monthKey(i.item_date) === month).length;
+  const qc = useQueryClient();
+  const navigate = useNavigate();
+  const runSynth = useServerFn(synthesize);
+  const [synth, setSynth] = useState<{ state: "idle" | "loading" | "few" | "error"; message?: string | null }>({ state: "idle" });
+  useEffect(() => { if (view !== "read") setSynth({ state: "idle" }); }, [view]);
+
+  async function onSynthesize() {
+    if (synth.state === "loading") return;
+    if (items.filter((i) => !i.is_synthesis).length < SYNTH_MIN) { setSynth({ state: "few" }); return; }
+    setSynth({ state: "loading" });
+    try {
+      const r = await runSynth();
+      if (r.ok) {
+        setSynth({ state: "idle" });
+        await qc.invalidateQueries({ queryKey: ["items"] });
+        navigate({ to: "/item/$id", params: { id: r.id } });
+      } else if (r.reason === "few") setSynth({ state: "few" });
+      else setSynth({ state: "error", message: r.message });
+    } catch {
+      setSynth({ state: "error" });
+    }
+  }
 
   return (
     <>
@@ -74,9 +98,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         )}
         <div className="spacer" />
         {view === "read" && (
-          <button className="btn" type="button" disabled={items.length < SYNTH_MIN}
-            title={items.length < SYNTH_MIN ? `Synthesize needs at least ${SYNTH_MIN} entries` : undefined}
-            style={items.length < SYNTH_MIN ? { opacity: 0.45, cursor: "default" } : undefined}>
+          <button className="btn" type="button" onClick={onSynthesize} aria-busy={synth.state === "loading"}
+            style={synth.state === "loading" ? { opacity: 0.45, cursor: "default" } : undefined}>
             <ThreadIcon />
             Synthesize
           </button>
@@ -88,6 +111,18 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
         <AccountMenu />
       </header>
+      {view === "read" && synth.state !== "idle" && (
+        <p className="synthState" role="status">
+          {synth.state === "loading" && "Reading your notes and captures. This can take up to a minute."}
+          {synth.state === "few" && `Synthesize needs at least ${SYNTH_MIN} items to find patterns.`}
+          {synth.state === "error" && (
+            <>
+              {synth.message ? `${synth.message} Nothing was saved.` : "Couldn’t finish the synthesis. Nothing was saved."}
+              <button className="btn" type="button" onClick={onSynthesize}>Try again</button>
+            </>
+          )}
+        </p>
+      )}
       {children}
     </>
   );

@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { hhmm } from "@/lib/notes";
-import { hostOf, wordCount, type Item } from "@/lib/items";
+import { hostOf, itemsQuery, wordCount, type Item } from "@/lib/items";
 import type { Annot } from "@/lib/marks";
 import { MarkedBody, type MarkActions } from "@/components/MarkedBody";
 
@@ -23,6 +25,17 @@ export function Entry({
   const words = wordCount(item.body);
   const cut = isCapture && !full && !expanded && words > SHORT_CAPTURE;
   const synthCount = (item.synthesis as { count?: number } | null)?.count;
+  const navigate = useNavigate();
+  const { data: all } = useQuery({ ...itemsQuery(), enabled: item.is_synthesis });
+  const known = useMemo(() => (all ? new Set(all.map((i) => i.id)) : undefined), [all]);
+  // "From" source links open that item.
+  const onSource = (e: React.MouseEvent) => {
+    const a = (e.target as HTMLElement).closest("a[data-item]") as HTMLElement | null;
+    if (!a) return;
+    e.preventDefault();
+    e.stopPropagation();
+    navigate({ to: "/item/$id", params: { id: a.dataset["item"]! } });
+  };
 
   return (
     <article className={`entry${item.is_synthesis ? " synthesis" : ""}`} onClick={onOpen}>
@@ -45,12 +58,14 @@ export function Entry({
           </div>
         </>
       )}
-      <div style={isCapture ? { marginTop: 10 } : undefined}>
+      <div style={isCapture ? { marginTop: 10 } : undefined} onClickCapture={item.is_synthesis ? onSource : undefined}>
         <MarkedBody
           body={item.body}
           annots={annots}
-          className={`body${cut ? " clamp4" : ""}`}
-          editable={editable && annots.length === 0}
+          className={`body${cut ? " clamp4" : ""}${item.is_synthesis ? " synth" : ""}`}
+          editable={editable && annots.length === 0 && !item.is_synthesis}
+          synth={item.is_synthesis}
+          known={known}
           actions={actions}
           onEdit={onEdit}
         />

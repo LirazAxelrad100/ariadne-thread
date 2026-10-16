@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
 import { segments, toBody, toRendered, writerQuery, type Annot } from "@/lib/marks";
 
-const SKIP = ".annot, .annotSlot";
+const SKIP = ".annot, .annotSlot, .from";
 
 function textNodes(root: HTMLElement): Text[] {
   const out: Text[] = [];
@@ -103,7 +103,7 @@ export type MarkActions = {
  * (only while it has no marks).
  */
 export function MarkedBody({
-  body, annots, className = "body", plain = true, editable = false, actions, onEdit,
+  body, annots, className = "body", plain = true, editable = false, actions, onEdit, synth = false, known,
 }: {
   body: string;
   annots: Annot[];
@@ -112,6 +112,10 @@ export function MarkedBody({
   editable?: boolean;
   actions?: MarkActions | undefined;
   onEdit?: ((body: string) => void) | undefined;
+  /** Synthesis body: section headers and "From" source lines. */
+  synth?: boolean;
+  /** Ids of items that still exist; other "From" links show "(deleted)". */
+  known?: Set<string> | undefined;
 }) {
   const { data: writer = "" } = useQuery(writerQuery());
   const ref = useRef<HTMLDivElement>(null);
@@ -189,7 +193,7 @@ export function MarkedBody({
       root.querySelectorAll("mark[data-id]").forEach((m) => m.replaceWith(...Array.from(m.childNodes)));
       root.normalize();
     } else {
-      root.innerHTML = mdToHtml(body, plain && !editable);
+      root.innerHTML = mdToHtml(body, plain && !editable, synth);
     }
     // Loose text at the top of an editable box becomes its own line, so comment lines sit under the whole line.
     if (editable) {
@@ -201,7 +205,14 @@ export function MarkedBody({
         group.appendChild(n);
       }
     }
-    const segs = segments(body);
+    if (synth && known) root.querySelectorAll("a[data-item]").forEach((a) => {
+      if (known.has((a as HTMLElement).dataset["item"]!)) return;
+      const d = document.createElement("span");
+      d.className = "deleted";
+      d.textContent = "(deleted)";
+      a.replaceWith(d);
+    });
+    const segs = segments(body, synth);
     const sorted = [...annots].sort((a, b) => a.start_offset - b.start_offset);
     for (const a of sorted) for (const [f, t] of toRendered(segs, a.start_offset, a.end_offset)) wrap(root, f, t, a.id);
     // Comment lines go directly under the paragraph holding their mark.
@@ -241,7 +252,7 @@ export function MarkedBody({
       root.appendChild(d);
     }
     setSlot(newSlot);
-  }, [body, annotsKey, editable, plain, editing, writer]);
+  }, [body, annotsKey, editable, plain, editing, writer, synth, known ? [...known].join() : ""]);
 
   function place(rect: DOMRect) {
     const w = wrapRef.current!.getBoundingClientRect();
@@ -273,7 +284,7 @@ export function MarkedBody({
     if (!pop || pop.kind !== "new" || !actions || !ref.current) return;
     const text = editable ? domToMd(ref.current) : body;
     if (editable && text !== body) await actions.saveBody?.(text);
-    const segs = segments(text);
+    const segs = segments(text, synth);
     const start = toBody(segs, pop.start, false);
     const end = toBody(segs, pop.end, true);
     setPop(null);

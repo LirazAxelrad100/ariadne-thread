@@ -17,3 +17,11 @@ describe("mark offsets", () => {
     expect(toRendered(segs, s, e)).toEqual([[16, 22], [22, 25]]);
   });
 });
+
+describe("synthesis bodies", () => {
+  it("skips the header prefix and the From line when mapping marks", () => {
+    const body = "## Themes\nFear grows.\nFrom: [[abc|A note…]]\n- Example";
+    const segs = segments(body, true);
+    expect(segs.map((s) => body.slice(s.b, s.b + s.len))).toEqual(["Themes", "Fear grows.", "Example"]);
+  });
+});
