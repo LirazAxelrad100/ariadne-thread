@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/auth";
 import { LogoMark } from "@/components/Logo";
 import { SiteFooter } from "@/components/SiteFooter";
+import { DEMO_EMAIL } from "@/lib/demoAccount";
 
 
 export const Route = createFileRoute("/auth")({
