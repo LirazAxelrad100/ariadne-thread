@@ -21,15 +21,21 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  // Stay blank while a session may be arriving (e.g. back from Google), so the form never flashes.
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
+    const returning = /access_token|code=|error=/.test(window.location.hash + window.location.search);
+    let fallback: ReturnType<typeof setTimeout> | undefined;
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/write", replace: true });
+      else if (returning) fallback = setTimeout(() => setChecking(false), 4000);
+      else setChecking(false);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
       if (session) navigate({ to: "/write", replace: true });
     });
-    return () => sub.subscription.unsubscribe();
+    return () => { sub.subscription.unsubscribe(); if (fallback) clearTimeout(fallback); };
   }, [navigate]);
 
   async function onSignIn() {
@@ -46,6 +52,8 @@ function AuthPage() {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     if (error) setError("Wrong email or password.");
   }
+
+  if (checking) return null;
 
   return (
     <>
