@@ -347,7 +347,9 @@ body {
 
 .menu[hidden] { display: none; }
 
-.menu button {
+.menu button, .menu a[role="menuitem"] {
+  text-decoration: none;
+  box-sizing: border-box;
   display: block;
   width: 100%;
   padding: 8px 10px;
@@ -362,7 +364,7 @@ body {
   cursor: pointer;
 }
 
-.menu button:hover { background: var(--paper); }
+.menu button:hover, .menu a[role="menuitem"]:hover { background: var(--paper); }
 
 /* ---------- stream ---------- */
 

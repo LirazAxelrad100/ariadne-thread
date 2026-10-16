@@ -1,27 +1,79 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { FOOTER_LINES, FOOTER_MOBILE_LINES } from "@/lib/shots";
 
-const SUPPORT = "support@ariadne-thread.app";
+export const SUPPORT = "support@ariadne-thread.app";
 
-type Dialog = "privacy" | "how";
+export type InfoDialogKind = "privacy" | "how";
 
-export function SiteFooter() {
-  const [open, setOpen] = useState<Dialog | null>(null);
-  const howRef = useRef<HTMLButtonElement>(null);
-  const linkRef = useRef<HTMLButtonElement>(null);
+/** The How it works / Privacy pop-up, shared by the landing footer and the account menu. */
+export function InfoDialog({ kind, onClose }: { kind: InfoDialogKind; onClose: () => void }) {
   const closeRef = useRef<HTMLButtonElement>(null);
-  // Which link opened the pop-up, so focus can go back to it on close.
-  const trigger = useRef<HTMLButtonElement | null>(null);
-
   useEffect(() => {
-    if (!open) return;
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [onClose]);
+
+  const titleId = kind === "how" ? "howTitle" : "privTitle";
+  return (
+    <div className="privBackdrop" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="privCard" role="dialog" aria-modal="true" aria-labelledby={titleId}>
+        <div className="privHead">
+          <h2 id={titleId}>{kind === "how" ? "How it works" : "Privacy"}</h2>
+          <button ref={closeRef} type="button" className="privClose" aria-label="Close" onClick={onClose}>
+            ×
+          </button>
+        </div>
+        {kind === "how" ? (
+          <div className="privSteps">
+            {FOOTER_LINES.map((l) => (
+              <p className="privStep" key={l.name}>
+                <span className="privStepName">{l.name}</span>
+                <span className="privStepLine">{l.line}</span>
+              </p>
+            ))}
+            <h3 className="privSub">On mobile</h3>
+            {FOOTER_MOBILE_LINES.map((l) => (
+              <p className="privStep" key={l.name}>
+                <span className="privStepName">{l.name}</span>
+                <span className="privStepLine">{l.line}</span>
+              </p>
+            ))}
+          </div>
+        ) : (
+          <>
+            <p>
+              Your board is yours. Nothing you write or save is shared with or visible to anyone
+              else.
+            </p>
+            <p>
+              When you press Synthesize, your notes and clips are sent to an AI service to find
+              patterns in them. It is used to produce your synthesis and nothing else — not to
+              train models, not to build a profile of you.
+            </p>
+            <p>
+              Your items and marks are stored so the board works. There are no ads and your data
+              is not sold.
+            </p>
+            <p>
+              Want it gone? Email <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a> and your account
+              and everything in it will be deleted.
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function SiteFooter() {
+  const [open, setOpen] = useState<InfoDialogKind | null>(null);
+  const howRef = useRef<HTMLButtonElement>(null);
+  const linkRef = useRef<HTMLButtonElement>(null);
+  const trigger = useRef<HTMLButtonElement | null>(null);
 
   const close = () => {
     const back = trigger.current;
@@ -29,7 +81,7 @@ export function SiteFooter() {
     requestAnimationFrame(() => back?.focus());
   };
 
-  const show = (which: Dialog, from: RefObject<HTMLButtonElement | null>) => {
+  const show = (which: InfoDialogKind, from: RefObject<HTMLButtonElement | null>) => {
     trigger.current = from.current;
     setOpen(which);
   };
@@ -40,20 +92,10 @@ export function SiteFooter() {
         <div className="landFootRow">
           <span>Built at the SheBuilds Buildathon, October 2026</span>
           <span className="landFootLinks">
-            <button
-              ref={howRef}
-              type="button"
-              className="landFootLink"
-              onClick={() => show("how", howRef)}
-            >
+            <button ref={howRef} type="button" className="landFootLink" onClick={() => show("how", howRef)}>
               How it works
             </button>
-            <button
-              ref={linkRef}
-              type="button"
-              className="landFootLink"
-              onClick={() => show("privacy", linkRef)}
-            >
+            <button ref={linkRef} type="button" className="landFootLink" onClick={() => show("privacy", linkRef)}>
               Privacy
             </button>
             <a className="landFootLink" href={`mailto:${SUPPORT}`}>
@@ -69,68 +111,7 @@ export function SiteFooter() {
           by Judson Brewer, MD, PhD. All rights reserved.
         </p>
       </footer>
-      {open && (
-        <div className="privBackdrop" onMouseDown={(e) => e.target === e.currentTarget && close()}>
-          <div
-            className="privCard"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={open === "how" ? "howTitle" : "privTitle"}
-          >
-            <div className="privHead">
-              <h2 id={open === "how" ? "howTitle" : "privTitle"}>
-                {open === "how" ? "How it works" : "Privacy"}
-              </h2>
-              <button
-                ref={closeRef}
-                type="button"
-                className="privClose"
-                aria-label="Close"
-                onClick={close}
-              >
-                ×
-              </button>
-            </div>
-            {open === "how" ? (
-              <div className="privSteps">
-                {FOOTER_LINES.map((l) => (
-                  <p className="privStep" key={l.name}>
-                    <span className="privStepName">{l.name}</span>
-                    <span className="privStepLine">{l.line}</span>
-                  </p>
-                ))}
-                <h3 className="privSub">On mobile</h3>
-                {FOOTER_MOBILE_LINES.map((l) => (
-                  <p className="privStep" key={l.name}>
-                    <span className="privStepName">{l.name}</span>
-                    <span className="privStepLine">{l.line}</span>
-                  </p>
-                ))}
-              </div>
-            ) : (
-              <>
-                <p>
-                  Your board is yours. Nothing you write or save is shared with or visible to anyone
-                  else.
-                </p>
-                <p>
-                  When you press Synthesize, your notes and clips are sent to an AI service to find
-                  patterns in them. It is used to produce your synthesis and nothing else — not to
-                  train models, not to build a profile of you.
-                </p>
-                <p>
-                  Your items and marks are stored so the board works. There are no ads and your data
-                  is not sold.
-                </p>
-                <p>
-                  Want it gone? Email <a href={`mailto:${SUPPORT}`}>{SUPPORT}</a> and your account
-                  and everything in it will be deleted.
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      {open && <InfoDialog kind={open} onClose={close} />}
     </>
   );
 }
