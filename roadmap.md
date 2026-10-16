@@ -11,6 +11,7 @@
   - [x] Fix "Payload Too Large": article now handed over by message, not in the link; bookmark reuses an open Ariadne tab (published app only). Verify with user after publish.
 - Bookmarklet button: one "Capture to Ariadne" button styled directly in the account menu (outlined, 44px, transparent fill, --meta-soft caption "Desktop browsers only." with a short "Drag me to your bookmarks bar" instruction line, menu-float shadow), same drag handle and code everywhere; no intermediate step or separate panel, and never in the header. Same button comes to "First steps" and the landing page when those are built. Verified by the user.
 - Capture re-tested by the user with the freshly dragged bookmark on a real article: opened, filled and saved correctly. Step 5 closed.
+- Read month clarity (the "9 entries" confusion): the header count now reads "9 of 19 entries" (month on screen of the whole timeline, hidden on mobile), clicking the month name opens the month strip your stylesheet already had — every month with entries, grouped by year, oldest left, current one dotted, closed by re-click / outside click / Esc / switching to Write — and the stream ends with one quiet underlined line naming the months still off screen ("September, August and July hold 10 more entries") that jumps to the nearest of them. Verified in a test browser as the demo account: strip open/close, jump to September, and the line re-pointing from every month.
 
 
 
