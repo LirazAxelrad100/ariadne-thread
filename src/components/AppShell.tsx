@@ -82,12 +82,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [synth, setSynth] = useState<{ state: "idle" | "loading" | "few" | "error"; message?: string | null }>({ state: "idle" });
   useEffect(() => { if (view !== "read") setSynth({ state: "idle" }); }, [view]);
 
-  const running = view === "read" && synth.state === "loading";
-  useEffect(() => {
-    document.body.classList.toggle("synthesizing", running);
-    return () => document.body.classList.remove("synthesizing");
-  }, [running]);
-
   async function onSynthesize() {
     if (synth.state === "loading") return;
     if (items.filter((i) => !i.is_synthesis).length < SYNTH_MIN) { setSynth({ state: "few" }); return; }
@@ -136,10 +130,12 @@ export function AppShell({ children }: { children: ReactNode }) {
         )}
         <div className="spacer" />
         {view === "read" && (
-          <button className="btn" type="button" onClick={onSynthesize} aria-busy={synth.state === "loading"}
-            style={synth.state === "loading" ? { opacity: 0.75, cursor: "default" } : undefined}>
-            <ThreadIcon working={synth.state === "loading"} />
-            Synthesize
+          <button className={synth.state === "loading" ? "btn synthBusy" : "btn"} type="button"
+            onClick={onSynthesize} aria-busy={synth.state === "loading"}
+            style={synth.state === "loading" ? { cursor: "default" } : undefined}>
+            <ThreadIcon />
+            <span className="btnLabel">Synthesize</span>
+            {synth.state === "loading" && <span className="btnDot" aria-hidden="true" />}
           </button>
         )}
         <span className="barSep" />
@@ -176,7 +172,6 @@ export function AppShell({ children }: { children: ReactNode }) {
           )}
         </p>
       )}
-      {running && <span className="railRunner" aria-hidden="true" />}
       {children}
     </>
   );
