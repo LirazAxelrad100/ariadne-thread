@@ -1354,7 +1354,7 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 
 /* Paste a link — the phone's capture door (desktop has the bookmarklet). */
 .pasteLinkWrap { display: none; }
-.pasteLink { display: flex; gap: 8px; margin-top: 8px; }
+.pasteLink { display: flex; width: 100%; gap: 8px; margin-top: 8px; }
 .pasteLink .capField { flex: 1; min-width: 0; font-size: 16px; }
 .pasteLink .btn { height: 40px; padding: 0 14px; }
 @media (max-width: 720px), (hover: none) { .pasteLinkWrap { display: inline; } }

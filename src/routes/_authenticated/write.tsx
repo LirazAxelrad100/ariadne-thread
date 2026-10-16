@@ -1,4 +1,4 @@
-import { createFileRoute, useRouteContext, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from "react";
 import { enrich } from "@/lib/share";
@@ -380,20 +380,20 @@ function CaptureFields({ cap, onChange }: { cap: CaptureMeta; onChange: (c: Capt
 
 /** Phone capture: paste an article's link, the page comes in like a bookmarklet capture. */
 function PasteLink() {
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState("");
   const ok = /^https?:\/\/\S+\.\S+/.test(url.trim());
+  const go = () => { if (ok) window.location.assign("/capture?url=" + encodeURIComponent(url.trim())); };
   if (!open) return <button type="button" className="capToggle" onClick={() => setOpen(true)}>Paste a link</button>;
   return (
-    <form className="pasteLink" onSubmit={(e) => {
-      e.preventDefault();
-      if (ok) navigate({ to: "/capture", search: { url: url.trim() } as never });
-    }}>
+    <span className="pasteLink">
       <input className="capField" autoFocus type="url" inputMode="url" placeholder="https://…" value={url}
         aria-label="Article link" onChange={(e) => setUrl(e.target.value)}
-        onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); setOpen(false); } }} />
-      <button type="submit" className="btn" disabled={!ok}>Capture</button>
-    </form>
+        onKeyDown={(e) => {
+          if (e.key === "Escape") { e.stopPropagation(); setOpen(false); }
+          if (e.key === "Enter") { e.preventDefault(); go(); }
+        }} />
+      <button type="button" className="btn" disabled={!ok} onClick={go}>Capture</button>
+    </span>
   );
 }
