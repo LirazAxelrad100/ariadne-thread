@@ -54,4 +54,4 @@ export const STEPS: Step[] = [
 
 // How long each step holds before the carousel moves on. Synthesize gets
 // longer so the finding can actually be read.
-export const DURATIONS = [5000, 5000, 5000, 5000, 8000];
+export const DURATIONS = [7000, 6500, 7500, 6000, 10000];
