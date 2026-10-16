@@ -119,3 +119,9 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Verified in a test browser with a real demo sign-in: the intro is on Write, gone while typing, no console errors; the typed probe note was deleted afterwards and the thread is back to 19 items.
 - [x] Security scan before publishing: clean. Publish requested 16 Oct 17:13 UTC.
 - [x] Read count (16 Oct 17:14): the month-filtered count reads "10" while Write says 19 — show "10 / 19" in Read so it doesn't look like a bug.
+
+## Pre-submission (submit Sat evening; deadline Sun Oct 18 06:59 UTC)
+- [ ] Full QA run (demo + new Google user): write, capture, mark ± comment, synthesize, Read, sign-out, mobile size
+- [ ] User checks: Speak, bookmarklet on 3 sites, iPhone/Android capture, Safari/Firefox, WhatsApp preview
+- [ ] Submission copy: description, problem + intended user, category, additional context, testing instructions, known limitations
+- [ ] Submission visuals: up to 3 screenshots
