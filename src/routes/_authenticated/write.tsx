@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { enrich } from "@/lib/share";
@@ -11,7 +11,6 @@ import { BookmarkletLink } from "@/components/BookmarkletLink";
 import { VoiceButton } from "@/components/VoiceButton";
 import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
 import { supabase } from "@/integrations/supabase/client";
-import { demoModeQueryOptions } from "@/lib/demo";
 
 export const Route = createFileRoute("/_authenticated/write")({
   head: () => ({
@@ -35,10 +34,6 @@ const EMPTY_CAP: CaptureMeta = { title: "", source_url: "", writer: "", author_m
 function WriteView() {
   const qc = useQueryClient();
   const navigateTo = useNavigate();
-  const { user } = useRouteContext({ from: "/_authenticated" });
-  const { data: demoMode } = useQuery(demoModeQueryOptions(user?.id));
-  // The read-only demo has nothing to write: send it straight to the thread.
-  useEffect(() => { if (demoMode) navigateTo({ to: "/read", replace: true }); }, [demoMode, navigateTo]);
   const { data: notes = [] } = useQuery({ queryKey: ["notes", "today"], queryFn: fetchTodayNotes });
   const { data: allAnnots = [] } = useQuery(annotationsQuery());
   const { data: allItems = [], isSuccess: itemsLoaded } = useQuery(itemsQuery());
@@ -288,12 +283,6 @@ function WriteView() {
         </div>
       </main>
       <div className="composerWrap">
-        {demoMode ? (
-          <p className="demoNote">
-            The demo is read-only — nothing here can be changed. Open Read to follow the
-            thread, and press Synthesize to see what the AI finds.
-          </p>
-        ) : (
         <div className="composerRail">
           <span className="nowDot" />
           <span className="nowTime">{hhmm(liveTime)}</span>
