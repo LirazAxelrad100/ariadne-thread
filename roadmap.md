@@ -100,3 +100,4 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [ ] Captured article title (16 Oct): dropped by the user for now — selecting words in a capture's title, writer or site name stays inert; marks and comments remain on the article text only. Revisit only if it confuses a judge.
 
 - Sign-in page redesign (no demo prefill; judges get credentials privately)
+- [x] Article credit placement (16 Oct): the "Article in the demo:" credit belongs to the landing page only — the sign-in page's footer carries just the buildathon line and the three links. Verified in a test browser: landing footer shows the credit, /auth footer does not.
