@@ -1013,3 +1013,23 @@ body.mode-item .composerWrap { display: none; }
   font-size: 14px;
   color: var(--ink-recede);
 }
+
+/* ARIADNE — while Synthesize runs, the icon's dot rides the thread's own curve. */
+.threadWorking .tDot {
+  offset-path: path("M8 38 C16 38 12 16 21 16 C29 16 26 34 34 32 C39 30.8 38 14 41 11");
+  animation: tTravel 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes tTravel {
+  0%   { offset-distance: 0%;   opacity: 0; }
+  10%  { opacity: 1; }
+  82%  { offset-distance: 100%; opacity: 1; }
+  94%  { offset-distance: 100%; opacity: 0; }
+  100% { offset-distance: 0%;   opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .threadWorking .tDot { animation: tPulse 1.6s ease-in-out infinite; offset-path: none; }
+  @keyframes tPulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+  }
+}

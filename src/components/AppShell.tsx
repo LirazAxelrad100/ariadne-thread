@@ -131,8 +131,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="spacer" />
         {view === "read" && (
           <button className="btn" type="button" onClick={onSynthesize} aria-busy={synth.state === "loading"}
-            style={synth.state === "loading" ? { opacity: 0.45, cursor: "default" } : undefined}>
-            <ThreadIcon />
+            style={synth.state === "loading" ? { opacity: 0.75, cursor: "default" } : undefined}>
+            <ThreadIcon working={synth.state === "loading"} />
             Synthesize
           </button>
         )}
