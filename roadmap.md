@@ -59,3 +59,7 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Article attribution (16 Oct): the author is Judson Brewer, MD, PhD. Capture scene byline and Read scene source line carry the full name; the demo item's writer field set to match so the real demo agrees; the footer now carries a credit line linking to the article, rights reserved.
 - [x] Landing bookmarklet placement (16 Oct, user's call): removed from the closing section so Start / Try the demo stand alone; the button stays only inside the Capture scene. Signed-out captures confirmed to be kept in the browser and restored after sign-in, so nothing is lost either way.
 - [ ] Mobile preview review (16 Oct): user wants to see the landing on a phone in the preview — switched the preview to phone view; walk through the phone pass items above while it's there.
+
+## Mobile capture (16 Oct)
+- [x] Paste a link (phones only, under the writing box) — the page's title, writer and text come in like a bookmarklet capture. Verified on the real Substack article.
+- [x] Share to Ariadne — app is installable (icon, manifest), shared links land in the writing box; signed-out shares wait through sign-in. Works on Android after "Add to home screen"; iPhone doesn't offer web apps in its Share menu, so iPhone uses Paste a link. Needs publish + a check on a real phone.
