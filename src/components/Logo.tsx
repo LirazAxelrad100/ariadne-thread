@@ -17,9 +17,9 @@ export function LogoMark({ size = 26 }: { size?: number }) {
 }
 
 /** Small thread icon used inside outlined buttons (Synthesize, bookmarklet). */
-export function ThreadIcon({ size = 14, muted = false }: { size?: number; muted?: boolean }) {
+export function ThreadIcon({ size = 14, muted = false, working = false }: { size?: number; muted?: boolean; working?: boolean }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true" className={working ? "threadWorking" : undefined}>
       <path
         d="M8 38 C16 38 12 16 21 16 C29 16 26 34 34 32 C39 30.8 38 14 41 11"
         fill="none"
@@ -27,7 +27,12 @@ export function ThreadIcon({ size = 14, muted = false }: { size?: number; muted?
         strokeWidth="3.4"
         strokeLinecap="round"
       />
-      <circle cx="41" cy="11" r="5" fill="var(--logo-dot)" />
+      {working ? (
+        /* While working the dot rides the thread itself (offset-path in CSS). */
+        <circle r="5" fill="var(--logo-dot)" className="tDot" />
+      ) : (
+        <circle cx="41" cy="11" r="5" fill="var(--logo-dot)" />
+      )}
     </svg>
   );
 }
