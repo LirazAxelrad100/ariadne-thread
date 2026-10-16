@@ -98,7 +98,6 @@ function AccountMenu() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [bookmarklet, setBookmarklet] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const meta = (user.user_metadata ?? {}) as { full_name?: string; name?: string; avatar_url?: string; picture?: string };
@@ -106,7 +105,7 @@ function AccountMenu() {
   const avatar = meta.avatar_url || meta.picture;
   const initial = (name || "?").trim().charAt(0).toUpperCase();
 
-  // Keep the installation panel open while the user moves to the bookmarks bar.
+  // Keep the menu open while the user moves to the bookmarks bar.
   useEffect(() => {
     if (!open) return;
     const close = () => setOpen(false);
@@ -137,9 +136,9 @@ function AccountMenu() {
       <button
         className="account"
         aria-label="Account"
-        aria-haspopup={bookmarklet && open ? "dialog" : "menu"}
+        aria-haspopup="menu"
         aria-expanded={open}
-        onClick={() => { setBookmarklet(false); setOpen((o) => !o); }}
+        onClick={() => setOpen((o) => !o)}
         style={avatar ? { padding: 0, overflow: "hidden" } : undefined}
       >
         {avatar ? (
@@ -148,22 +147,13 @@ function AccountMenu() {
           initial
         )}
       </button>
-      <div className={bookmarklet ? "menu bmPanel" : "menu"} role={bookmarklet ? "dialog" : "menu"} aria-label={bookmarklet ? "Get the bookmarklet" : "Account menu"} hidden={!open}>
-        {bookmarklet ? (
-          <>
-            <div className="bmInstructions">Drag it to your bookmarks bar. On any page, select a passage or capture the whole article.</div>
-            <BookmarkletLink />
-          </>
-        ) : (
-          <>
+      <div className="menu accountMenu" role="menu" aria-label="Account menu" hidden={!open}>
         <div style={{ padding: "6px 10px 8px", lineHeight: 1.4 }}>
           {name && name !== user.email && <div style={{ fontSize: 13.5, fontWeight: 500 }}>{name}</div>}
           <div className="meta" style={{ whiteSpace: "normal", wordBreak: "break-all" }}>{user.email}</div>
         </div>
-        <button className="bmMenuItem" role="menuitem" onClick={() => setBookmarklet(true)}><ThreadIcon size={16} muted />Get the bookmarklet</button>
+        <BookmarkletLink />
         <button role="menuitem" onClick={onSignOut}>Sign out</button>
-          </>
-        )}
       </div>
     </div>
   );
