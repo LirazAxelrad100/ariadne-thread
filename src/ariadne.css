@@ -1421,3 +1421,9 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
     font-size: 14px;
   }
 }
+@media (max-width: 720px) {
+  .topbar { align-items: center; }
+  .topbar .viewNav { align-self: center; }
+  .topbar .viewNav a { align-items: center; }
+  .topbar .headDot { align-self: center; transform: translateY(1px); }
+}
