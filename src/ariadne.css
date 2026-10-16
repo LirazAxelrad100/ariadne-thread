@@ -1235,3 +1235,10 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
   .landStep { height: auto !important; }
   .landStepBm { display: none; }
 }
+
+/* Landing picture header: logo + view name, covers the cropped app header */
+.landShot { position: relative; }
+.landShotBar { position: absolute; inset: 0 0 auto 0; height: 50px; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: var(--paper); border-bottom: 1px solid var(--rail); z-index: 1; }
+.landShotBar svg { width: 22px; height: 22px; flex-shrink: 0; }
+.landShotBarSep { width: 1px; height: 18px; background: var(--rail); }
+.landShotBarName { font-size: 14px; font-weight: 500; color: var(--ink); }
