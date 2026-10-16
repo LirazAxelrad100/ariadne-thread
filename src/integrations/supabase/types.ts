@@ -165,6 +165,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      insert_synthesis: {
+        Args: {
+          p_body: string
+          p_created_at: string
+          p_item_date: string
+          p_synthesis: Json
+          p_title: string
+        }
+        Returns: string
+      }
       is_demo_visitor: { Args: never; Returns: boolean }
     }
     Enums: {
