@@ -24,12 +24,12 @@
 Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ariadne-thread.app); your own account untouched. Email sign-in added to the sign-in page.
 2. Synthesis — Done and approved by the user. Built to spec (5+ items, four sections, empty ones hidden, "From" links) and shaped over three rounds: "The thread" opens with 2–3 sentences; each section holds up to two findings, each a 2–3 sentence explanation, short bullet examples quoting the actual passages, then its "From" sources. While it runs, the word "Synthesize" greys out and a warm dot rides the thread icon's curve, keeps the same wave across the word and travels back, over and over; the status line under the header stays. Verified frame by frame in a test browser.
 3. Empty states. The throwaway test account (lirazaxelrad2@gmail.com) is empty — samples go in via "Explore the demo entries" on the empty Read screen. After these tests: offer to clear the test junk out of the user's own account on request.
-4. Landing page — the last big item: hero lockup + hook, Start / Try the demo, "How it works" carousel (5 steps, auto-advance, thread grows), closing, privacy verbatim, footer.
+4. Landing page — DONE and verified in a test browser: header mark + wordmark with Sign in; hero lockup (logo, "Ariadne’s Thread", hook "AI that finds the thread in the maze of your mind.", Start / Try the demo); "How it works" rail of five steps with the screenshot panel beside it, auto-advancing 5s each (8s on Synthesize), clickable, Pause/Play, paused under prefers-reduced-motion; "Capture from anywhere" with the same bookmarklet button; closing repeat of the lockup + actions; privacy copy verbatim; footer "Built at the SheBuilds Buildathon, October 2026" + Privacy. Screens 01–05 were captured from the running app and served as CDN assets. "Try the demo" signs the read-only visitor in server-side and lands on Read with the full thread. Verified: all five images load at 1200×800, the carousel advances and changes the shot, the demo reaches Read with 8 current-month entries, no console errors, nothing clipped at the bottom.
 
 ## Open gaps (parked 16 Oct — pick up during polish)
 - Item view gives no hint that text can be selected to mark it; the popup only appears once someone discovers it.
 - Deleting the very last entry has not been checked: Read should fall back to "Your thread starts here" and Write should show the thread intro again.
-- Mobile pass not started: header two rows, month switcher on its own centred row, no carousel (steps as a list with a shot under each), writing box fixed 232px, editable fields ≥16px.
+- Mobile pass: the landing is done on a phone (steps as a list, the active step's shot under it, "Capture from anywhere" reworded to "+ Capture in the app" since the bookmarklet is desktop-only). Still to do: header two rows, month switcher on its own centred row, writing box fixed 232px, editable fields ≥16px.
 
 
 ## Submission checklist (event rules)
