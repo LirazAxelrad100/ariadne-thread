@@ -1449,3 +1449,4 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 @media (max-width: 720px) {
   .topbar .monthNav { margin-top: 16px; margin-bottom: -16px; }
 }
+.synthBtn { align-self: center; }
