@@ -29,7 +29,7 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 
 ## Open gaps (parked 16 Oct — pick up during polish)
 - Demo account's AI synthesis: deferred to 17 Oct by the user (Synthesize already run several times today, so the feature itself is proven).
-- Item view gives no hint that text can be selected to mark it; the popup only appears once someone discovers it.
+- [x] Item view hint (16 Oct): a quiet brown line above the entry text — "Select any words to mark or comment." — sitting in the lock line's own slot, so the same spot always states the current rule; it disappears the moment the item has a mark, where "Text is locked…" takes over. Aligned with the body column (rail/timestamp stay clear of it), one line on phones (the longer wording wrapped). Verified in a test browser as the demo account, desktop and phone.
 - [x] Deleting the very last entry: verified by the user (16 Oct) — done several times, and both Read ("Your thread starts here.") and Write (thread intro) showed their empty states.
 - Mobile pass: the landing is done on a phone (steps as a list, the active step's shot under it, "Capture from anywhere" reworded to "+ Capture in the app" since the bookmarklet is desktop-only). Still to do: header two rows, month switcher on its own centred row, writing box fixed 232px, editable fields ≥16px.
 
