@@ -15,6 +15,10 @@
 
 
 
+- Read timeline spacing (brief 07): 22px between entries within a day (18px on phones) and exactly 40px from a day's last entry to the next day divider; each day keeps its own rail that stops at its last entry, with the "Wednesday · 14 October" label and hairline above it. Verified in the demo account: measured gaps 22/22 inside a day and 40 between all six days.
+- Read order settled: each month starts at its first day and runs oldest → newest, opening at the top. The one place order matters — Synthesize — already lands you on the new note: verified in the test account (three notes → Synthesize → the view moves to the new synthesis item; back returns to Read with four entries).
+
+
 ## Next steps (spec build order — each starts when the user sends its prompt)
 
 Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ariadne-thread.app); your own account untouched. Email sign-in added to the sign-in page.
