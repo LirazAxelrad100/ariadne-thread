@@ -1147,7 +1147,9 @@ body.mode-item .composerWrap { display: none; }
 .emptyBtn:disabled { opacity: .6; cursor: default; }
 
 /* Placeholder line in the writing box while it has no text. */
-.composer[data-empty]::before { content: attr(data-placeholder); color: var(--meta-soft); pointer-events: none; }
+.composer[data-empty] { position: relative; }
+.composer[data-empty]::before { content: attr(data-placeholder); color: var(--meta-soft); pointer-events: none; position: absolute; inset: 16px 18px auto 18px; }
+.capBox .composer.capText[data-empty]::before { inset: 0 0 auto 0; }
 
 /* First steps: shown in Write only while the account has no items at all. */
 .firstSteps { margin: clamp(0px, 6vh, 48px) auto 0; padding-bottom: 56px; max-width: 860px; }
