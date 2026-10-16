@@ -55,7 +55,7 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Landing pictures: cut header replaced with logo + view name strip (approved).
 - [x] Hero title: user wants it exactly "like it was" (old screenshot image-14) — hook line reverted to 22px/300 --ink-recede; layout itself never changed. Published and confirmed good by the user (16 Oct).
 - [x] Landing pictures replaced with live scenes (approved by the user 16 Oct): five moving scenes drawn in the app with the demo's own words — typing, capture arriving, a mark landing, the thread, a synthesis finding. Screenshots retired. "Try the demo" kept next to Start.
-- [ ] Republish the landing so the live site carries the live scenes (waiting on the user's word).
+- [x] Republished (16 Oct 12:40 UTC): the live site now carries the live scenes.
 - [ ] Synthesize scene's finding line is the AI's wording (built on real demo lines); the user may replace it with her own sentence.
 - [x] Article attribution (16 Oct): the author is Judson Brewer, MD, PhD. Capture scene byline and Read scene source line carry the full name; the demo item's writer field set to match so the real demo agrees; the footer now carries a credit line linking to the article, rights reserved.
 - [x] Landing bookmarklet placement (16 Oct, user's call): removed from the closing section so Start / Try the demo stand alone; the button stays only inside the Capture scene. Signed-out captures confirmed to be kept in the browser and restored after sign-in, so nothing is lost either way.
@@ -67,7 +67,7 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 
 ## Footer "How it works" (16 Oct)
 - [x] Footer link "How it works" added next to Privacy and Support; opens the same card style as Privacy with five short lines, one per step (Write, Capture, Mark, Read, Synthesize). Esc, × and backdrop click all close it; focus returns to the link. Phone: lines stack.
-- [ ] Copy: the five lines are the carousel's wording for now — the user is writing her own.
+- [x] Copy: the user's own five lines + On mobile section are wired into the footer pop-up (16 Oct).
 
 ## Speaking into notes (16 Oct)
 - [x] Speak button under the writing box: talk, it turns into text in the box, autosaved and editable. No audio is kept anywhere — text only.
@@ -77,6 +77,6 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Real microphone test by the user — passed (16 Oct, second run): spoken words landed in the box while she was still talking, confirmed from her screenshot ("I can see the text while I'm speaking"). Phone header confirmed good from her screenshots.
 - [x] Capture: subtitle (page description) and writer name now picked up (sailthru/parsely author meta, ld+json arrays).
 - [x] Capture subtitle fixed for real (16 Oct): the bookmarklet's ellipsis check lost its backslashes inside the template literal (`/\u2026|\.\.\.$/` shipped as `/…|...$/`, matching every description), so the subtitle line was never prepended. Now double-escaped, and the visible dek element (Hearst `data-fp-dek`, common `.article-dek/.article-subtitle` selectors) is preferred over the SEO meta description. Verified on the Cosmopolitan chai-latte article: "A little creamy, a little sweet, and a little spicy—and no coffee shop run required." lands at the top with a blank line, writer Catharine Malzahn, correct title. Paste a link / phone share get the same dek preference in fetchPage.functions.ts. Verified by the user (16 Oct) with a freshly dragged button: subtitle at the top, then the full article, writer and title correct. The capture that held only the subtitle was a stray highlight on the page — a selection is taken as a chosen passage, as designed.
-- [ ] Publish so the live site hands out the fixed button (the user pushed the earlier batch herself; until this goes live the live site still offers the old button).
+- [x] Published (16 Oct 12:40 UTC): the live site now hands out the fixed button. Live page confirmed serving (200, correct title).
 - [x] Account menu: How it works, Privacy, Support
 - [x] Capture caption (16 Oct): now "Drag the button to your bookmarks bar." — 6px directly below the button with its left edge flush with the button's, in the account menu and the Write intro; measured at 900/1280/1440px wide, one line, no clash with the neighbouring column.
