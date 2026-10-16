@@ -308,7 +308,8 @@ function WriteView() {
             <VoiceButton
               label={cap ? "Speak a comment" : "Speak"}
               onText={(t) => {
-                if (cap) setCap({ ...cap, why: cap.why.trim() ? `${cap.why.trim()} ${t}` : t });
+                const c = draft.current.cap;
+                if (c) setCap({ ...c, why: c.why.trim() ? `${c.why.trim()} ${t}` : t });
                 else onEdit(draft.current.body.trim() ? `${draft.current.body.replace(/\s+$/, "")}\n\n${t}` : t);
               }}
             />
