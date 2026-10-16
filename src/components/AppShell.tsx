@@ -39,12 +39,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     return () => document.body.classList.remove(cls);
   }, [view, isItem]);
 
-  const running = view === "read" && synth.state === "loading";
-  useEffect(() => {
-    document.body.classList.toggle("synthesizing", running);
-    return () => document.body.classList.remove("synthesizing");
-  }, [running]);
-
   const months = [...new Set(items.map((i) => monthKey(i.item_date)))]; // newest first
   const m = (search as { m?: string }).m;
   const month = m ?? months[0] ?? monthKey(now);
