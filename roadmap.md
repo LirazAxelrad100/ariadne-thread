@@ -67,3 +67,11 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 ## Footer "How it works" (16 Oct)
 - [x] Footer link "How it works" added next to Privacy and Support; opens the same card style as Privacy with five short lines, one per step (Write, Capture, Mark, Read, Synthesize). Esc, × and backdrop click all close it; focus returns to the link. Phone: lines stack.
 - [ ] Copy: the five lines are the carousel's wording for now — the user is writing her own.
+
+## Speaking into notes (16 Oct)
+- [x] Speak button under the writing box: talk, it turns into text in the box, autosaved and editable. No audio is kept anywhere — text only.
+- [x] On a captured article the button reads "Speak a comment" and the words go into "What caught you?" at the end of the piece.
+- [x] Words appear while still talking: each pause lands its phrase in the box, so Stop only sends the last bit.
+- [x] Speech-to-text runs through src/routes/api/transcribe.ts (bearer-checked, streamed); recordings stop on their own after 10 minutes.
+- [ ] Real microphone test by the user (desktop + phone) — checked only with a computer-voiced sample so far; tell me if phrases arrive too slowly or cut in the wrong places.
+- [ ] Publish so the live site carries the Speak button.
