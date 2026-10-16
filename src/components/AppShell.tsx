@@ -165,7 +165,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {view === "read" && synth.state !== "idle" && (
         <p className="synthState" role="status">
           {synth.state === "loading" && "Reading your notes and captures. This can take up to a minute."}
-          {synth.state === "few" && "Not enough notes yet for AI synthesize."}
+          {synth.state === "few" && "Not enough notes yet for AI synthesis."}
           {synth.state === "error" && (
             <>
               {synth.message ? `${synth.message} Nothing was saved.` : "Couldn’t finish the synthesis. Nothing was saved."}
