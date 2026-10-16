@@ -115,9 +115,6 @@ export function LandingPage() {
                   ))}
                 </div>
                 <p className="bigCopy">{step.copy}</p>
-                <div className="landStepBm bigBm">
-                  <BookmarkletLink inline />
-                </div>
                 <button
                   type="button"
                   className="landPause"
@@ -138,6 +135,9 @@ export function LandingPage() {
             <h2>Ariadne’s Thread</h2>
             <p>AI that finds the thread in the maze of your mind.</p>
             {actions}
+            <div className="landCloseBm">
+              <BookmarkletLink inline />
+            </div>
           </section>
 
           <SiteFooter />
