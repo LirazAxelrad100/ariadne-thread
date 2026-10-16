@@ -19,7 +19,6 @@ export function BookmarkletLink({ compact = false, inline = false }: { compact?:
     const origin = /^http:\/\/localhost(:\d+)?$/.test(here) ? here : PUBLIC_ORIGIN;
     ref.current?.setAttribute("href", bookmarkletHref(origin));
   }, []);
-  const small = compact || inline;
   const cls = inline ? "btn bmButton bmButtonInline" : compact ? "btn bmButton bmButtonCompact" : "btn bmButton";
   return (
     <div className={inline ? "bmInstall bmInstallInline" : "bmInstall"}>
@@ -28,15 +27,15 @@ export function BookmarkletLink({ compact = false, inline = false }: { compact?:
         className={cls}
         onClick={(e) => { e.preventDefault(); setClicked(true); }}
         draggable
-        title={small ? "Desktop browsers only" : "Drag me to your bookmarks bar"}
+        title="Drag me to your bookmarks bar"
       >
         <ThreadIcon size={inline ? 14 : 16} muted />
         Capture to Ariadne
       </a>
       <div className="bmHint">
-        {inline ? "drag to your bookmarks bar" : compact ? "Drag to your bookmarks bar" : "Desktop browsers only."}
+        {inline ? "drag to your bookmarks bar" : "Drag it to your bookmarks bar."}
       </div>
-      {clicked && <div className="bmClickNote" role="status">Drag it to your bookmarks bar instead.</div>}
+      {clicked && <div className="bmClickNote" role="status">Drag the button instead of clicking it.</div>}
     </div>
   );
 }
