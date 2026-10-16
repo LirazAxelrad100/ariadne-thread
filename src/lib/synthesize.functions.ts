@@ -158,8 +158,7 @@ export const synthesize = createServerFn({ method: "POST" })
 
       const now = new Date();
       // Written through a function that always files the result under the signed-in
-      // user's own id and always marks it as a synthesis. That is the single write
-      // the read-only demo visitor is allowed to make.
+      // user's own id and always marks it as a synthesis.
       const { data: newId, error: saveErr } = await supabase.rpc("insert_synthesis", {
         p_body: body.trimEnd(),
         p_title: `Synthesis: ${now.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}`,
