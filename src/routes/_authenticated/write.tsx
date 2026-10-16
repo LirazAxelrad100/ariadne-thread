@@ -37,6 +37,8 @@ function WriteView() {
   const navigateTo = useNavigate();
   const { user } = useRouteContext({ from: "/_authenticated" });
   const { data: demoMode } = useQuery(demoModeQueryOptions(user?.id));
+  // The read-only demo has nothing to write: send it straight to the thread.
+  useEffect(() => { if (demoMode) navigateTo({ to: "/read", replace: true }); }, [demoMode, navigateTo]);
   const { data: notes = [] } = useQuery({ queryKey: ["notes", "today"], queryFn: fetchTodayNotes });
   const { data: allAnnots = [] } = useQuery(annotationsQuery());
   const { data: allItems = [], isSuccess: itemsLoaded } = useQuery(itemsQuery());
