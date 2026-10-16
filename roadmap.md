@@ -93,3 +93,4 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Mark hint on phones (16 Oct): the gutter hint reads "Select to mark" on a phone and "Select words to mark or comment" on a computer. Wording settled — the user tried to find a single word and gave up, so it stays two short lines.
 - [ ] Captured article title (16 Oct): dropped by the user for now — selecting words in a capture's title, writer or site name stays inert; marks and comments remain on the article text only. Revisit only if it confuses a judge.
 
+- Sign-in page redesign (no demo prefill; judges get credentials privately)
