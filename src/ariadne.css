@@ -703,12 +703,24 @@ mark mark { background: #ecd394; }
 
 .annotInput:focus { outline: none; }
 
-/* The line above the body: the hint while there are no marks, the lock notice after. */
-.lockLine,
-.markHint {
-  margin: 0 0 6px;
-  padding-inline-start: calc(var(--gutter) + 1px); /* line up with the entry text, past the rail */
+/* The lock notice sits under the body, lined up with the entry text. */
+.lockLine {
+  margin: 12px 0 0;
+  padding-inline-start: calc(var(--gutter) + 1px); /* past the rail */
   line-height: var(--l1);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--meta-soft);
+}
+
+/* The select-text hint lives in the gutter, under the time: always visible,
+   however long the text, and it never pushes the body around. */
+.gutterHint {
+  position: absolute;
+  inset-inline-start: calc(var(--gutter) * -1 + 12px);
+  top: calc(var(--l1) + 8px);
+  width: calc(var(--gutter) - 24px);
+  line-height: 1.55;
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--meta-soft);
@@ -927,6 +939,7 @@ body.mode-item .composerWrap { display: none; }
   .thread { gap: 18px; }
   .entry .dot { top: calc(var(--l1) / 2 - 4px); width: 8px; height: 8px; inset-inline-start: calc(var(--gutter) * -1 - 5px); }
   .entry .time { font-size: 11px; inset-inline-start: calc(var(--gutter) * -1 + 10px); }
+  .gutterHint { inset-inline-start: calc(var(--gutter) * -1 + 10px); width: calc(var(--gutter) - 18px); top: calc(var(--l1) + 7px); font-size: 10px; }
 
   body.mode-reading .entry .body,
   body.mode-item .entry .body { font-size: 15.5px; line-height: 1.75; }
