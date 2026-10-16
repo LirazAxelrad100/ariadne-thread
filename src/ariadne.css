@@ -965,9 +965,19 @@ body.mode-item .composerWrap { display: none; }
 .capWhy { font-family: var(--font-mono); font-style: italic; font-size: 13px; }
 .capMine { flex: none; font-size: 12px; color: var(--ink-recede); display: flex; gap: 4px; align-items: center; white-space: nowrap; }
 .capToggle { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
-.bmBlock { padding: 8px 10px 10px; border-top: 1px solid var(--surface-border); border-bottom: 1px solid var(--surface-border); margin: 4px 0; }
-.bmBlock .btn { cursor: grab; text-decoration: none; }
-.bmHint { margin-top: 6px; font-size: 12px; line-height: 1.4; color: var(--meta-soft); white-space: normal; max-width: 240px; }
+.bmInstall { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.btn.bmButton { height: 44px; padding: 0 18px; cursor: grab; text-decoration: none; font-size: 14px; font-weight: 500; white-space: nowrap; }
+.btn.bmButton:hover { border-color: var(--control-border); }
+.btn.bmButton:active { cursor: grabbing; }
+.bmButton svg, .bmMenuItem svg { flex: none; }
+.menu .bmMenuItem { display: flex; align-items: center; gap: 8px; }
+.menu.bmPanel { width: 260px; max-width: calc(100vw - 32px); padding: 16px; gap: 12px; }
+.bmPanel .bmButton { padding-inline: 16px; }
+.bmInstructions, .bmClickNote { font-size: 14px; font-weight: 300; line-height: 1.5; color: var(--ink-recede); }
+.bmHint { font-size: 12px; line-height: 1.4; color: var(--meta-soft); }
+@media (max-width: 720px) {
+  .bmInstall, .menu .bmMenuItem, .menu.bmPanel { display: none; }
+}
 @media (max-width: 719px) {
   .capField { font-size: 16px; height: 36px; }
   .capRow { flex-wrap: wrap; }

@@ -17,13 +17,13 @@ export function LogoMark({ size = 26 }: { size?: number }) {
 }
 
 /** Small thread icon used inside outlined buttons (Synthesize, bookmarklet). */
-export function ThreadIcon() {
+export function ThreadIcon({ size = 14, muted = false }: { size?: number; muted?: boolean }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 48 48" aria-hidden="true">
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden="true">
       <path
         d="M8 38 C16 38 12 16 21 16 C29 16 26 34 34 32 C39 30.8 38 14 41 11"
         fill="none"
-        stroke="currentColor"
+        stroke={muted ? "var(--dot)" : "currentColor"}
         strokeWidth="3.4"
         strokeLinecap="round"
       />
