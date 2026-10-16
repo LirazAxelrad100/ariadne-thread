@@ -1,7 +1,7 @@
 // The five "How it works" steps and the screenshot shown for each.
 // Each screenshot is a real screen of the running app, stored as a CDN asset.
-import shotWrite from "@/assets/01_write.png.asset.json";
-import shotCapture from "@/assets/02_capture_real.png.asset.json";
+import shotWrite from "@/assets/01_write_demo.png.asset.json";
+import shotCapture from "@/assets/02_capture_demo.png.asset.json";
 import shotMark from "@/assets/04_mark.png.asset.json";
 import shotRead from "@/assets/03_read.png.asset.json";
 import shotSynth from "@/assets/05_synthesis.png.asset.json";
