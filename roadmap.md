@@ -53,3 +53,6 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 
 - [x] Landing pictures: cut header replaced with logo + view name strip (approved).
 - [x] Hero title: user wants it exactly "like it was" (old screenshot image-14) — hook line reverted to 22px/300 --ink-recede; layout itself never changed. Published and confirmed good by the user (16 Oct).
+- [x] Landing pictures replaced with live scenes (approved by the user 16 Oct): five moving scenes drawn in the app with the demo's own words — typing, capture arriving, a mark landing, the thread, a synthesis finding. Screenshots retired. "Try the demo" kept next to Start.
+- [ ] Republish the landing so the live site carries the live scenes (waiting on the user's word).
+- [ ] Synthesize scene's finding line is the AI's wording (built on real demo lines); the user may replace it with her own sentence.
