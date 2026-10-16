@@ -120,9 +120,9 @@ export const synthesize = createServerFn({ method: "POST" })
           },
         },
       });
-      let out: Record<string, Entry[]>;
+      let out: Record<string, Entry[]> & { thread?: string };
       try {
-        out = (await result.output) as Record<string, Entry[]>;
+        out = (await result.output) as typeof out;
       } catch (e) {
         if (NoObjectGeneratedError.isInstance(e) && e.text) {
           try { out = JSON.parse(e.text); } catch { throw e; }
@@ -130,22 +130,24 @@ export const synthesize = createServerFn({ method: "POST" })
       }
 
       // Keep only numbers on the list; drop entries left without a source.
-      let body = "";
+      let sections = "";
       const used = new Set<number>();
       for (const [key, name] of SECTIONS) {
         const entries = (Array.isArray(out[key]) ? out[key] : [])
-          .map((e) => ({ ...e, sources: [...new Set((e.sources ?? []).filter((n) => Number.isInteger(n) && n >= 1 && n <= items.length))] }))
-          .filter((e) => e.text?.trim() && e.sources.length);
+          .map((e) => ({ ...e, sources: [...new Set((e.sources ?? []).filter((n) => Number.isInteger(n) && n >= 1 && n <= items.length))].slice(0, 4) }))
+          .filter((e) => e.text?.trim() && e.sources.length)
+          .slice(0, 2);
         if (!entries.length) continue;
-        body += `${body ? "\n" : ""}## ${name}\n`;
+        sections += `${sections ? "\n" : ""}## ${name}\n`;
         for (const e of entries) {
-          body += `${e.text.replace(/\s*\n\s*/g, " ").trim()}\n`;
-          for (const x of (e.examples ?? []).slice(0, 3)) if (x.trim()) body += `- ${x.replace(/\s*\n\s*/g, " ").trim()}\n`;
+          sections += `${e.text.replace(/\s*\n\s*/g, " ").trim()}\n`;
           e.sources.forEach((n) => used.add(n));
-          body += `From: ${e.sources.map((n) => `[[${items[n - 1]!.id}|${label(items[n - 1]!)}]]`).join(" · ")}\n`;
+          sections += `From: ${e.sources.map((n) => `[[${items[n - 1]!.id}|${label(items[n - 1]!)}]]`).join(" · ")}\n`;
         }
       }
-      if (!body) return { ok: false, reason: "error", message: "No clear threads were found yet." };
+      if (!sections) return { ok: false, reason: "error", message: "No clear threads were found yet." };
+      const thread = (out.thread ?? "").replace(/\[\[|\]\]/g, "").replace(/\s*\n\s*/g, " ").trim();
+      const body = thread ? `## The thread\n${thread}\n\n${sections}` : sections;
 
       const now = new Date();
       const { data: saved, error: saveErr } = await supabase
