@@ -1067,8 +1067,8 @@ body.mode-item .composerWrap { display: none; }
   .bmInstall { display: none; }
 }
 @media (max-width: 719px) {
-  .capField { font-size: 16px; height: 36px; }
-  .capRow { flex-wrap: wrap; }
+  .capInput { font-size: 16px; }
+  .capMeta { flex-wrap: wrap; row-gap: 6px; }
 }
 
 /* ARIADNE — Synthesize states: one line under the header (brief). */
