@@ -19,7 +19,7 @@
 
 Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ariadne-thread.app); your own account untouched. Email sign-in added to the sign-in page.
 2. Synthesis — Done and approved by the user. Built to spec (5+ items, four sections, empty ones hidden, "From" links) and shaped over three rounds: "The thread" opens with 2–3 sentences; each section holds up to two findings, each a 2–3 sentence explanation, short bullet examples quoting the actual passages, then its "From" sources. While it runs, the word "Synthesize" greys out and a warm dot rides the thread icon's curve, keeps the same wave across the word and travels back, over and over; the status line under the header stays. Verified frame by frame in a test browser.
-3. Empty states.
+3. Empty states. The throwaway test account (lirazaxelrad2@gmail.com) is empty — samples go in via "Explore the demo entries" on the empty Read screen. After these tests: offer to clear the test junk out of the user's own account on request.
 4. Landing page (current front page is a stand-in: logo + "Start").
 
 
