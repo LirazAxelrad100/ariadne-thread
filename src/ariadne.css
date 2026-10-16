@@ -1059,3 +1059,22 @@ body.mode-item .composerWrap { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .btnDot { animation: tPulse 1.6s ease-in-out infinite alternate; }
 }
+
+/* ---------- empty states & first steps ---------- */
+
+.emptyState { align-items: center; text-align: center; padding-top: 12vh; }
+.emptyTitle { margin: 0; font-size: 17px; font-weight: 300; }
+.emptySub { margin: 4px 0 0; font-size: 15px; color: var(--ink-recede); }
+.emptyActions { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; justify-content: center; }
+.emptyBtn { height: 40px; padding: 0 18px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 500; text-decoration: none; }
+.emptyBtn:disabled { opacity: .6; cursor: default; }
+
+/* Placeholder line in the writing box while it has no text. */
+.composer[data-empty]::before { content: attr(data-placeholder); color: var(--meta-soft); pointer-events: none; }
+
+/* First steps: shown in Write only while the account has no items at all. */
+.firstSteps { margin: 8vh auto 0; max-width: 520px; }
+.fsTitle { margin: 0 0 10px; font-size: 13px; font-weight: 500; letter-spacing: .04em; color: var(--meta); }
+.fsList { margin: 0; padding-inline-start: 20px; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--ink-recede); }
+.fsList li { margin: 0 0 14px; }
+.fsList .bmInstall { margin-top: 8px; }

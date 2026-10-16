@@ -103,7 +103,7 @@ export type MarkActions = {
  * (only while it has no marks).
  */
 export function MarkedBody({
-  body, annots, className = "body", plain = true, editable = false, actions, onEdit, synth = false, known,
+  body, annots, className = "body", plain = true, editable = false, actions, onEdit, synth = false, known, placeholder,
 }: {
   body: string;
   annots: Annot[];
@@ -116,6 +116,8 @@ export function MarkedBody({
   synth?: boolean;
   /** Ids of items that still exist; other "From" links show "(deleted)". */
   known?: Set<string> | undefined;
+  /** Shown in the box while it has no text (editable only). */
+  placeholder?: string | undefined;
 }) {
   const { data: writer = "" } = useQuery(writerQuery());
   const ref = useRef<HTMLDivElement>(null);
@@ -310,6 +312,8 @@ export function MarkedBody({
       <div
         ref={ref}
         className={className}
+        data-placeholder={editable && placeholder ? placeholder : undefined}
+        data-empty={editable && placeholder && !body.trim() ? "" : undefined}
         contentEditable={editable || undefined}
         suppressContentEditableWarning
         style={editable ? { outline: "none" } : undefined}
