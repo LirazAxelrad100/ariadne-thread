@@ -1403,3 +1403,27 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 .topbar .account { margin: 0; position: relative; top: 0; display: block; }
 .topbar .headDot { align-self: baseline; transform: translateY(calc(4px - .25em * 15 / 15)); }
 .topbar .viewNav a[aria-current="page"]::before { align-self: baseline; transform: translateY(calc(3px - .25em)); }
+
+/* ARIADNE — phone header: no logo or dividers; the current view's name is the
+   title, the nav shows only the view to switch to (outlined, like a button);
+   date / month switcher sit on a second line. */
+@media (max-width: 720px) {
+  .topbar .logo,
+  .topbar .barSep,
+  .topbar .viewNav a[aria-current="page"] { display: none; }
+  .topbar .meta { order: 10; flex-basis: 100%; margin-top: 2px; }
+  .topbar .viewNav a {
+    align-self: center;
+    padding: 0 14px;
+    border: 1px solid var(--control-border);
+    border-radius: 8px;
+    color: var(--ink);
+    font-size: 14px;
+  }
+}
+@media (max-width: 720px) {
+  .topbar { align-items: center; }
+  .topbar .viewNav { align-self: center; }
+  .topbar .viewNav a { align-items: center; }
+  .topbar .headDot { align-self: center; transform: translateY(1px); }
+}
