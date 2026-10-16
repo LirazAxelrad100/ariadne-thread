@@ -100,7 +100,7 @@ function ItemView() {
     await supabase.from("annotations").delete().eq("item_id", id);
     await supabase.from("items").delete().eq("id", id);
     await Promise.all([qc.invalidateQueries({ queryKey: ["items"] }), refreshMarks()]);
-    navigate({ to: "/read" });
+    navigate({ to: backTo });
   }
 
   return (
