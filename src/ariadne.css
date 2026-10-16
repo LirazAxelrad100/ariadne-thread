@@ -1260,8 +1260,9 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 .privCard p:last-child { margin-bottom: 0; }
 .privCard a { color: var(--ink-recede); text-decoration: underline; text-underline-offset: 3px; }
 /* "How it works" pop-up: step name in brown, its line beside it. */
-.privStep { display: flex; gap: 14px; align-items: baseline; margin: 0 0 10px; }
-.privStepName { flex: none; width: 92px; font-size: 13px; font-weight: 500; letter-spacing: .06em; color: var(--meta); }
+.privStep { display: flex; flex-direction: column; gap: 2px; margin: 0 0 14px; }
+.privStepName { font-size: 13px; font-weight: 500; letter-spacing: .06em; color: var(--meta); }
+.privSub { margin: 22px 0 10px; font-size: 15px; font-weight: 500; color: var(--ink); }
 .privStepLine { font-size: 15px; font-weight: 300; line-height: 1.6; color: var(--ink-recede); }
 @media (max-width: 720px) {
   .privBackdrop { padding: 0 16px; }
