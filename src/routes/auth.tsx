@@ -41,11 +41,13 @@ function AuthPage() {
     // Drop anything cached while signed out (empty lists), so Write never
     // shows the first-visit picture before this account's notes arrive.
     let entered = false;
-    const enter = () => {
+    const enter = (email?: string) => {
       if (entered) return;
       entered = true; settled = true;
       queryClient.clear();
-      navigate({ to: "/write", replace: true });
+      // Judges' demo account opens on Read: Write only shows today, so it
+      // would be empty on whatever day they look.
+      navigate({ to: email === DEMO_EMAIL ? "/read" : "/write", replace: true });
     };
     // A stored login can belong to an account that no longer exists (the
     // landing-page demo we removed). Ask the server before sending them on:
