@@ -8,6 +8,7 @@ import { itemsQuery } from "@/lib/items";
 import { MarkedBody, type MarkActions } from "@/components/MarkedBody";
 import { Entry } from "@/components/Entry";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
+import { VoiceButton } from "@/components/VoiceButton";
 import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
 import { supabase } from "@/integrations/supabase/client";
 import { demoModeQueryOptions } from "@/lib/demo";
@@ -304,6 +305,14 @@ function WriteView() {
           </div>
           {cap && <CaptureFields cap={cap} onChange={setCap} />}
           <p className="status">
+            <VoiceButton
+              label={cap ? "Speak a comment" : "Speak"}
+              onText={(t) => {
+                if (cap) setCap({ ...cap, why: cap.why.trim() ? `${cap.why.trim()} ${t}` : t });
+                else onEdit(draft.current.body.trim() ? `${draft.current.body.replace(/\s+$/, "")}\n\n${t}` : t);
+              }}
+            />
+            {" · "}
             {savedAt ? <>Saved <span className="mono">{savedAt}</span></> : "Saves as you type"}
             <span className="escHint"> · Esc to close the {cap ? "capture" : "note"}</span>
             {!cap && !(allItems.length === 0 && !boxBody) && (

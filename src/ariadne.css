@@ -1366,3 +1366,11 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 .pasteLink .capField { flex: 1; min-width: 0; font-size: 16px; }
 .pasteLink .btn { height: 40px; padding: 0 14px; }
 @media (max-width: 720px), (hover: none) { .pasteLinkWrap { display: inline; } }
+
+/* Speak (speech-to-text in the composer) */
+.voiceRec { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }
+.voiceDot { width: 7px; height: 7px; border-radius: 50%; background: var(--meta); animation: voicePulse 1.2s ease-in-out infinite; }
+@keyframes voicePulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .voiceDot { animation: none; } }
+.voiceBusy { font-style: italic; }
+.voiceErr { color: var(--meta-soft); }
