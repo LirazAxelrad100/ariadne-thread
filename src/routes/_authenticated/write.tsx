@@ -1,4 +1,4 @@
-import { createFileRoute, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { enrich } from "@/lib/share";
@@ -34,6 +34,7 @@ const EMPTY_CAP: CaptureMeta = { title: "", source_url: "", writer: "", author_m
 
 function WriteView() {
   const qc = useQueryClient();
+  const navigateTo = useNavigate();
   const { user } = useRouteContext({ from: "/_authenticated" });
   const { data: demoMode } = useQuery(demoModeQueryOptions(user?.id));
   const { data: notes = [] } = useQuery({ queryKey: ["notes", "today"], queryFn: fetchTodayNotes });
@@ -272,7 +273,8 @@ function WriteView() {
             <div className="thread">
               {notes.filter((n) => n.id !== draft.current.id).map((n) =>
                 n.type === "capture"
-                  ? <Entry key={n.id} item={n} annots={allAnnots.filter((a) => a.item_id === n.id)} />
+                  ? <Entry key={n.id} item={n} annots={allAnnots.filter((a) => a.item_id === n.id)}
+                      onOpen={() => navigateTo({ to: "/item/$id", params: { id: n.id } })} />
                   : <TodayNote key={n.id} note={n} />)}
             </div>
           )}
@@ -339,6 +341,7 @@ function WriteView() {
 
 function TodayNote({ note }: { note: NoteRow }) {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const { data: all = [] } = useQuery(annotationsQuery());
   const annots = all.filter((a) => a.item_id === note.id);
@@ -361,7 +364,7 @@ function TodayNote({ note }: { note: NoteRow }) {
   }
 
   return (
-    <article className="entry" onClick={() => { if (!annots.length) setEditing(true); }}>
+    <article className="entry" style={{ cursor: "pointer" }} onClick={() => { if (!editing) navigate({ to: "/item/$id", params: { id: note.id } }); }}>
       <span className="dot" />
       <span className="time">{hhmm(note.item_date)}</span>
       {editing ? (
