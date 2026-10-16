@@ -25,21 +25,21 @@ Return "thread" plus four lists: themes, connections, open_questions, contradict
 - open_questions: questions the person keeps circling without answering.
 - contradictions: places where the person's thinking, or their sources, clearly pull against each other.
 
-Each entry: "text" is ONE sharp, specific sentence (under 30 words). "sources" are the numbers of the items the entry draws on.
+Each entry: "theme" is 2-3 short sentences (under 60 words total) naming and explaining the specific finding — concrete, grounded in what the items actually say. "examples" are 2-3 short bullets, each quoting or closely paraphrasing a specific passage from a source item (under 20 words each), so the reader sees the evidence. "sources" are the numbers of the items the entry draws on.
 
 Weighting: the person's own words matter most. NOTE items, "What caught me" lines, MARK passages and especially MARK comments are personal reflection — weight them about 3x higher than raw captured article text. A CAPTURE marked "written by the user" counts as the person's own note.
 
 Rules:
 - Use only item numbers from the list. Every entry needs at least one source.
 - If nothing clearly fits a list, return it empty. Never invent findings, never manufacture conflicts.
-- Be very short: at most 2 entries per list, only the strongest. Cite only the 2-4 items that matter most for each entry. Write in English even if items are in other languages.
-- Never mention item numbers inside thread or text.`;
+- Be selective: at most 2 entries per list, only the strongest. Cite only the 2-4 items that matter most for each entry. Write in English even if items are in other languages.
+- Never mention item numbers inside thread, theme or examples.`;
 
 type Row = {
   id: string; type: string; title: string | null; body: string; writer: string | null;
   why: string | null; author_me: boolean; item_date: string;
 };
-type Entry = { text: string; sources: number[] };
+type Entry = { theme: string; examples: string[]; sources: number[] };
 
 function label(it: Row) {
   const raw = it.type === "capture" && it.title
@@ -100,7 +100,11 @@ export const synthesize = createServerFn({ method: "POST" })
           return res;
         },
       });
-      const entry = z.object({ text: z.string(), sources: z.array(z.number()) });
+      const entry = z.object({
+        theme: z.string(),
+        examples: z.array(z.string()),
+        sources: z.array(z.number()),
+      });
       const schema = z.object({
         thread: z.string(),
         themes: z.array(entry), connections: z.array(entry),
@@ -135,12 +139,15 @@ export const synthesize = createServerFn({ method: "POST" })
       for (const [key, name] of SECTIONS) {
         const entries = ((Array.isArray(out[key]) ? out[key] : []) as Entry[])
           .map((e) => ({ ...e, sources: [...new Set((e.sources ?? []).filter((n) => Number.isInteger(n) && n >= 1 && n <= items.length))].slice(0, 4) }))
-          .filter((e) => e.text?.trim() && e.sources.length)
+          .filter((e) => e.theme?.trim() && e.sources.length)
           .slice(0, 2);
         if (!entries.length) continue;
         sections += `${sections ? "\n" : ""}## ${name}\n`;
         for (const e of entries) {
-          sections += `${e.text.replace(/\s*\n\s*/g, " ").trim()}\n`;
+          sections += `${e.theme.replace(/\s*\n\s*/g, " ").trim()}\n`;
+          for (const ex of (e.examples ?? []).filter((x) => x?.trim()).slice(0, 3)) {
+            sections += `- ${ex.replace(/\s*\n\s*/g, " ").trim()}\n`;
+          }
           e.sources.forEach((n) => used.add(n));
           sections += `From: ${e.sources.map((n) => `[[${items[n - 1]!.id}|${label(items[n - 1]!)}]]`).join(" · ")}\n`;
         }
