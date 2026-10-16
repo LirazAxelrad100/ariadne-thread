@@ -234,7 +234,7 @@ function WriteView() {
         <div className="inner">
           {allItems.length === 0 && !boxBody && (
             <div className="firstSteps">
-              <svg className="fsThread" viewBox="0 0 900 140" aria-hidden="true">
+              <svg className="fsThread" viewBox="0 0 900 120" aria-hidden="true">
                 <path d="M 0 118 C 50 120, 105 103, 150 100 C 240 94, 360 42, 450 40 C 540 38, 660 106, 750 100 C 785 98, 822 66, 842 46" fill="none" />
                 <circle cx="150" cy="100" r="5" />
                 <circle cx="450" cy="40" r="5" />
@@ -249,7 +249,7 @@ function WriteView() {
                 <div className="fsCol">
                   <p className="fsColTitle">Capture</p>
                   <p className="fsColText">Read something that inspires you? Capture it in one click.</p>
-                  <BookmarkletLink />
+                  <BookmarkletLink compact />
                 </div>
                 <div className="fsCol">
                   <p className="fsColTitle">Mark</p>
@@ -291,7 +291,7 @@ function WriteView() {
           <p className="status">
             {savedAt ? <>Saved <span className="mono">{savedAt}</span></> : "Saves as you type"}
             <span className="escHint"> · Esc to close the {cap ? "capture" : "note"}</span>
-            {!cap && (
+            {!cap && !(allItems.length === 0 && !boxBody) && (
               <> · <button type="button" className="capToggle" onClick={() => setCap({ ...EMPTY_CAP })}>Pasting something you read? Add its source</button></>
             )}
           </p>
