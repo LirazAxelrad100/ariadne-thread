@@ -51,6 +51,25 @@ export function monthLabel(key: string) {
   return new Date(y!, m! - 1, 1).toLocaleDateString("en-GB", { month: "long", year: "numeric" });
 }
 
+/** "Sep" — the month strip's short labels. */
+export function monthShort(key: string) {
+  const [y, m] = key.split("-").map(Number);
+  return new Date(y!, m! - 1, 1).toLocaleDateString("en-GB", { month: "short" });
+}
+
+/** Month names for a signpost line, nearest first, the year only when it
+ *  isn't the year on screen: "September, August and July". */
+export function monthNames(keys: string[], near: string) {
+  const parts = keys.map((k) => {
+    const name = new Date(Number(k.slice(0, 4)), Number(k.slice(5, 7)) - 1, 1)
+      .toLocaleDateString("en-GB", { month: "long" });
+    return k.slice(0, 4) === near.slice(0, 4) ? name : `${name} ${k.slice(0, 4)}`;
+  });
+  if (parts.length <= 1) return parts[0] ?? "";
+  return `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
+}
+
+
 /** "Wednesday · 14 October" */
 export function dayLabel(d: Date | string) {
   const x = new Date(d);

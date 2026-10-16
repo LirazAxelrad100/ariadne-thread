@@ -470,6 +470,25 @@ body.mode-item .entry .body {
   background: var(--rail);
 }
 
+/* ---------- Read: signposts to the months off screen ---------- */
+
+/* A day divider's shape, but the label is an underlined link: the month on
+   screen ends here, the timeline doesn't. */
+.monthSign {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-inline-start: var(--gutter);
+}
+
+.monthSign::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rail);
+}
+
+
 .empty {
   margin-top: 12vh;
   color: var(--meta-soft);

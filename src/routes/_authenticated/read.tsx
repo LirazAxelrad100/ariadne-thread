@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLayoutEffect, useRef } from "react";
 import { Entry } from "@/components/Entry";
-import { groupByDay, itemsQuery, monthKey } from "@/lib/items";
+import { groupByDay, itemsQuery, monthKey, monthNames } from "@/lib/items";
 import { annotationsQuery } from "@/lib/marks";
 
 type Search = { m?: string };
@@ -36,6 +36,15 @@ function ReadView() {
   // Read runs oldest → newest, top to bottom (user rule); items arrive newest-first.
   const shown = items.filter((i) => monthKey(i.item_date) === month).reverse();
   const streamRef = useRef<HTMLElement>(null);
+
+  // What this month doesn't hold, in the direction you'd read on to it: the
+  // months before this one, or — once you're at the oldest — the months after.
+  const months = [...new Set(items.map((i) => monthKey(i.item_date)))]; // newest first
+  const idx = months.indexOf(month);
+  const rest = idx < 0 ? []
+    : idx + 1 < months.length ? months.slice(idx + 1)
+    : months.slice(0, idx).reverse();
+  const restCount = items.filter((i) => rest.includes(monthKey(i.item_date))).length;
 
   // Scroll to top before paint so switching views never shows a jump.
   useLayoutEffect(() => {
@@ -74,6 +83,21 @@ function ReadView() {
             </div>
           </section>
         ))}
+
+        {/* The month ends here; the timeline doesn't. One quiet line naming the
+            months still off screen, which jumps to the nearest of them. */}
+        {rest.length > 0 && (
+          <div className="monthSign">
+            <button
+              type="button"
+              className="moreBtn"
+              onClick={() => navigate({ to: "/read", search: { m: rest[0]! } })}
+            >
+              {monthNames(rest, month)} {rest.length === 1 ? "holds" : "hold"} {restCount} more{" "}
+              {restCount === 1 ? "entry" : "entries"}
+            </button>
+          </div>
+        )}
       </div>
     </main>
   );
