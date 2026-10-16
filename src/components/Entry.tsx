@@ -19,7 +19,7 @@ export function Entry({
   actions?: MarkActions;
   editable?: boolean;
   onEdit?: (body: string) => void;
-  hint?: string | undefined;
+  hint?: React.ReactNode | undefined;
 }) {
   const [expanded, setExpanded] = useState(false);
   const isCapture = item.type === "capture";
