@@ -74,7 +74,7 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] On a captured article the button reads "Speak a comment" and the words go into "What caught you?" at the end of the piece.
 - [x] Words appear while still talking: each pause lands its phrase in the box, so Stop only sends the last bit.
 - [x] Speech-to-text runs through src/routes/api/transcribe.ts (bearer-checked, streamed); recordings stop on their own after 10 minutes.
-- [x] Real microphone test by the user (live audio tested; she will re-test later). Phone header confirmed good from her screenshots.
+- [x] Real microphone test by the user — passed (16 Oct, second run): spoken words landed in the box while she was still talking, confirmed from her screenshot ("I can see the text while I'm speaking"). Phone header confirmed good from her screenshots.
 - [x] Capture: subtitle (page description) and writer name now picked up (sailthru/parsely author meta, ld+json arrays).
 - [ ] Publish so the live site carries the Speak button.
 - [x] Account menu: How it works, Privacy, Support
