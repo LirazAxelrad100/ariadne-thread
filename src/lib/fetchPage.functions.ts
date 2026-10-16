@@ -54,7 +54,9 @@ export function extract(html: string, url: string) {
   const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1];
   const title = meta(html, "og:title") || (h1 ? strip(h1) : "") || strip(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "");
 
-  let writer = meta(html, "author") || meta(html, "sailthru.author") || meta(html, "parsely-author") || meta(html, "article:author");
+  const nu = (v: string) => (/^https?:/.test(v) ? "" : v);
+  const relAuthor = html.match(/<a[^>]*rel=["']author["'][^>]*>([\s\S]*?)<\/a>/i)?.[1];
+  let writer = nu(meta(html, "author")) || nu(meta(html, "sailthru.author")) || nu(meta(html, "parsely-author")) || nu(meta(html, "article:author")) || (relAuthor ? strip(relAuthor) : "");
   if (!writer) {
     for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
       try {
