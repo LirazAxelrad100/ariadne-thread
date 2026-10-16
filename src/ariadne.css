@@ -1158,8 +1158,9 @@ body.mode-item .composerWrap { display: none; }
 .landCapCopy { margin: 0; max-width: 560px; font-size: 15px; font-weight: 300; line-height: 1.6; color: var(--ink-recede); }
 .landCapPhone { display: none; margin: 0; max-width: 560px; font-size: 15px; font-weight: 300; line-height: 1.6; color: var(--ink-recede); }
 
-.landClose { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 10vh 0 8vh; }
+.landClose { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 10vh 0 8vh; }
 .landClose h2 { margin: 0; font-size: 44px; font-weight: 400; letter-spacing: -.02em; color: var(--ink); }
+.landClose .landActions { margin-top: 16px; }
 .landClose p { margin: 0; font-size: 20px; font-weight: 300; color: var(--ink-recede); }
 
 .landPrivacy { max-width: 680px; margin: 0 auto; padding-bottom: 30px; }
