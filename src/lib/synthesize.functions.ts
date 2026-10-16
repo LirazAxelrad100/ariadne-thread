@@ -120,9 +120,9 @@ export const synthesize = createServerFn({ method: "POST" })
           },
         },
       });
-      let out: Record<string, Entry[]> & { thread?: string };
+      let out: { thread?: string; [k: string]: Entry[] | string | undefined };
       try {
-        out = (await result.output) as typeof out;
+        out = (await result.output) as unknown as typeof out;
       } catch (e) {
         if (NoObjectGeneratedError.isInstance(e) && e.text) {
           try { out = JSON.parse(e.text); } catch { throw e; }
@@ -133,7 +133,7 @@ export const synthesize = createServerFn({ method: "POST" })
       let sections = "";
       const used = new Set<number>();
       for (const [key, name] of SECTIONS) {
-        const entries = (Array.isArray(out[key]) ? out[key] : [])
+        const entries = ((Array.isArray(out[key]) ? out[key] : []) as Entry[])
           .map((e) => ({ ...e, sources: [...new Set((e.sources ?? []).filter((n) => Number.isInteger(n) && n >= 1 && n <= items.length))].slice(0, 4) }))
           .filter((e) => e.text?.trim() && e.sources.length)
           .slice(0, 2);
