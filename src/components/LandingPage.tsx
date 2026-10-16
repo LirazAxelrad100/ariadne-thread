@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { LogoMark } from "@/components/Logo";
+import { SiteFooter } from "@/components/SiteFooter";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
 import { startDemoSession } from "@/lib/demo.functions";
 import { STEPS, DURATIONS, type Step } from "@/lib/shots";
@@ -17,11 +18,6 @@ const stepTop = (i: number) => {
   for (let k = 0; k < i; k++) t += stepH(k);
   return t;
 };
-const PRIVACY = [
-  "Your board is yours. Nothing you write or save is shared with or visible to anyone else.",
-  "When you press Synthesize, your notes and clips are sent to an AI service to find patterns in them. It is used to produce your synthesis and nothing else — not to train models, not to build a profile of you.",
-  "Your items and marks are stored so the board works. There are no ads and your data is not sold.",
-];
 
 export function LandingPage() {
   const [cur, setCur] = useState(0);
@@ -178,24 +174,7 @@ export function LandingPage() {
             {actions}
           </section>
 
-          <section className="landPrivacy" id="privacy">
-            <div className="dayDivider">
-              <span>Privacy</span>
-            </div>
-            {PRIVACY.map((p) => (
-              <p key={p.slice(0, 20)}>{p}</p>
-            ))}
-            <p>
-              Want it gone? Email{" "}
-              <a href="mailto:lirazaxelrad2@gmail.com">lirazaxelrad2@gmail.com</a> and
-              your account and everything in it will be deleted.
-            </p>
-          </section>
-
-          <footer className="landFoot">
-            <span>Built at the SheBuilds Buildathon, October 2026</span>
-            <a href="#privacy">Privacy</a>
-          </footer>
+          <SiteFooter />
         </div>
       </main>
     </>
