@@ -39,7 +39,7 @@ type Row = {
   id: string; type: string; title: string | null; body: string; writer: string | null;
   why: string | null; author_me: boolean; item_date: string;
 };
-type Entry = { text: string; examples: string[]; sources: number[] };
+type Entry = { text: string; sources: number[] };
 
 function label(it: Row) {
   const raw = it.type === "capture" && it.title
