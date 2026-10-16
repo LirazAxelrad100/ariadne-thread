@@ -157,17 +157,18 @@ export const synthesize = createServerFn({ method: "POST" })
       const body = thread ? `## The thread\n${thread}\n\n${sections}` : sections;
 
       const now = new Date();
-      const { data: saved, error: saveErr } = await supabase
-        .from("items")
-        .insert({
-          type: "note", is_synthesis: true, writer: "AI", body: body.trimEnd(), item_date: now.toISOString(),
-          title: `Synthesis: ${now.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}`,
-          synthesis: { count: items.length, sources: used.size },
-        })
-        .select("id")
-        .single();
-      if (saveErr) return { ok: false, reason: "error", message: null };
-      return { ok: true, id: saved.id };
+      // Written through a function that always files the result under the signed-in
+      // user's own id and always marks it as a synthesis. That is the single write
+      // the read-only demo visitor is allowed to make.
+      const { data: newId, error: saveErr } = await supabase.rpc("insert_synthesis", {
+        p_body: body.trimEnd(),
+        p_title: `Synthesis: ${now.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}`,
+        p_item_date: now.toISOString().slice(0, 10),
+        p_created_at: now.toISOString(),
+        p_synthesis: { count: items.length, sources: used.size },
+      });
+      if (saveErr || !newId) return { ok: false, reason: "error", message: null };
+      return { ok: true, id: newId };
     } catch (e) {
       const status = (e as { statusCode?: number })?.statusCode;
       console.error("synthesize failed", status, e);
