@@ -132,6 +132,7 @@ function WriteView() {
         localStorage.removeItem(INCOMING_KEY);
         persistLocal();
         setBoxBody(draft.current.body);
+        setWrote(true);
         setCapState(meta);
         setLiveTime(new Date());
         if (draft.current.body) await flush();
