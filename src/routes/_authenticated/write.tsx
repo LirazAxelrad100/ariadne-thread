@@ -51,6 +51,9 @@ function WriteView() {
   const [boxBody, setBoxBody] = useState("");
   const [boxId, setBoxId] = useState<string | null>(null);
   const [cap, setCapState] = useState<CaptureMeta | null>(null);
+  // Once something is written, the first-visit intro stays gone — even in the
+  // moment between closing the note and the saved list arriving.
+  const [wrote, setWrote] = useState(false);
 
   const persistLocal = () => localStorage.setItem(DRAFT_KEY, JSON.stringify(draft.current));
 
@@ -198,6 +201,7 @@ function WriteView() {
       setLiveTime(new Date());
     }
     draft.current.body = body;
+    if (body.trim()) setWrote(true);
     setBoxBody(body);
     idleLeft.current = IDLE_MS;
     persistLocal();
@@ -243,7 +247,7 @@ function WriteView() {
     <>
       <main className="stream" ref={streamRef}>
         <div className="inner">
-          {allItems.length === 0 && !boxBody && (
+          {allItems.length === 0 && !boxBody && !boxId && !wrote && (
             <div className="firstSteps">
               <svg className="fsThread" viewBox="0 0 900 120" aria-hidden="true">
                 <path d="M 0 118 C 50 120, 105 103, 150 100 C 240 94, 360 42, 450 40 C 540 38, 660 106, 750 100 C 785 98, 822 66, 842 46" fill="none" />
