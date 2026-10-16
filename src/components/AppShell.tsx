@@ -49,6 +49,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   const older = idx >= 0 ? months[idx + 1] : undefined;
   const newer = idx > 0 ? months[idx - 1] : undefined;
   const count = items.filter((i) => monthKey(i.item_date) === month).length;
+  // In Read the header count is the month on screen, so it carries the whole
+  // thread's total as well — "10 / 19" — otherwise the smaller number reads as
+  // entries that went missing between the two views.
+  const headShown = view === "write" ? items.length : count;
+  const headTotal = items.length;
+
 
   // The month strip: every month that holds entries, so the whole span of the
   // timeline is one click away. It closes on re-click, a click outside, Esc,
@@ -133,10 +139,11 @@ export function AppShell({ children }: { children: ReactNode }) {
           </>
         )}
         <div className="spacer" />
-        {(view === "write" ? items.length : count) > 0 && (
+        {headShown > 0 && (
           <span className="mono headCount">
-            {view === "write" ? items.length : count} {(view === "write" ? items.length : count) === 1 ? "entry" : "entries"}
+            {headShown}{headShown !== headTotal ? ` / ${headTotal}` : ""} {headTotal === 1 ? "entry" : "entries"}
           </span>
+
         )}
         {view === "read" && (
           <button className={synth.state === "loading" ? "synthBtn synthBusy" : "synthBtn"} type="button"
