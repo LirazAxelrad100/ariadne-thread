@@ -8,6 +8,10 @@ import { dayLabel, itemQuery } from "@/lib/items";
 import { annotationsQuery } from "@/lib/marks";
 
 export const Route = createFileRoute("/_authenticated/item/$id")({
+  validateSearch: (search: Record<string, unknown>): { from?: "write" | "read" } => {
+    const raw = search["from"];
+    return raw === "write" || raw === "read" ? { from: raw } : {};
+  },
   head: () => ({
     meta: [
       { title: "Entry · Ariadne’s Thread" },
@@ -29,6 +33,8 @@ function ItemView() {
   const { id } = Route.useParams();
   const qc = useQueryClient();
   const navigate = useNavigate();
+  const { from } = Route.useSearch();
+  const backTo = from === "write" ? "/write" : "/read";
   const { data: item } = useSuspenseQuery(itemQuery(id));
   const { data: all } = useSuspenseQuery(annotationsQuery());
   const annots = all.filter((a) => a.item_id === id);
@@ -42,11 +48,11 @@ function ItemView() {
       if (e.key !== "Escape") return;
       const t = e.target as HTMLElement;
       if (t.closest(".annotInput")) return;
-      navigate({ to: "/read" });
+      navigate({ to: backTo });
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [navigate]);
+  }, [navigate, backTo]);
 
   async function saveBody(body: string) {
     window.clearTimeout(saveTimer.current);
@@ -95,14 +101,14 @@ function ItemView() {
     await supabase.from("annotations").delete().eq("item_id", id);
     await supabase.from("items").delete().eq("id", id);
     await Promise.all([qc.invalidateQueries({ queryKey: ["items"] }), refreshMarks()]);
-    navigate({ to: "/read" });
+    navigate({ to: backTo });
   }
 
   return (
     <main className="stream">
       <div className="inner">
         <div className="itemTop">
-          <Link to="/read" className="back" aria-label="Back to Read">←</Link>
+          <Link to={backTo} className="back" aria-label="Back">←</Link>
           {item && <div className="dayDivider" style={{ flex: 1, marginBottom: 0 }}><span>{dayLabel(item.item_date)}</span></div>}
           {item && (
             <div className="itemDel">

@@ -112,7 +112,7 @@ function ReadView() {
             <div className="thread">
               {g.items.map((it) => (
                 <Entry key={it.id} item={it} annots={annots.filter((a) => a.item_id === it.id)}
-                  onOpen={() => navigate({ to: "/item/$id", params: { id: it.id } })} />
+                  onOpen={() => navigate({ to: "/item/$id", params: { id: it.id }, search: { from: "read" } })} />
               ))}
             </div>
           </section>

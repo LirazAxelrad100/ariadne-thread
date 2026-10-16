@@ -279,7 +279,7 @@ function WriteView() {
               {notes.filter((n) => n.id !== draft.current.id).map((n) =>
                 n.type === "capture"
                   ? <Entry key={n.id} item={n} annots={allAnnots.filter((a) => a.item_id === n.id)}
-                      onOpen={() => navigateTo({ to: "/item/$id", params: { id: n.id } })} />
+                      onOpen={() => navigateTo({ to: "/item/$id", params: { id: n.id }, search: { from: "write" } })} />
                   : <TodayNote key={n.id} note={n} />)}
             </div>
           )}
@@ -369,7 +369,7 @@ function TodayNote({ note }: { note: NoteRow }) {
   }
 
   return (
-    <article className="entry" style={{ cursor: "pointer" }} onClick={() => { if (!editing) navigate({ to: "/item/$id", params: { id: note.id } }); }}>
+    <article className="entry" style={{ cursor: "pointer" }} onClick={() => { if (!editing) navigate({ to: "/item/$id", params: { id: note.id }, search: { from: "write" } }); }}>
       <span className="dot" />
       <span className="time">{hhmm(note.item_date)}</span>
       {editing ? (
