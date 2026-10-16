@@ -87,3 +87,4 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Publish latest (How it works step 04 copy) and re-check on live — pushed and confirmed on ariadne-thread.lovable.app.
 
 - [x] Capture composer redesign: all details inside the writing box (title, writer · domain, I wrote this, text with fade, What caught me)
+- [x] Write intro: cursor sits on the hint's first line (no jump below it); no flash of the sign-in page or the empty-Write picture after Google sign-in. Being published by the user (16 Oct 14:58 UTC) and to be re-checked on live.
