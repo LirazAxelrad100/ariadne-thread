@@ -1001,6 +1001,13 @@ body.mode-item .composerWrap { display: none; }
 }
 
 /* ---------- capture in the writing box (Step 5) ---------- */
+.capField {
+  flex: 1; min-width: 0; height: 32px; padding: 0 10px;
+  border: 1px solid var(--surface-border); border-radius: 8px;
+  background: var(--white); color: var(--ink); font: inherit; font-size: 14px; font-weight: 300;
+}
+.capField:focus { outline: none; border-color: var(--meta-soft); }
+.capField::placeholder { color: var(--meta-soft); }
 /* Every capture detail lives inside the box, laid out like a capture entry in Read. */
 .capBox {
   padding: 16px 18px 14px;
