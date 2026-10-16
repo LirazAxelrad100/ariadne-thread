@@ -163,7 +163,7 @@ export const synthesize = createServerFn({ method: "POST" })
       const { data: newId, error: saveErr } = await supabase.rpc("insert_synthesis", {
         p_body: body.trimEnd(),
         p_title: `Synthesis: ${now.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}`,
-        p_item_date: now.toISOString(),
+        p_item_date: now.toISOString().slice(0, 10),
         p_created_at: now.toISOString(),
         p_synthesis: { count: items.length, sources: used.size },
       });
