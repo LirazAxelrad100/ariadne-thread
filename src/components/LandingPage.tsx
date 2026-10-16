@@ -21,6 +21,7 @@ export function LandingPage() {
   const [demoBusy, setDemoBusy] = useState(false);
   const [demoErr, setDemoErr] = useState(false);
   const openDemo = useServerFn(startDemoSession);
+  const step = STEPS[cur] ?? STEPS[0];
 
   // Reduced motion: the carousel starts paused instead of moving on its own.
   useEffect(() => {
@@ -129,11 +130,11 @@ export function LandingPage() {
               </div>
 
               <div className="landShot">
-                {STEPS[cur].shot ? (
-                  <img src={STEPS[cur].shot} alt={STEPS[cur].alt} />
+                {step.shot ? (
+                  <img src={step.shot} alt={step.alt} />
                 ) : (
                   <div className="landShotPh">
-                    {STEPS[cur].n} · {STEPS[cur].name}
+                    {step.n} · {step.name}
                   </div>
                 )}
               </div>
