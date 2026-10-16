@@ -330,7 +330,6 @@ function WriteView() {
             )}
           </p>
         </div>
-        )}
       </div>
     </>
   );
