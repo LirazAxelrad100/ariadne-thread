@@ -32,6 +32,8 @@ function ItemView() {
   const { id } = Route.useParams();
   const qc = useQueryClient();
   const navigate = useNavigate();
+  const { from } = Route.useSearch();
+  const backTo = from === "write" ? "/write" : "/read";
   const { data: item } = useSuspenseQuery(itemQuery(id));
   const { data: all } = useSuspenseQuery(annotationsQuery());
   const annots = all.filter((a) => a.item_id === id);
