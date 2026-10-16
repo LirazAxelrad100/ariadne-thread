@@ -126,14 +126,14 @@ function ItemView() {
         </div>
         {item ? (
           <>
-            {locked ? (
-              <p className="lockLine">Text is locked while it has marks. Delete all marks to edit again.</p>
-            ) : (
-              <p className="markHint">Select any words to mark or comment.</p>
-            )}
             <div className="thread">
               <Entry item={item} full annots={annots} actions={actions} editable={!locked} onEdit={onEdit} />
             </div>
+            {locked ? (
+              <p className="lockLine" style={{ marginTop: 12 }}>Text is locked while it has marks. Delete all marks to edit again.</p>
+            ) : (
+              <p className="markHint" style={{ marginTop: 12 }}>Select any words to mark or comment.</p>
+            )}
           </>
         ) : (
           <p className="empty">This entry is no longer here.</p>
