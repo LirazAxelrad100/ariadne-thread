@@ -12,7 +12,7 @@
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
 0. Re-test capture with the user after installing the updated bookmark: LinkedIn bullets and a Guardian piece are the known cases.
-1. Account-menu bookmarklet button and panel built: “Get the bookmarklet” opens the installation panel, shared draggable button with caption and click feedback. Add the same button to "First steps" and the landing page later; never to the header itself.
+1. Account-menu bookmarklet button styled directly in the menu, with caption and click feedback; no “Get the bookmarklet” step or separate panel. Add the same button to "First steps" and the landing page later; never to the header itself.
 2. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
 3. Synthesis — needs 5+ items, four sections, "From" source links.
 4. Empty states.
