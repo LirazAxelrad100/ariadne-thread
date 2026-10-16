@@ -32,7 +32,7 @@ export function BookmarkletLink({ compact = false, inline = false }: { compact?:
         Capture to Ariadne
       </a>
       <div className="bmHint">
-        {inline ? "drag to your bookmarks bar" : "Drag it to your bookmarks bar."}
+        {inline ? "drag to your bookmarks bar" : "Drag the button to your bookmarks bar."}
       </div>
       {clicked && <div className="bmClickNote" role="status">Drag the button instead of clicking it.</div>}
     </div>
