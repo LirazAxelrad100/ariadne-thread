@@ -1258,11 +1258,6 @@ body.mode-item .composerWrap { display: none; }
 }
 
 /* ---------- read-only demo visitor ---------- */
-body.mode-demo .entryTools,
-body.mode-demo .itemDel,
-body.mode-demo .selPop,
-body.mode-demo .accountMenu .bmInstall { display: none; }
-.demoNote { margin: 0; font-size: 15px; font-weight: 300; line-height: 1.6; color: var(--ink-recede); }
 
 /* ---------- landing on phones ---------- */
 @media (max-width: 720px) {

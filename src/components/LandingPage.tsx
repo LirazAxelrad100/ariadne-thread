@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { supabase } from "@/integrations/supabase/client";
 import { LogoMark } from "@/components/Logo";
 import { SiteFooter } from "@/components/SiteFooter";
-import { startDemoSession } from "@/lib/demo.functions";
 import { STEPS, DURATIONS, type Step } from "@/lib/shots";
 import { LiveScene } from "@/components/LiveScenes";
 
@@ -12,9 +9,6 @@ export function LandingPage() {
   const [cur, setCur] = useState(0);
   const [paused, setPaused] = useState(false);
   const [hover, setHover] = useState(false);
-  const [demoBusy, setDemoBusy] = useState(false);
-  const [demoErr, setDemoErr] = useState(false);
-  const openDemo = useServerFn(startDemoSession);
   const step: Step = STEPS[cur] ?? STEPS[0] ?? { n: "", name: "", copy: "", shot: "", alt: "" };
 
   // Reduced motion: the carousel starts paused instead of moving on its own.
@@ -28,30 +22,11 @@ export function LandingPage() {
     return () => clearTimeout(t);
   }, [cur, paused, hover]);
 
-  async function tryDemo() {
-    setDemoErr(false);
-    setDemoBusy(true);
-    const res = await openDemo();
-    setDemoBusy(false);
-    if (!res.ok) {
-      setDemoErr(true);
-      return;
-    }
-    await supabase.auth.setSession({
-      access_token: res.access_token,
-      refresh_token: res.refresh_token,
-    });
-    window.location.assign("/read");
-  }
-
   const actions = (
     <div className="landActions">
       <Link to="/auth" className="btn primary" style={{ textDecoration: "none" }}>
         Start
       </Link>
-      <button type="button" className="btn" onClick={tryDemo} disabled={demoBusy}>
-        Try the demo
-      </button>
     </div>
   );
 
@@ -79,11 +54,6 @@ export function LandingPage() {
               </div>
             </div>
             {actions}
-            {demoErr && (
-              <p className="landNote" role="status">
-                Couldn’t open the demo just now. You can sign in instead.
-              </p>
-            )}
           </section>
 
           <section className="landHow">
