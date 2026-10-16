@@ -69,7 +69,8 @@ export function InfoDialog({ kind, onClose }: { kind: InfoDialogKind; onClose: (
   );
 }
 
-export function SiteFooter() {
+/** The shared footer. `credit` adds the article credit shown by the landing page's demo animation. */
+export function SiteFooter({ credit = false }: { credit?: boolean }) {
   const [open, setOpen] = useState<InfoDialogKind | null>(null);
   const howRef = useRef<HTMLButtonElement>(null);
   const linkRef = useRef<HTMLButtonElement>(null);
@@ -103,13 +104,15 @@ export function SiteFooter() {
             </a>
           </span>
         </div>
-        <p className="landCredit">
-          Article in the demo:{" "}
-          <a href="https://substack.com/home/post/p-169790855" target="_blank" rel="noreferrer">
-            “What If Anxiety Is a Habit, Not a Disorder?”
-          </a>{" "}
-          by Judson Brewer, MD, PhD. All rights reserved.
-        </p>
+        {credit && (
+          <p className="landCredit">
+            Article in the demo:{" "}
+            <a href="https://substack.com/home/post/p-169790855" target="_blank" rel="noreferrer">
+              “What If Anxiety Is a Habit, Not a Disorder?”
+            </a>{" "}
+            by Judson Brewer, MD, PhD. All rights reserved.
+          </p>
+        )}
       </footer>
       {open && <InfoDialog kind={open} onClose={close} />}
     </>
