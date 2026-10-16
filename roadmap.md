@@ -38,12 +38,12 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 ## Submission checklist (handbook-verified 16 Oct — season4-helper.lovable.app, Handbook tab)
 - **Pencils down Sat Oct 17 · 11:59 p.m. PT = Sun Oct 18 · 06:59 UTC.** Form opens Sat morning, in the personal Hub. Nothing that changes what judges see may be edited afterwards — editing the submitted experience disqualifies it.
 - Form fields: name · published `.lovable.app` URL · short description · problem + intended user · category (single select) · up to 3 screenshots. Optional: additional context · testing instructions · safe demo access · known limitations. No video required.
-- Judges' demo login (demo@ariadne-thread.app) goes in the form's "safe demo access" field only — never in app code, never in public Slack. The sign-in page does not prefill it. It is not the landing page's "Try the demo" account.
+- Judges' demo login (demo@ariadne-thread.app) goes in the form's "safe demo access" field only — never in app code, never in public Slack. The sign-in page does not prefill it. The landing page's "Try the demo" visitor account was removed (16 Oct), so this is now the only demo account.
 - [x] Generate the demo account's AI synthesis **before** submitting — done 16 Oct (see above). After submission the content is frozen.
 - [ ] Pick the 3 screenshots (from the live scenes) and write the testing-instructions and known-limitations lines.
-- [x] Sample data clearly labeled (user's call, 16 Oct): explained in the submission form's additional-context field, with the reason — the app stays clean; the landing page's "Try the demo" account is separate and read-only.
+- [x] Sample data clearly labeled (user's call, 16 Oct): explained in the submission form's additional-context field, with the reason — the app stays clean.
 - Before submitting: sign in as the judges' demo account on the published app and confirm the 18 entries, marks and Synthesize all work there.
-- Landing "Try the demo" uses its own read-only visitor account, so the judges' login never ships in the app.
+- [x] Landing "Try the demo" visitor account removed (16 Oct, user's call): button gone from the landing, demo-visitor write policies rebuilt as plain owner policies, its auth user + 18 sample copies deleted, password secret removed. The judges' demo account is untouched (19 items incl. the synthesis). Leftover `demo_visitors` table/function stay only until the next publish, then dropped in a follow-up migration.
 - Eligibility gates: fresh project after kickoff, no unresolved security errors, accessible through the published link, unchanged after submission.
 
 ## Still not supplied
