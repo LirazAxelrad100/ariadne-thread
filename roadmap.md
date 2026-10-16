@@ -89,6 +89,6 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 
 - [x] Capture composer redesign: all details inside the writing box (title, writer · domain, I wrote this, text with fade, What caught me)
 - [x] Write intro: cursor sits on the hint's first line (no jump below it); no flash of the sign-in page or the empty-Write picture after Google sign-in. Being published by the user (16 Oct 14:58 UTC) and to be re-checked on live.
-- [x] Mark hint on phones (16 Oct): the gutter hint reads "Select to mark" on a phone and "Select words to mark or comment" on a computer.
+- [x] Mark hint on phones (16 Oct): the gutter hint reads "Select to mark" on a phone and "Select words to mark or comment" on a computer. Wording settled — the user tried to find a single word and gave up, so it stays two short lines.
 - [ ] Captured article title (16 Oct): dropped by the user for now — selecting words in a capture's title, writer or site name stays inert; marks and comments remain on the article text only. Revisit only if it confuses a judge.
 
