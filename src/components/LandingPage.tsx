@@ -20,7 +20,7 @@ export function LandingPage() {
   const [demoBusy, setDemoBusy] = useState(false);
   const [demoErr, setDemoErr] = useState(false);
   const openDemo = useServerFn(startDemoSession);
-  const step = STEPS[cur] ?? STEPS[0];
+  const step: Step = STEPS[cur] ?? STEPS[0] ?? { n: "", name: "", copy: "", shot: "", alt: "" };
 
   // Reduced motion: the carousel starts paused instead of moving on its own.
   useEffect(() => {
