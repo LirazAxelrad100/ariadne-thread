@@ -93,7 +93,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Link to="/read" search={newer ? { m: newer } : {}} className="mArrow" aria-label="Next month"
                 disabled={!newer} style={!newer ? { opacity: 0.3, pointerEvents: "none" } : undefined}>›</Link>
             </nav>
-            <span className="mono">{count} {count === 1 ? "entry" : "entries"}</span>
+              <span className="mono">{count} of {items.length} {items.length === 1 ? "entry" : "entries"}</span>
           </>
         )}
         <div className="spacer" />
