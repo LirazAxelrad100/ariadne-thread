@@ -111,3 +111,4 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Live site confirmed serving the newest build: /auth returns the same chunk set 10/10 times and every chunk resolves (no stale-HTML 404s), and the deployed sign-in code carries the "stuck sign-in" fix (its own entered flag + the server check).
 - [x] Google sign-in verified by the user on the live site with her own account — worked end to end.
 - [ ] Demo account (demo@ariadne-thread.app) end-to-end check on live — waiting on the password from the user. Covers: email sign-in reaches Write, Read shows the thread oldest-first with the synthesis last, marks/comments open, a fresh Synthesize run, then delete anything the check adds so judges see the thread as shipped.
+- [ ] Logout lands on the sign-in page today; the user wants the landing page instead. Change the sign-out path and verify a real sign-out returns to "/" with no sign-in flash.
