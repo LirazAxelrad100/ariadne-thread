@@ -707,6 +707,7 @@ mark mark { background: #ecd394; }
 .lockLine,
 .markHint {
   margin: 0 0 6px;
+  padding-inline-start: calc(var(--gutter) + 1px); /* line up with the entry text, past the rail */
   line-height: var(--l1);
   font-family: var(--font-mono);
   font-size: 11px;

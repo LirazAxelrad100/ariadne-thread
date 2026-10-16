@@ -129,7 +129,7 @@ function ItemView() {
             {locked ? (
               <p className="lockLine">Text is locked while it has marks. Delete all marks to edit again.</p>
             ) : (
-              <p className="markHint">Select any words to mark them or leave a comment.</p>
+              <p className="markHint">Select any words to mark or comment.</p>
             )}
             <div className="thread">
               <Entry item={item} full annots={annots} actions={actions} editable={!locked} onEdit={onEdit} />
