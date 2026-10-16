@@ -3,7 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { synthesize } from "@/lib/synthesize.functions";
 import { itemsQuery, monthKey, monthLabel, monthShort, SYNTH_MIN } from "@/lib/items";
-import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { InfoDialog, SUPPORT, type InfoDialogKind } from "@/components/SiteFooter";
 import { LogoMark, ThreadIcon } from "@/components/Logo";
 import { signOut } from "@/lib/auth";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
@@ -196,6 +197,11 @@ function AccountMenu() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const [info, setInfo] = useState<InfoDialogKind | null>(null);
+  const closeInfo = useCallback(() => {
+    setInfo(null);
+    requestAnimationFrame(() => ref.current?.querySelector<HTMLButtonElement>(".account")?.focus());
+  }, []);
 
   const meta = (user.user_metadata ?? {}) as { full_name?: string; name?: string; avatar_url?: string; picture?: string };
   const name = meta.full_name || meta.name || user.email || "";
@@ -250,8 +256,12 @@ function AccountMenu() {
           <div className="meta" style={{ whiteSpace: "normal", wordBreak: "break-all" }}>{user.email}</div>
         </div>
         <BookmarkletLink />
+        <button role="menuitem" onClick={() => { setOpen(false); setInfo("how"); }}>How it works</button>
+        <button role="menuitem" onClick={() => { setOpen(false); setInfo("privacy"); }}>Privacy</button>
+        <a role="menuitem" href={`mailto:${SUPPORT}`} onClick={() => setOpen(false)}>Support</a>
         <button role="menuitem" onClick={onSignOut}>Sign out</button>
       </div>
+      {info && <InfoDialog kind={info} onClose={closeInfo} />}
     </div>
   );
 }
