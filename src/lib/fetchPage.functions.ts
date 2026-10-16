@@ -54,7 +54,7 @@ export function extract(html: string, url: string) {
   const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1];
   const title = meta(html, "og:title") || (h1 ? strip(h1) : "") || strip(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "");
 
-  let writer = meta(html, "author") || meta(html, "article:author");
+  let writer = meta(html, "author") || meta(html, "sailthru.author") || meta(html, "parsely-author") || meta(html, "article:author");
   if (!writer) {
     for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
       try {
@@ -81,7 +81,9 @@ export function extract(html: string, url: string) {
   let text = paras.join("\n\n");
   const end = text.search(/\n\s*(share this post|discussion about this post|ready for more\?|related (stories|articles)|you might also like|subscribe to)/i);
   if (end > 0) text = text.slice(0, end);
-  if (!text) text = meta(html, "og:description") || meta(html, "description");
+  const dek = meta(html, "og:description") || meta(html, "description");
+  if (!text) text = dek;
+  else if (dek.length > 20 && !text.includes(dek.slice(0, 40)) && !/(\u2026|\.\.\.)$/.test(dek)) text = dek + "\n\n" + text;
 
   return { url, title: title.slice(0, 300), writer: writer.slice(0, 120), text: text.trim().slice(0, 60000) };
 }
