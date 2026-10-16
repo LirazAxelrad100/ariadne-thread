@@ -5,10 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/auth";
 import { LogoMark } from "@/components/Logo";
 import { SiteFooter } from "@/components/SiteFooter";
-import { startJudgeSession } from "@/lib/demo.functions";
 
-const DEMO_EMAIL = "demo@ariadne-thread.app";
-const DEMO_DOTS = "demo-prefill";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -57,21 +54,14 @@ function AuthPage() {
     if (result.error) setError("Couldn’t sign in. Please try again.");
   }
 
-  const [email, setEmail] = useState(DEMO_EMAIL);
-  const [password, setPassword] = useState(DEMO_DOTS);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [emailErr, setEmailErr] = useState<string | null>(null);
   const [passErr, setPassErr] = useState<string | null>(null);
-  const prefilled = email === DEMO_EMAIL && password === DEMO_DOTS;
 
   async function onEmail(e: React.FormEvent) {
     e.preventDefault();
     setError(null); setEmailErr(null); setPassErr(null);
-    if (prefilled) {
-      const r = await startJudgeSession();
-      if (!r.ok) { setPassErr("Couldn’t open the demo just now. Please try again."); return; }
-      await supabase.auth.setSession({ access_token: r.access_token, refresh_token: r.refresh_token });
-      return;
-    }
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) { setEmailErr("Enter your email address."); return; }
     if (!password) { setPassErr("Enter your password."); return; }
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
@@ -110,15 +100,11 @@ function AuthPage() {
               <div className="authField">
                 <label htmlFor="auth-pass">Password</label>
                 <input id="auth-pass" type="password" autoComplete="current-password" value={password}
-                  onFocus={() => { if (password === DEMO_DOTS && email !== DEMO_EMAIL) setPassword(""); }}
                   onChange={(e) => { setPassword(e.target.value); setPassErr(null); }} />
                 {passErr && <p className="authErr">{passErr}</p>}
               </div>
               <button className="authSubmit" type="submit">Sign in</button>
             </form>
-            {prefilled && (
-              <p className="authJudge">Judging the buildathon?<br />The demo account is filled in. Just press Sign in.</p>
-            )}
           </div>
         </div>
         <SiteFooter />
