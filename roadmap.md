@@ -80,3 +80,8 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Published (16 Oct 12:40 UTC): the live site now hands out the fixed button. Live page confirmed serving (200, correct title).
 - [x] Account menu: How it works, Privacy, Support
 - [x] Capture caption (16 Oct): now "Drag the button to your bookmarks bar." — 6px directly below the button with its left edge flush with the button's, in the account menu and the Write intro; measured at 900/1280/1440px wide, one line, no clash with the neighbouring column.
+
+## Pre-submission QA (16 Oct)
+- [x] Automated: tests pass (incl. new rule tests), security + dependency scans clean, data separation rules checked, live landing OK on desktop and phone (no console errors, pop-ups open/close), demo account holds the 18 seed items only.
+- [ ] (user) Judges' email sign-in on live, Google sign-in with a new account, Speak on phone, bookmarklet on 3 sites, iPhone Paste a link / Android Share, Safari + Firefox, link preview in WhatsApp.
+- [ ] Publish latest (How it works step 04 copy) and re-check on live.
