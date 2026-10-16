@@ -35,7 +35,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const now = useNow();
   const { user } = useRouteContext({ from: "/_authenticated" });
   const { data: demoMode } = useQuery(demoModeQueryOptions(user?.id));
-  const { data: items = [] } = useQuery({ ...itemsQuery(), enabled: view === "read" });
+  const { data: items = [] } = useQuery(itemsQuery());
 
   useEffect(() => {
     const cls = isItem ? "mode-item" : view === "read" ? "mode-reading" : "mode-writing";
@@ -143,6 +143,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           </>
         )}
         <div className="spacer" />
+        {view === "write" && items.length > 0 && (
+          <span className="mono countWriting">{items.length} {items.length === 1 ? "entry" : "entries"}</span>
+        )}
         {view === "read" && (
           <button className={synth.state === "loading" ? "btn synthBusy" : "btn"} type="button"
             onClick={onSynthesize} aria-busy={synth.state === "loading"}
@@ -152,11 +155,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             {synth.state === "loading" && <span className="btnDot" aria-hidden="true" />}
           </button>
         )}
-        <span className="barSep" />
-        <nav className="viewNav" aria-label="Views">
-          <Link to="/write" aria-current={view === "write" ? "page" : undefined}>Write</Link>
-          <Link to="/read" aria-current={view === "read" ? "page" : undefined}>Read</Link>
-        </nav>
+        {view === "write"
+          ? <Link to="/read" className="viewBtn">Read</Link>
+          : <Link to="/write" className="viewBtn">Write</Link>}
         <AccountMenu />
         {view === "read" && months.length > 1 && (
           <nav className="monthStrip" aria-label="All months" hidden={!strip}>
