@@ -1073,8 +1073,18 @@ body.mode-item .composerWrap { display: none; }
 .composer[data-empty]::before { content: attr(data-placeholder); color: var(--meta-soft); pointer-events: none; }
 
 /* First steps: shown in Write only while the account has no items at all. */
-.firstSteps { margin: 8vh auto 0; max-width: 520px; }
-.fsTitle { margin: 0 0 10px; font-size: 13px; font-weight: 500; letter-spacing: .04em; color: var(--meta); }
-.fsList { margin: 0; padding-inline-start: 20px; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--ink-recede); }
-.fsList li { margin: 0 0 14px; }
-.fsList .bmInstall { margin-top: 8px; }
+.firstSteps { margin: 9vh auto 0; max-width: 860px; }
+.fsThread { display: block; width: 100%; height: auto; }
+.fsThread path { stroke: var(--dot); stroke-width: 1.5; }
+.fsThread circle { fill: var(--dot); }
+.fsThread .fsThreadEnd { fill: var(--logo-dot); }
+.fsCols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 36px; }
+.fsCol { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.fsColTitle { margin: 0 0 8px; font-size: 15px; font-weight: 500; color: var(--ink); }
+.fsColText { margin: 0; max-width: 250px; font-size: 14px; font-weight: 300; line-height: 1.6; color: var(--ink-recede); }
+.fsCol .bmInstall { align-items: center; margin-top: 16px; }
+@media (max-width: 700px) {
+  .firstSteps { margin-top: 4vh; }
+  .fsThread { display: none; }
+  .fsCols { grid-template-columns: 1fr; gap: 22px; margin-top: 0; }
+}

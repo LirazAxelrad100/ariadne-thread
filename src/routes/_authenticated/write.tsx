@@ -234,15 +234,28 @@ function WriteView() {
         <div className="inner">
           {allItems.length === 0 && !boxBody && (
             <div className="firstSteps">
-              <p className="fsTitle">First steps</p>
-              <ol className="fsList">
-                <li>Write your thoughts in the text field below — it saves as you type.</li>
-                <li>
-                  Capture text from any page with the bookmarklet — drag it to your bookmarks bar.
+              <svg className="fsThread" viewBox="0 0 900 140" aria-hidden="true">
+                <path d="M 0 118 C 50 120, 105 103, 150 100 C 240 94, 360 42, 450 40 C 540 38, 660 106, 750 100 C 785 98, 822 66, 842 46" fill="none" />
+                <circle cx="150" cy="100" r="5" />
+                <circle cx="450" cy="40" r="5" />
+                <circle cx="750" cy="100" r="5" />
+                <circle cx="842" cy="46" r="7" className="fsThreadEnd" />
+              </svg>
+              <div className="fsCols">
+                <div className="fsCol">
+                  <p className="fsColTitle">Write</p>
+                  <p className="fsColText">Whatever’s on your mind, jot it down.</p>
+                </div>
+                <div className="fsCol">
+                  <p className="fsColTitle">Capture</p>
+                  <p className="fsColText">Read something that inspires you? Capture it in one click.</p>
                   <BookmarkletLink />
-                </li>
-                <li>Select text in any note to mark it or add a related thought.</li>
-              </ol>
+                </div>
+                <div className="fsCol">
+                  <p className="fsColTitle">Mark</p>
+                  <p className="fsColText">Mark the parts that move you. Add a note.</p>
+                </div>
+              </div>
             </div>
           )}
           {notes.length > 0 && (
