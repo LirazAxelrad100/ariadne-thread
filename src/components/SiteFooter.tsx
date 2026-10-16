@@ -11,7 +11,7 @@ export function SiteFooter() {
     if (!open) return;
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") close();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -21,10 +21,6 @@ export function SiteFooter() {
     setOpen(false);
     requestAnimationFrame(() => linkRef.current?.focus());
   };
-
-  useEffect(() => {
-    if (!open) linkRef.current && document.activeElement === document.body && linkRef.current.focus();
-  }, [open]);
 
   return (
     <>
