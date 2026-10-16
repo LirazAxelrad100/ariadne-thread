@@ -15,10 +15,11 @@
 ## Next steps (spec build order — each starts when the user sends its prompt)
 0. Re-test capture with the user after installing the updated bookmark: LinkedIn bullets and a Guardian piece are the known cases.
 
-2. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
-3. Synthesis — needs 5+ items, four sections, "From" source links.
-4. Empty states.
-5. Landing page (current front page is a stand-in: logo + "Start").
+1. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
+2. Synthesis — needs 5+ items, four sections, "From" source links.
+3. Empty states.
+4. Landing page (current front page is a stand-in: logo + "Start").
+
 
 ## Still not supplied
 - `ariadne-base.css` values are in `src/ariadne.css`, but the logo lockup/header mark SVG source, screens 01–11, and `seed.json` from the brief have not been uploaded.
