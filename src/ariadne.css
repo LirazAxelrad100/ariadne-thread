@@ -1379,80 +1379,66 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 .voiceBusy { font-style: italic; }
 .voiceErr { color: var(--meta-soft); }
 
-/* ARIADNE — header alignment: every text item on one baseline; marks,
-   dividers and the avatar centred. Dots sit on the baseline and are lifted
-   to the middle of the lowercase letters. */
-.topbar { align-items: baseline; }
-.topbar .logo,
-.topbar .logo span,
-.topbar .barTitle,
-.topbar .meta,
-.topbar .mono,
-.topbar .monthNav,
-.topbar .mLabel,
-.topbar .mArrow,
-.topbar .viewNav a { line-height: 1; }
-.topbar .logo { align-items: baseline; }
+/* ARIADNE — final header. The current view is a plain label on the left;
+   the other view is an outlined link-button on the right. Text items share
+   one baseline; buttons, avatar, logo and divider are centred. */
+.topbar { align-items: baseline; min-height: 68px; box-sizing: border-box; padding-block: 0; padding-top: env(safe-area-inset-top); }
+.topbar .logo, .topbar .logo span, .topbar .barTitle, .topbar .meta,
+.topbar .mono, .topbar .monthNav, .topbar .mLabel, .topbar .mArrow { line-height: 1; }
+.topbar .logo { align-items: baseline; align-self: center; }
 .topbar .logo svg { align-self: center; }
 .topbar .monthNav { align-items: baseline; }
-.topbar .viewNav { align-items: baseline; }
-.topbar .viewNav a { align-items: baseline; }
-.topbar .barSep,
-.topbar .account,
-.topbar .btn { align-self: center; }
-.topbar .account { margin: 0; position: relative; top: 0; display: block; }
-.topbar .headDot { align-self: baseline; transform: translateY(calc(4px - .25em * 15 / 15)); }
-.topbar .viewNav a[aria-current="page"]::before { align-self: baseline; transform: translateY(calc(3px - .25em)); }
+.topbar .barSep { align-self: center; height: 22px; background: #DBE2EC; }
+.topbar .barTitle { font-size: 15px; font-weight: 500; color: #2E2822; }
+.topbar .meta, .headCount, .mCount { font-family: var(--font-mono); font-size: 11.5px; color: #96684F; white-space: nowrap; }
+.mCount { display: none; }
+.topbar .account { align-self: center; margin: 0; display: block; width: 36px; height: 36px; }
+.headCount { margin-inline-end: 7px; } /* 9 gap + 7 = 16 */
 
-/* ARIADNE — phone header: no logo or dividers; the current view's name is the
-   title, the nav shows only the view to switch to (outlined, like a button);
-   date / month switcher sit on a second line. */
-@media (max-width: 720px) {
-  .topbar .logo,
-  .topbar .barSep,
-  .topbar .viewNav a[aria-current="page"] { display: none; }
-  .topbar .meta { order: 10; flex-basis: 100%; margin-top: 2px; }
-  .topbar .viewNav a {
-    align-self: center;
-    padding: 0 14px;
-    border: 1px solid var(--control-border);
-    border-radius: 8px;
-    color: var(--ink);
-    font-size: 14px;
-  }
-}
-@media (max-width: 720px) {
-  .topbar { align-items: center; }
-  .topbar .viewNav { align-self: center; }
-  .topbar .viewNav a { align-items: center; }
-  .topbar .headDot { align-self: center; transform: translateY(1px); }
-}
-
-/* ARIADNE — view switch: the current view is the plain label on the left;
-   the other view is this outlined link-button on the right. */
-.countWriting { font-family: var(--font-mono); font-size: 11.5px; color: #96684F; line-height: 1; white-space: nowrap; }
-.viewBtn {
+.viewBtn, .synthBtn {
   flex: none;
   align-self: center;
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   box-sizing: border-box;
   height: 36px;
   padding: 0 16px;
-  margin-inline: 3px 7px;
   border: 1px solid #CFD8E3;
   border-radius: 8px;
   background: transparent;
   color: #2E2822;
-  font-family: var(--font-sans, "Space Grotesk"), sans-serif;
+  font-family: var(--font-ui);
   font-size: 14px;
   font-weight: 500;
   line-height: 1;
   text-decoration: none;
+  cursor: pointer;
 }
+.synthBtn { background: #E7ECF3; position: relative; }
 .viewBtn:hover { background: #E7ECF3; }
-.viewBtn:focus-visible { outline: 2px solid #5C6B7D; outline-offset: 2px; border-radius: 8px; }
-.topbar .btn + .viewBtn { margin-inline-start: 3px; }
+.synthBtn:hover:not(:disabled) { background: #DBE2EC; }
+.synthBtn:disabled { cursor: default; }
+.synthBtn svg { width: 16px; height: 16px; flex: none; }
+.synthBtn.synthBusy .btnLabel { opacity: 0.35; transition: opacity 0.3s ease; }
+.viewBtn:focus-visible, .synthBtn:focus-visible { outline: 2px solid #5C6B7D; outline-offset: 2px; border-radius: 8px; }
+.synthBtn + .viewBtn { margin-inline-start: 3px; } /* 9 + 3 = 12 */
+.viewBtn { margin-inline-end: 7px; }            /* 9 + 7 = 16 before avatar */
+
 @media (max-width: 720px) {
-  .viewBtn { height: 44px; }
+  .topbar { min-height: 68px; padding-block: 0; padding-top: env(safe-area-inset-top); }
+  .topbar .account { width: 36px; height: 36px; }
+  .mArrow { min-height: 0; }
+  .topbar .monthNav { order: 10; flex-basis: 100%; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--hairline); margin: 0 -20px; padding-inline: 20px; }
+  .mCount { display: inline; margin-inline-start: -4px; }
+  .topbar .monthNav .mLabel { margin-inline-start: auto; }
+  .topbar .monthNav .mCount { margin-inline-end: auto; }
+  .headCount { display: none; }
+}
+@media (max-width: 640px) {
+  .topbar .logo span { display: none; }
+  .topbar .logo { margin-inline-end: 4px; }
+  .metaDate { display: none; }
+  .synthBtn { padding: 0; width: 36px; justify-content: center; }
+  .synthBtn .btnLabel { display: none; }
 }

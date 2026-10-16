@@ -121,37 +121,38 @@ export function AppShell({ children }: { children: ReactNode }) {
         <span className="barSep" />
         {view === "write" ? (
           <>
-            <span className="headDot" />
-            <span className="barTitle">Writing now</span>
-            <span className="meta">{formatWriting(now)}</span>
+            <span className="barTitle">Write</span>
+            <span className="meta"><span className="metaDate">{formatWriting(now).split(" · ")[0]} · </span>{formatWriting(now).split(" · ")[1]}</span>
           </>
         ) : (
           <>
             <span className="barTitle">Read</span>
-            {items.length > 0 && <>
+            {items.length > 0 && (
             <nav className="monthNav" aria-label="Month">
               <Link to="/read" search={older ? { m: older } : {}} className="mArrow" aria-label="Previous month"
                 disabled={!older} style={!older ? { opacity: 0.3, pointerEvents: "none" } : undefined}>‹</Link>
               <button className="mLabel" type="button"
                 aria-expanded={months.length > 1 ? strip : undefined}
                 onClick={() => months.length > 1 && setStrip((s) => !s)}>{monthLabel(month)}</button>
+              <span className="mono mCount">· {count} {count === 1 ? "entry" : "entries"}</span>
               <Link to="/read" search={newer ? { m: newer } : {}} className="mArrow" aria-label="Next month"
                 disabled={!newer} style={!newer ? { opacity: 0.3, pointerEvents: "none" } : undefined}>›</Link>
             </nav>
-              <span className="mono countReading">{count} of {items.length} {items.length === 1 ? "entry" : "entries"}</span>
-            </>}
+            )}
           </>
         )}
         <div className="spacer" />
-        {view === "write" && items.length > 0 && (
-          <span className="mono countWriting">{items.length} {items.length === 1 ? "entry" : "entries"}</span>
+        {(view === "write" ? items.length : count) > 0 && (
+          <span className="mono headCount">
+            {view === "write" ? items.length : count} {(view === "write" ? items.length : count) === 1 ? "entry" : "entries"}
+          </span>
         )}
         {view === "read" && (
-          <button className={synth.state === "loading" ? "btn synthBusy" : "btn"} type="button"
-            onClick={onSynthesize} aria-busy={synth.state === "loading"}
-            style={synth.state === "loading" ? { cursor: "default" } : undefined}>
+          <button className={synth.state === "loading" ? "synthBtn synthBusy" : "synthBtn"} type="button"
+            onClick={onSynthesize} disabled={synth.state === "loading"} aria-busy={synth.state === "loading"}
+            aria-label="Synthesize">
             <ThreadIcon />
-            <span className="btnLabel">Synthesize</span>
+            <span className="btnLabel">{synth.state === "loading" ? "Synthesizing…" : "Synthesize"}</span>
             {synth.state === "loading" && <span className="btnDot" aria-hidden="true" />}
           </button>
         )}
