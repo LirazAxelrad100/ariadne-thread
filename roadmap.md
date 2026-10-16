@@ -9,14 +9,17 @@
 
 - Step 5 — Capture: bookmarklet ("Capture to Ariadne" in the account menu) opens the app with title, link, writer and text in the writing box; logged-out captures wait through sign-in; "Add its source" turns a pasted text into a capture (phone path); optional "What caught you?" line; no AI summary, no badge (per spec). Bookmarklet also goes into the first-visit steps when empty states are built. Verified by the user on a real article after the drag handle was rebuilt to carry the real `javascript:` code.
   - [x] Fix "Payload Too Large": article now handed over by message, not in the link; bookmark reuses an open Ariadne tab (published app only). Verify with user after publish.
+- Bookmarklet button: one "Capture to Ariadne" button styled directly in the account menu (outlined, 44px, transparent fill, --meta-soft caption "Desktop browsers only." with a short "Drag me to your bookmarks bar" instruction line, menu-float shadow), same drag handle and code everywhere; no intermediate step or separate panel, and never in the header. Same button comes to "First steps" and the landing page when those are built. Verified by the user.
+
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
 0. Re-test capture with the user after installing the updated bookmark: LinkedIn bullets and a Guardian piece are the known cases.
-1. Account-menu bookmarklet button styled directly in the menu, with caption and click feedback; no “Get the bookmarklet” step or separate panel. Add the same button to "First steps" and the landing page later; never to the header itself.
-2. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
-3. Synthesis — needs 5+ items, four sections, "From" source links.
-4. Empty states.
-5. Landing page (current front page is a stand-in: logo + "Start").
+
+1. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
+2. Synthesis — needs 5+ items, four sections, "From" source links.
+3. Empty states.
+4. Landing page (current front page is a stand-in: logo + "Start").
+
 
 ## Still not supplied
 - `ariadne-base.css` values are in `src/ariadne.css`, but the logo lockup/header mark SVG source, screens 01–11, and `seed.json` from the brief have not been uploaded.
