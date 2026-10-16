@@ -1222,3 +1222,15 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
   .landFoot { flex-direction: column; gap: 8px; }
   .landFoot span { white-space: nowrap; }
 }
+
+/* ---------- landing: bookmarklet inside carousel step 02 ---------- */
+.landShot { height: 532px; } /* = 4 × 96 + 148, the step list */
+.landStepBm { margin-top: 2px; cursor: default; } /* 6px column gap + 2px = 8px under the copy */
+.bmInstallInline { position: relative; display: flex; flex-direction: row; align-items: center; gap: 10px; }
+.btn.bmButton.bmButtonInline { height: 32px; padding: 0 10px; font-size: 13px; font-weight: 500; gap: 7px; }
+.bmInstallInline .bmHint { margin: 0; font-size: 12px; color: var(--meta-soft); }
+.bmInstallInline .bmClickNote { position: absolute; top: 100%; left: 0; margin-top: 4px; white-space: nowrap; }
+@media (max-width: 720px) {
+  .landStep { height: auto !important; }
+  .landStepBm { display: none; }
+}
