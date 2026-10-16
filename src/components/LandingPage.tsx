@@ -8,6 +8,15 @@ import { startDemoSession } from "@/lib/demo.functions";
 import { STEPS, DURATIONS, type Step } from "@/lib/shots";
 
 const STEP_H = 96;
+const CAPTURE_H = 148; // step 02 also holds the bookmarklet line
+const CAPTURE_STEP = 1;
+const DOT_Y = 10; // centre of a step's dot, from the step's top
+const stepH = (i: number) => (i === CAPTURE_STEP ? CAPTURE_H : STEP_H);
+const stepTop = (i: number) => {
+  let t = 0;
+  for (let k = 0; k < i; k++) t += stepH(k);
+  return t;
+};
 const PRIVACY = [
   "Your board is yours. Nothing you write or save is shared with or visible to anyone else.",
   "When you press Synthesize, your notes and clips are sent to an AI service to find patterns in them. It is used to produce your synthesis and nothing else — not to train models, not to build a profile of you.",
@@ -17,6 +26,7 @@ const PRIVACY = [
 export function LandingPage() {
   const [cur, setCur] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [hover, setHover] = useState(false);
   const [demoBusy, setDemoBusy] = useState(false);
   const [demoErr, setDemoErr] = useState(false);
   const openDemo = useServerFn(startDemoSession);
@@ -28,10 +38,10 @@ export function LandingPage() {
   }, []);
 
   useEffect(() => {
-    if (paused) return;
+    if (paused || hover) return;
     const t = setTimeout(() => setCur((c) => (c + 1) % STEPS.length), DURATIONS[cur]);
     return () => clearTimeout(t);
-  }, [cur, paused]);
+  }, [cur, paused, hover]);
 
   async function tryDemo() {
     setDemoErr(false);
@@ -97,15 +107,20 @@ export function LandingPage() {
             </div>
             <div className="landCols">
               <div className="landStepsCol">
-                <div className="landSteps">
+                <div
+                  className="landSteps"
+                  onMouseEnter={() => setHover(true)}
+                  onMouseLeave={() => setHover(false)}
+                >
                   <div
                     className="landGrow"
-                    style={{ height: (cur + 1) * STEP_H - STEP_H / 2 }}
+                    style={{ height: stepTop(cur) + DOT_Y }}
                   />
                   {STEPS.map((s, i) => (
                     <div
                       key={s.n}
                       className="landStep"
+                      style={{ height: stepH(i) }}
                       data-on={i === cur ? "1" : undefined}
                       onClick={() => {
                         setCur(i);
@@ -116,6 +131,14 @@ export function LandingPage() {
                       <span className="landStepNum">{s.n}</span>
                       <span className="landStepName">{s.name}</span>
                       <p className="landStepCopy">{s.copy}</p>
+                      {i === CAPTURE_STEP && (
+                        <div
+                          className="landStepBm"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <BookmarkletLink inline />
+                        </div>
+                      )}
                       {s.shot && (
                         <img className="landShotMini" src={s.shot} alt={s.alt} />
                       )}
@@ -143,22 +166,6 @@ export function LandingPage() {
             </div>
           </section>
 
-          <section className="landCapture">
-            <div className="dayDivider">
-              <span>Capture from anywhere</span>
-            </div>
-            <div className="landCapCols">
-              <p className="landCapCopy">
-                Drag this button to your bookmarks bar. On any page, select a passage
-                and click it to send it here.
-              </p>
-              <p className="landCapPhone">
-                The bookmarklet works on desktop browsers. On your phone, tap + Capture
-                in the app and paste the passage you want to keep.
-              </p>
-              <BookmarkletLink />
-            </div>
-          </section>
 
           <section className="landClose">
             <h2>Ariadne’s Thread</h2>
