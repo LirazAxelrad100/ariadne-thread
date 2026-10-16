@@ -2,8 +2,8 @@ import { Link, useNavigate, useRouteContext, useRouterState } from "@tanstack/re
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { synthesize } from "@/lib/synthesize.functions";
-import { itemsQuery, monthKey, monthLabel, SYNTH_MIN } from "@/lib/items";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { itemsQuery, monthKey, monthLabel, monthShort, SYNTH_MIN } from "@/lib/items";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { LogoMark, ThreadIcon } from "@/components/Logo";
 import { signOut } from "@/lib/auth";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
@@ -46,6 +46,36 @@ export function AppShell({ children }: { children: ReactNode }) {
   const older = idx >= 0 ? months[idx + 1] : undefined;
   const newer = idx > 0 ? months[idx - 1] : undefined;
   const count = items.filter((i) => monthKey(i.item_date) === month).length;
+
+  // The month strip: every month that holds entries, so the whole span of the
+  // timeline is one click away. It closes on re-click, a click outside, Esc,
+  // or switching to Write.
+  const [strip, setStrip] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  useEffect(() => { setStrip(false); }, [view]);
+  useEffect(() => {
+    if (!strip) return;
+    const onDown = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) setStrip(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setStrip(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [strip]);
+
+  // Oldest on the left, grouped by year: the strip reads as a span of time.
+  const stripYears: { year: string; keys: string[] }[] = [];
+  for (const k of [...months].reverse()) {
+    const y = k.slice(0, 4);
+    const g = stripYears[stripYears.length - 1];
+    if (g && g.year === y) g.keys.push(k);
+    else stripYears.push({ year: y, keys: [k] });
+  }
+
   const qc = useQueryClient();
   const navigate = useNavigate();
   const runSynth = useServerFn(synthesize);
@@ -71,7 +101,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <header className="topbar">
+      <header className="topbar" ref={headerRef}>
         <Link to="/write" className="logo">
           <LogoMark />
           <span>Ariadne’s Thread</span>
@@ -89,11 +119,13 @@ export function AppShell({ children }: { children: ReactNode }) {
             <nav className="monthNav" aria-label="Month">
               <Link to="/read" search={older ? { m: older } : {}} className="mArrow" aria-label="Previous month"
                 disabled={!older} style={!older ? { opacity: 0.3, pointerEvents: "none" } : undefined}>‹</Link>
-              <span className="mLabel">{monthLabel(month)}</span>
+              <button className="mLabel" type="button"
+                aria-expanded={months.length > 1 ? strip : undefined}
+                onClick={() => months.length > 1 && setStrip((s) => !s)}>{monthLabel(month)}</button>
               <Link to="/read" search={newer ? { m: newer } : {}} className="mArrow" aria-label="Next month"
                 disabled={!newer} style={!newer ? { opacity: 0.3, pointerEvents: "none" } : undefined}>›</Link>
             </nav>
-              <span className="mono">{count} of {items.length} {items.length === 1 ? "entry" : "entries"}</span>
+              <span className="mono countReading">{count} of {items.length} {items.length === 1 ? "entry" : "entries"}</span>
           </>
         )}
         <div className="spacer" />
@@ -110,6 +142,21 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Link to="/read" aria-current={view === "read" ? "page" : undefined}>Read</Link>
         </nav>
         <AccountMenu />
+        {view === "read" && months.length > 1 && (
+          <nav className="monthStrip" aria-label="All months" hidden={!strip}>
+            {stripYears.map((g, gi) => (
+              <Fragment key={g.year}>
+                {gi > 0 && <span className="msSep" aria-hidden="true" />}
+                <span className="msYear">{g.year}</span>
+                {g.keys.map((k) => (
+                  <Link key={k} to="/read" search={{ m: k }} className="msMonth"
+                    aria-current={k === month ? "true" : undefined}
+                    onClick={() => setStrip(false)}>{monthShort(k)}</Link>
+                ))}
+              </Fragment>
+            ))}
+          </nav>
+        )}
       </header>
       {view === "read" && synth.state !== "idle" && (
         <p className="synthState" role="status">
