@@ -7,17 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
 import { startDemoSession } from "@/lib/demo.functions";
 import { STEPS, DURATIONS, type Step } from "@/lib/shots";
-
-const STEP_H = 96;
-const CAPTURE_H = 148; // step 02 also holds the bookmarklet line
-const CAPTURE_STEP = 1;
-const DOT_Y = 10; // centre of a step's dot, from the step's top
-const stepH = (i: number) => (i === CAPTURE_STEP ? CAPTURE_H : STEP_H);
-const stepTop = (i: number) => {
-  let t = 0;
-  for (let k = 0; k < i; k++) t += stepH(k);
-  return t;
-};
+import { LiveScene } from "@/components/LiveScenes";
 
 export function LandingPage() {
   const [cur, setCur] = useState(0);
@@ -101,45 +91,32 @@ export function LandingPage() {
             <div className="dayDivider">
               <span>How it works</span>
             </div>
-            <div className="landCols">
+            <div className="landCols liveCols">
               <div className="landStepsCol">
                 <div
-                  className="landSteps"
+                  className="bigSteps"
                   onMouseEnter={() => setHover(true)}
                   onMouseLeave={() => setHover(false)}
                 >
-                  <div
-                    className="landGrow"
-                    style={{ height: stepTop(cur) + DOT_Y }}
-                  />
                   {STEPS.map((s, i) => (
-                    <div
+                    <button
                       key={s.n}
-                      className="landStep"
-                      style={{ height: stepH(i) }}
+                      type="button"
+                      className="bigStep"
                       data-on={i === cur ? "1" : undefined}
                       onClick={() => {
                         setCur(i);
                         setPaused(true);
                       }}
                     >
-                      <span className="landStepDot" aria-hidden="true" />
-                      <span className="landStepNum">{s.n}</span>
-                      <span className="landStepName">{s.name}</span>
-                      <p className="landStepCopy">{s.copy}</p>
-                      {i === CAPTURE_STEP && (
-                        <div
-                          className="landStepBm"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <BookmarkletLink inline />
-                        </div>
-                      )}
-                      {s.shot && (
-                        <img className="landShotMini" src={s.shot} alt={s.alt} />
-                      )}
-                    </div>
+                      <span className="bigStepNum">{s.n}</span>
+                      <span className="bigStepName">{s.name}.</span>
+                    </button>
                   ))}
+                </div>
+                <p className="bigCopy">{step.copy}</p>
+                <div className="landStepBm bigBm">
+                  <BookmarkletLink inline />
                 </div>
                 <button
                   type="button"
@@ -150,19 +127,8 @@ export function LandingPage() {
                 </button>
               </div>
 
-              <div className="landShot">
-                <div className="landShotBar" aria-hidden="true">
-                  <LogoMark />
-                  <span className="landShotBarSep" />
-                  <span className="landShotBarName">{step.name}</span>
-                </div>
-                {step.shot ? (
-                  <img src={step.shot} alt={step.alt} />
-                ) : (
-                  <div className="landShotPh">
-                    {step.n} · {step.name}
-                  </div>
-                )}
+              <div className="liveStage">
+                <LiveScene key={cur} step={cur} runKey={cur} />
               </div>
             </div>
           </section>

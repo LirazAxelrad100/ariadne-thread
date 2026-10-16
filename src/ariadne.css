@@ -1265,3 +1265,81 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 .landStep[data-on="1"] .landStepNum, .landStep[data-on="1"] .landStepName { color: var(--logo-dot); }
 /* Hook and closing line reverted to the original 22px/300 --ink-recede (user: "like it was") */
 
+
+/* ---------- LANDING: live scenes (no screenshots) ---------- */
+.liveCols { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 56px; align-items: start; }
+.bigSteps { display: flex; flex-direction: column; }
+.bigStep { display: flex; align-items: baseline; gap: 22px; padding: 0; border: 0; background: none; cursor: pointer; text-align: start; font: inherit; }
+.bigStepNum { width: 18px; font-family: var(--font-mono); font-size: 11.5px; color: var(--meta-soft); }
+.bigStepName { font-size: 56px; font-weight: 300; line-height: 64px; letter-spacing: -.02em; color: #c4ccd8; transition: color .4s; }
+.bigStep:hover .bigStepName { color: var(--ink-recede); }
+.bigStep[data-on="1"] .bigStepNum { color: var(--logo-dot); }
+.bigStep[data-on="1"] .bigStepName { color: var(--ink); font-weight: 400; }
+.bigCopy { margin: 28px 0 0 40px; min-height: 84px; font-size: 18px; font-weight: 300; line-height: 1.55; color: var(--ink-recede); }
+.bigBm { margin: 8px 0 0 40px; }
+.liveCols .landPause { margin-inline-start: 40px; }
+.liveStage { min-height: 420px; padding-top: 10px; }
+.liveScene { animation: liveIn .5s ease both; font-size: 17px; line-height: 1.7; color: var(--ink); }
+@keyframes liveIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.liveScene p { margin: 0; }
+.liveDivider { margin-bottom: 14px; }
+.liveRail { border-inline-start: 1px solid var(--rail); padding-inline-start: 96px; display: flex; flex-direction: column; gap: 22px; margin-bottom: 30px; margin-inline-start: 8px; }
+.liveEntry { position: relative; }
+.liveDot { position: absolute; left: -101px; top: 11px; width: 9px; height: 9px; border-radius: 50%; background: var(--dot); }
+.liveDot[data-live="1"] { background: var(--logo-dot); }
+.liveTime { position: absolute; left: -76px; top: 0; font-family: var(--font-mono); font-size: 11.5px; line-height: 29px; color: var(--meta); }
+.liveRecede { color: var(--ink-recede); }
+.liveComposer { min-height: 150px; padding: 18px 22px; border: 1px solid var(--logo-dot); border-radius: 12px; background: var(--surface); font-size: 19px; line-height: 1.75; box-shadow: 0 8px 28px rgba(28, 44, 70, .14); }
+.liveCaret { display: inline-block; width: 1px; height: 1.1em; margin-left: 1px; vertical-align: -3px; background: var(--ink); animation: liveBlink 1s steps(1) infinite; }
+@keyframes liveBlink { 50% { opacity: 0; } }
+.liveCaption { margin-top: 8px !important; font-size: 12px; line-height: 1.4; color: var(--meta-soft); }
+.liveTitle { font-weight: 500; }
+.liveSrc { font-size: 13px; color: var(--meta-soft); }
+.liveMeta { font-family: var(--font-mono); font-size: 11.5px; color: var(--meta); }
+.liveComment { margin-top: 8px !important; padding-inline-start: 16px; font-family: var(--font-mono); font-size: 13px; color: var(--meta); }
+.liveComment em { font-style: italic; color: var(--ink); }
+.liveSel { transition: background .3s; }
+.liveSel[data-on="1"] { background: #cfd8e3; }
+.liveMarkWrap { position: relative; }
+.livePop { position: absolute; left: 30%; top: calc(100% + 8px); display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px; border-radius: 8px; background: var(--ink); color: var(--paper); font-size: 13px; white-space: nowrap; box-shadow: 0 8px 28px rgba(28, 44, 70, .14); z-index: 2; }
+.livePop .sw { width: 10px; height: 10px; border-radius: 2px; background: var(--mark-amber); }
+.livePopSep { width: 1px; height: 14px; background: currentColor; opacity: .3; }
+.liveBrowser { border: 1px solid var(--rail); border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 8px 28px rgba(28, 44, 70, .14); }
+.liveUrl { display: flex; align-items: center; gap: 14px; padding: 10px 14px; background: var(--surface); }
+.liveLights { display: flex; gap: 6px; }
+.liveLights i { width: 9px; height: 9px; border-radius: 50%; background: var(--rail); }
+.liveUrlText { flex: 1; padding: 4px 12px; border-radius: 6px; background: #fff; font-family: var(--font-mono); font-size: 12px; color: var(--ink-recede); }
+.liveBookmarks { display: flex; align-items: center; gap: 16px; padding: 7px 14px; border-bottom: 1px solid var(--rail); font-size: 13px; color: var(--ink-recede); }
+.livePill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 6px; border: 1px solid var(--control-border); color: var(--ink); transition: background .2s; }
+.livePill[data-on="1"] { background: var(--rail); }
+.livePage { padding: 26px 40px 30px; font-family: Georgia, serif; font-size: 16px; line-height: 1.75; color: #333; }
+.livePage h3 { margin: 0 0 12px; font-size: 24px; font-weight: 400; color: #222; }
+.liveLanded { opacity: 0; transition: opacity .4s; font-family: var(--font-mono); margin-top: 14px !important; }
+.liveLanded[data-on="1"] { opacity: 1; }
+.liveFade { opacity: 0; transform: translateY(6px); transition: opacity .5s, transform .5s; }
+.liveFade[data-on="1"] { opacity: 1; transform: none; }
+.liveSynthTop { display: flex; justify-content: flex-end; margin-bottom: 18px; }
+.liveSynthBtn { height: 40px; padding: 0 14px; font-size: 14px; font-weight: 500; }
+.liveBig { margin-top: 6px !important; font-size: 21px; line-height: 1.6; }
+.liveFrom { margin-top: 10px !important; font-size: 13px; color: var(--ink-recede); }
+.liveFrom u { text-underline-offset: 3px; }
+.liveSkelHead { margin-top: 22px !important; font-weight: 500; color: #cfd8e3; }
+.liveBar { display: block; height: 10px; margin-top: 12px; border-radius: 5px; background: #e2e7ef; }
+@media (max-width: 900px) {
+  .liveCols { grid-template-columns: 1fr; gap: 32px; }
+  .bigStepName { font-size: 40px; line-height: 48px; }
+}
+@media (max-width: 720px) {
+  .bigBm { display: none; }
+  .bigCopy { margin-left: 0; min-height: 0; }
+  .liveCols .landPause { margin-inline-start: 0; }
+  .liveRail { padding-inline-start: 62px; }
+  .liveDot { left: -67px; }
+  .liveTime { left: -54px; font-size: 10.5px; }
+  .liveStage { min-height: 0; }
+  .livePage { padding: 18px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liveScene, .liveFade, .liveLanded { animation: none; transition: none; }
+  .liveCaret { display: none; }
+}
