@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { FOOTER_LINES } from "@/lib/shots";
 
 const SUPPORT = "support@ariadne-thread.app";
@@ -29,7 +29,7 @@ export function SiteFooter() {
     requestAnimationFrame(() => back?.focus());
   };
 
-  const show = (which: Dialog, from: React.RefObject<HTMLButtonElement>) => {
+  const show = (which: Dialog, from: RefObject<HTMLButtonElement | null>) => {
     trigger.current = from.current;
     setOpen(which);
   };
