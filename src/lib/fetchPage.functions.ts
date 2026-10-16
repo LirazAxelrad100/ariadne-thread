@@ -81,7 +81,10 @@ export function extract(html: string, url: string) {
   let text = paras.join("\n\n");
   const end = text.search(/\n\s*(share this post|discussion about this post|ready for more\?|related (stories|articles)|you might also like|subscribe to)/i);
   if (end > 0) text = text.slice(0, end);
-  const dek = meta(html, "og:description") || meta(html, "description");
+  const dekEl =
+    html.match(/<div[^>]+data-fp-dek[^>]*>([\s\S]*?)<\/div>/i)?.[1] ??
+    html.match(/<(?:div|p|h2)[^>]+class=["'][^"']*(?:article-dek|article-subtitle|entry__subtitle)[^"']*["'][^>]*>([\s\S]*?)<\/(?:div|p|h2)>/i)?.[1] ?? "";
+  const dek = (dekEl ? strip(dekEl) : "") || meta(html, "og:description") || meta(html, "description");
   if (!text) text = dek;
   else if (dek.length > 20 && !text.includes(dek.slice(0, 40)) && !/(\u2026|\.\.\.)$/.test(dek)) text = dek + "\n\n" + text;
 
