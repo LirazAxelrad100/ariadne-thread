@@ -29,7 +29,7 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 
 ## Open gaps (parked 16 Oct — pick up during polish)
 - [x] Bookmark-bar icon (16 Oct): the bookmark itself now carries the Ariadne mark. The app's small icon had been a broken-image placeholder, and the real mark collapsed to a smudge at 16px, so 16/32/48 + .ico are cut from a tight, thick-stroked variant of the icon. Verified: the page head links all four sizes and each serves. A re-dragged bookmarklet is needed to pick it up.
-- Demo account's AI synthesis: deferred to 17 Oct by the user (Synthesize already run several times today, so the feature itself is proven).
+- [x] Demo account's AI synthesis (16 Oct 18:36): generated on the demo account, covers all 18 entries, sits at the end of Read. User confirmed the time reads 18:36.
 - [x] Item view hint (16 Oct): a quiet brown line above the entry text — "Select any words to mark or comment." — sitting in the lock line's own slot, so the same spot always states the current rule; it disappears the moment the item has a mark, where "Text is locked…" takes over. Aligned with the body column (rail/timestamp stay clear of it), one line on phones (the longer wording wrapped). Verified in a test browser as the demo account, desktop and phone.
 - [x] Deleting the very last entry: verified by the user (16 Oct) — done several times, and both Read ("Your thread starts here.") and Write (thread intro) showed their empty states.
 - Mobile pass: the landing is done on a phone (steps as a list, the active step's shot under it, "Capture from anywhere" reworded to "+ Capture in the app" since the bookmarklet is desktop-only). Still to do: header two rows, month switcher on its own centred row, writing box fixed 232px, editable fields ≥16px.
@@ -39,9 +39,9 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - **Pencils down Sat Oct 17 · 11:59 p.m. PT = Sun Oct 18 · 06:59 UTC.** Form opens Sat morning, in the personal Hub. Nothing that changes what judges see may be edited afterwards — editing the submitted experience disqualifies it.
 - Form fields: name · published `.lovable.app` URL · short description · problem + intended user · category (single select) · up to 3 screenshots. Optional: additional context · testing instructions · safe demo access · known limitations. No video required.
 - Judges' demo login (demo@ariadne-thread.app) goes in the form's "safe demo access" field only — never in app code, never in public Slack. The sign-in page does not prefill it. It is not the landing page's "Try the demo" account.
-- [ ] Generate the demo account's AI synthesis **before** submitting — after submission the content is frozen.
+- [x] Generate the demo account's AI synthesis **before** submitting — done 16 Oct (see above). After submission the content is frozen.
 - [ ] Pick the 3 screenshots (from the live scenes) and write the testing-instructions and known-limitations lines.
-- [ ] Sample data clearly labeled: a judge signing in as the demo account should be able to tell the 18 entries are sample entries, not their own (handbook's own final check).
+- [x] Sample data clearly labeled (user's call, 16 Oct): explained in the submission form's additional-context field, with the reason — the app stays clean; the landing page's "Try the demo" account is separate and read-only.
 - Before submitting: sign in as the judges' demo account on the published app and confirm the 18 entries, marks and Synthesize all work there.
 - Landing "Try the demo" uses its own read-only visitor account, so the judges' login never ships in the app.
 - Eligibility gates: fresh project after kickoff, no unresolved security errors, accessible through the published link, unchanged after submission.
