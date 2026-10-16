@@ -87,7 +87,10 @@ function WriteView() {
     idleLeft.current = IDLE_MS;
     setSavedAt(null);
     setLiveTime(new Date());
+    // Both lists: today's notes for the stream, all items for the first-visit
+    // intro — after the first save it must never come back.
     qc.invalidateQueries({ queryKey: ["notes"] });
+    qc.invalidateQueries({ queryKey: ["items"] });
   }, [flush, qc]);
 
   // Restore an unsynced draft, then land any capture sent by the bookmarklet.
