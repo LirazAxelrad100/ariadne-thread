@@ -16,6 +16,8 @@ export const Route = createFileRoute("/_authenticated/read")({
       { name: "description", content: "Your notes and captures, day by day." },
       { property: "og:title", content: "Read · Ariadne’s Thread" },
       { property: "og:description", content: "Your notes and captures, day by day." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   loader: ({ context }) => Promise.all([

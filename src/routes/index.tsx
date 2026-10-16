@@ -10,6 +10,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "A private stream of your thoughts and the things you read, with AI that finds the threads between them." },
       { property: "og:title", content: "Ariadne’s Thread" },
       { property: "og:description", content: "AI that finds the thread in the maze of your mind." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Landing,
