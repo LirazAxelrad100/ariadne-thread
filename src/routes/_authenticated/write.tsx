@@ -1,6 +1,7 @@
 import { createFileRoute, useRouteContext, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from "react";
+import { enrich } from "@/lib/share";
 import { fetchTodayNotes, hhmm, INCOMING_KEY, saveNote, type CaptureMeta, type Incoming, type NoteRow } from "@/lib/notes";
 import { annotationsQuery } from "@/lib/marks";
 import { itemsQuery } from "@/lib/items";
@@ -374,5 +375,25 @@ function CaptureFields({ cap, onChange }: { cap: CaptureMeta; onChange: (c: Capt
       </div>
       <input className="capField capWhy" placeholder="What caught you? (optional)" value={cap.why} onChange={set("why")} aria-label="What caught you?" />
     </div>
+  );
+}
+
+/** Phone capture: paste an article's link, the page comes in like a bookmarklet capture. */
+function PasteLink() {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [url, setUrl] = useState("");
+  const ok = /^https?:\/\/\S+\.\S+/.test(url.trim());
+  if (!open) return <button type="button" className="capToggle" onClick={() => setOpen(true)}>Paste a link</button>;
+  return (
+    <form className="pasteLink" onSubmit={(e) => {
+      e.preventDefault();
+      if (ok) navigate({ to: "/capture", search: { url: url.trim() } as never });
+    }}>
+      <input className="capField" autoFocus type="url" inputMode="url" placeholder="https://…" value={url}
+        aria-label="Article link" onChange={(e) => setUrl(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); setOpen(false); } }} />
+      <button type="submit" className="btn" disabled={!ok}>Capture</button>
+    </form>
   );
 }

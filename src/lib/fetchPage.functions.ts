@@ -58,7 +58,7 @@ export function extract(html: string, url: string) {
   if (!writer) {
     for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
       try {
-        let o = JSON.parse(m[1]);
+        let o = JSON.parse(m[1] ?? "");
         if (Array.isArray(o)) o = o[0];
         if (o?.["@graph"]) o = o["@graph"].find((g: { author?: unknown }) => g.author) ?? o["@graph"][0];
         const a = o?.author ?? o?.creator;
@@ -76,7 +76,7 @@ export function extract(html: string, url: string) {
     body.match(/<main[^>]*>([\s\S]*?)<\/main>/i)?.[1] ??
     body.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] ?? "";
   const paras = [...scope.matchAll(/<(p|li|h2|h3|blockquote)[^>]*>([\s\S]*?)<\/\1>/gi)]
-    .map((m) => (m[1].toLowerCase() === "li" ? "- " : "") + strip(m[2]))
+    .map((m) => ((m[1] ?? "").toLowerCase() === "li" ? "- " : "") + strip(m[2] ?? ""))
     .filter((t) => t.replace(/^- /, "").length > 1 && t !== title);
   let text = paras.join("\n\n");
   const end = text.search(/\n\s*(share this post|discussion about this post|ready for more\?|related (stories|articles)|you might also like|subscribe to)/i);
