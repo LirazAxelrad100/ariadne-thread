@@ -300,7 +300,7 @@ function WriteView() {
               editable
               actions={actions}
               onEdit={onEdit}
-              placeholder="What couldn't you stop thinking about today?"
+              placeholder="What couldn’t you stop thinking about today?"
             />
           </div>
           {cap && <CaptureFields cap={cap} onChange={setCap} />}
