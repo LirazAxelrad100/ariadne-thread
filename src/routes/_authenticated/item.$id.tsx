@@ -134,7 +134,7 @@ function ItemView() {
                 actions={actions}
                 editable={!locked}
                 onEdit={onEdit}
-                hint={locked ? undefined : "Select words to mark or comment"}
+                hint={locked ? undefined : (<><span className="hintFull">Select words to mark or comment</span><span className="hintShort">Select to mark</span></>)}
               />
             </div>
             {locked && (
