@@ -1,7 +1,7 @@
 // The five "How it works" steps and the screenshot shown for each.
 // Each screenshot is a real screen of the running app, stored as a CDN asset.
 import shotWrite from "@/assets/01_write.png.asset.json";
-import shotCapture from "@/assets/02_capture.png.asset.json";
+import shotCapture from "@/assets/02_capture_real.png.asset.json";
 import shotMark from "@/assets/04_mark.png.asset.json";
 import shotRead from "@/assets/03_read.png.asset.json";
 import shotSynth from "@/assets/05_synthesis.png.asset.json";
@@ -27,7 +27,7 @@ export const STEPS: Step[] = [
     name: "Capture",
     copy: "Read something that inspires you? Capture it in one click.",
     shot: shotCapture.url,
-    alt: "An article with a passage selected, captured into Ariadne’s Thread.",
+    alt: "A captured passage arriving in the writing box, with its title, writer and link filled in.",
   },
   {
     n: "03",
