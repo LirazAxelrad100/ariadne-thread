@@ -114,7 +114,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <>
       <header className="topbar" ref={headerRef}>
-        <Link to="/write" className="logo">
+        <Link to={demoMode ? "/read" : "/write"} className="logo">
           <LogoMark />
           <span>Ariadne’s Thread</span>
         </Link>
@@ -156,7 +156,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             {synth.state === "loading" && <span className="btnDot" aria-hidden="true" />}
           </button>
         )}
-        {view === "write"
+        {demoMode
+          ? <button type="button" className="viewBtn"
+              onClick={async () => { await signOut(queryClient); navigate({ to: "/", replace: true }); }}>
+              Leave the demo
+            </button>
+          : view === "write"
           ? <Link to="/read" className="viewBtn">Read</Link>
           : <Link to="/write" className="viewBtn">Write</Link>}
         <AccountMenu />
