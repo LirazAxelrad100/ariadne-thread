@@ -3,6 +3,7 @@
 // started); with reduced motion `t` is Infinity, so each scene shows finished.
 import { useEffect, useState } from "react";
 import { ThreadIcon } from "@/components/Logo";
+import { BookmarkletLink } from "@/components/BookmarkletLink";
 
 function useClock(key: number) {
   const [t, setT] = useState(0);
@@ -97,6 +98,9 @@ function CaptureScene({ t }: { t: number }) {
       <p className="liveCaption liveLanded" data-on={landed ? "1" : undefined}>
         → lands in your Read as a capture, with the passage you selected
       </p>
+      <div className="liveBmGet">
+        <BookmarkletLink inline />
+      </div>
     </>
   );
 }
