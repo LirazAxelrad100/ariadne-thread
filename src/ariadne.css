@@ -1442,3 +1442,10 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
   .synthBtn { padding: 0; width: 36px; justify-content: center; }
   .synthBtn .btnLabel { display: none; }
 }
+/* Centering via padding: the 36px buttons fill the line, every text item
+   (button labels included) sits on that line's baseline. */
+.topbar, .topbar[class] { min-height: 68px; padding-top: max(16px, env(safe-area-inset-top)); padding-bottom: 16px; }
+.viewBtn, .synthBtn { align-self: baseline; }
+@media (max-width: 720px) {
+  .topbar .monthNav { margin-top: 16px; margin-bottom: -16px; }
+}
