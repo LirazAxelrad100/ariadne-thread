@@ -1,0 +1,119 @@
+import { useEffect, useRef, useState } from "react";
+import { createParser } from "eventsource-parser";
+import { supabase } from "@/integrations/supabase/client";
+
+const RATE = 16000;
+const MAX_SEC = 600;
+
+function encodeWav(chunks: Float32Array[], inRate: number): File {
+  const ratio = inRate / RATE;
+  const total = chunks.reduce((s, c) => s + c.length, 0);
+  const all = new Float32Array(total);
+  let o = 0;
+  for (const c of chunks) { all.set(c, o); o += c.length; }
+  const n = Math.floor(total / ratio);
+  const buf = new ArrayBuffer(44 + n * 2);
+  const v = new DataView(buf);
+  const tag = (p: number, s: string) => { for (let i = 0; i < s.length; i++) v.setUint8(p + i, s.charCodeAt(i)); };
+  tag(0, "RIFF"); v.setUint32(4, 36 + n * 2, true); tag(8, "WAVE"); tag(12, "fmt ");
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, RATE, true); v.setUint32(28, RATE * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  tag(36, "data"); v.setUint32(40, n * 2, true);
+  for (let i = 0; i < n; i++) {
+    const s = Math.max(-1, Math.min(1, all[Math.floor(i * ratio)]!));
+    v.setInt16(44 + i * 2, s * (s < 0 ? 32768 : 32767), true);
+  }
+  return new File([buf], "recording.wav", { type: "audio/wav" });
+}
+
+type Rec = { stop: () => File; cancel: () => void };
+
+async function startRec(): Promise<Rec> {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  const ctx = new AudioContext();
+  await ctx.resume();
+  const src = ctx.createMediaStreamSource(stream);
+  const node = ctx.createScriptProcessor(4096, 1, 1);
+  const chunks: Float32Array[] = [];
+  node.onaudioprocess = (e) => chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+  src.connect(node); node.connect(ctx.destination);
+  const end = () => { stream.getTracks().forEach((t) => t.stop()); node.disconnect(); src.disconnect(); void ctx.close(); };
+  return { stop: () => { end(); return encodeWav(chunks, ctx.sampleRate); }, cancel: end };
+}
+
+async function transcribe(file: File): Promise<string> {
+  const { data } = await supabase.auth.getSession();
+  const form = new FormData();
+  form.append("file", file);
+  const res = await fetch("/api/transcribe", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${data.session?.access_token ?? ""}` },
+    body: form,
+  });
+  if (!res.ok || !res.body) {
+    if (res.status === 402) throw new Error("AI credits have run out.");
+    if (res.status === 429) throw new Error("Too many requests — try again in a moment.");
+    throw new Error("Couldn’t turn that into text.");
+  }
+  let text = "", final: string | null = null;
+  const parser = createParser({
+    onEvent: (ev) => {
+      try {
+        const d = JSON.parse(ev.data) as { type?: string; delta?: string; text?: string };
+        if (d.type === "transcript.text.delta" && d.delta) text += d.delta;
+        if (d.type === "transcript.text.done" && typeof d.text === "string") final = d.text;
+      } catch { /* ignore keep-alives */ }
+    },
+  });
+  const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+  for (;;) { const { done, value } = await reader.read(); if (done) break; parser.feed(value); }
+  return (final ?? text).trim();
+}
+
+/** Speak instead of typing: records, turns speech into text, hands the text over. Audio is never kept. */
+export function VoiceButton({ onText, label = "Speak" }: { onText: (t: string) => void; label?: string }) {
+  const [state, setState] = useState<"idle" | "rec" | "busy">("idle");
+  const [sec, setSec] = useState(0);
+  const [err, setErr] = useState<string | null>(null);
+  const rec = useRef<Rec | null>(null);
+
+  useEffect(() => () => rec.current?.cancel(), []);
+  useEffect(() => {
+    if (state !== "rec") return;
+    const t = window.setInterval(() => setSec((s) => { if (s + 1 >= MAX_SEC) void stop(); return s + 1; }), 1000);
+    return () => window.clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
+
+  async function start() {
+    setErr(null);
+    try { rec.current = await startRec(); setSec(0); setState("rec"); }
+    catch { setErr("Microphone not available."); }
+  }
+  async function stop() {
+    const r = rec.current; rec.current = null;
+    if (!r) return;
+    const file = r.stop();
+    if (file.size < 16000) { setState("idle"); setErr("Too short — try again."); return; }
+    setState("busy");
+    try {
+      const t = await transcribe(file);
+      if (t) onText(t); else setErr("Didn’t catch any words.");
+    } catch (e) { setErr((e as Error).message); }
+    setState("idle");
+  }
+
+  const mm = `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, "0")}`;
+  return (
+    <span className="voice">
+      {state === "idle" && <button type="button" className="capToggle" onClick={start} onMouseDown={(e) => e.preventDefault()}>{label}</button>}
+      {state === "rec" && (
+        <button type="button" className="capToggle voiceRec" onClick={stop} onMouseDown={(e) => e.preventDefault()} aria-label="Stop recording">
+          <span className="voiceDot" />Stop <span className="mono">{mm}</span>
+        </button>
+      )}
+      {state === "busy" && <span className="voiceBusy">Turning it into text…</span>}
+      {err && state === "idle" && <span className="voiceErr"> {err}</span>}
+    </span>
+  );
+}
