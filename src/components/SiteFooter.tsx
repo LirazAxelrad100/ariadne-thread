@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
-import { FOOTER_LINES } from "@/lib/shots";
+import { FOOTER_LINES, FOOTER_MOBILE_LINES } from "@/lib/shots";
 
 const SUPPORT = "support@ariadne-thread.app";
 
@@ -94,6 +94,13 @@ export function SiteFooter() {
             {open === "how" ? (
               <div className="privSteps">
                 {FOOTER_LINES.map((l) => (
+                  <p className="privStep" key={l.name}>
+                    <span className="privStepName">{l.name}</span>
+                    <span className="privStepLine">{l.line}</span>
+                  </p>
+                ))}
+                <h3 className="privSub">On mobile</h3>
+                {FOOTER_MOBILE_LINES.map((l) => (
                   <p className="privStep" key={l.name}>
                     <span className="privStepName">{l.name}</span>
                     <span className="privStepLine">{l.line}</span>
