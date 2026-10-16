@@ -1073,7 +1073,7 @@ body.mode-item .composerWrap { display: none; }
 .composer[data-empty]::before { content: attr(data-placeholder); color: var(--meta-soft); pointer-events: none; }
 
 /* First steps: shown in Write only while the account has no items at all. */
-.firstSteps { margin: clamp(12px, 6vh, 48px) auto 0; padding-bottom: 56px; max-width: 860px; }
+.firstSteps { margin: clamp(0px, 6vh, 48px) auto 0; padding-bottom: 56px; max-width: 860px; }
 .fsThread { display: block; width: 100%; height: auto; }
 .fsThread path { stroke: var(--dot); stroke-width: 1.5; }
 .fsThread circle { fill: var(--dot); }
