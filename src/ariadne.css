@@ -553,6 +553,11 @@ body.mode-item .entry .body {
 
 .itemTop .back:hover { color: var(--ink); background: var(--surface); }
 
+.itemDel { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-recede); white-space: nowrap; }
+.itemDel button { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; }
+.itemDel button:hover { color: var(--ink); }
+.itemDel .confirm { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
 /* Writer line: "AI · Synthesis of 12 items", or a capture's writer · source */
 .byline {
   font-family: var(--font-mono);

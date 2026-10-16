@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Entry } from "@/components/Entry";
 import type { MarkActions } from "@/components/MarkedBody";
 import { supabase } from "@/integrations/supabase/client";
@@ -88,12 +88,35 @@ function ItemView() {
     },
   };
 
+  const [asking, setAsking] = useState(false);
+  async function deleteItem() {
+    window.clearTimeout(saveTimer.current);
+    pending.current = null;
+    await supabase.from("annotations").delete().eq("item_id", id);
+    await supabase.from("items").delete().eq("id", id);
+    await Promise.all([qc.invalidateQueries({ queryKey: ["items"] }), refreshMarks()]);
+    navigate({ to: "/read" });
+  }
+
   return (
     <main className="stream">
       <div className="inner">
         <div className="itemTop">
           <Link to="/read" className="back" aria-label="Back to Read">←</Link>
           {item && <div className="dayDivider" style={{ flex: 1, marginBottom: 0 }}><span>{dayLabel(item.item_date)}</span></div>}
+          {item && (
+            <div className="itemDel">
+              {asking ? (
+                <>
+                  <span>Delete this?</span>
+                  <button type="button" className="confirm" onClick={() => void deleteItem()}>Delete</button>
+                  <button type="button" onClick={() => setAsking(false)}>Cancel</button>
+                </>
+              ) : (
+                <button type="button" onClick={() => setAsking(true)}>Delete</button>
+              )}
+            </div>
+          )}
         </div>
         {item ? (
           <>
