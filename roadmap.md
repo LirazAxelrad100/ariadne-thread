@@ -35,10 +35,16 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - Mobile pass: the landing is done on a phone (steps as a list, the active step's shot under it, "Capture from anywhere" reworded to "+ Capture in the app" since the bookmarklet is desktop-only). Still to do: header two rows, month switcher on its own centred row, writing box fixed 232px, editable fields ≥16px.
 
 
-## Submission checklist (event rules)
-- Judges' demo login (demo@ariadne-thread.app) goes in the private submission form only — never in app code, never in public Slack. It is not the landing page's "Try the demo" account.
+## Submission checklist (handbook-verified 16 Oct — season4-helper.lovable.app, Handbook tab)
+- **Pencils down Sat Oct 17 · 11:59 p.m. PT = Sun Oct 18 · 06:59 UTC.** Form opens Sat morning, in the personal Hub. Nothing that changes what judges see may be edited afterwards — editing the submitted experience disqualifies it.
+- Form fields: name · published `.lovable.app` URL · short description · problem + intended user · category (single select) · up to 3 screenshots. Optional: additional context · testing instructions · safe demo access · known limitations. No video required.
+- Judges' demo login (demo@ariadne-thread.app) goes in the form's "safe demo access" field only — never in app code, never in public Slack. The sign-in page does not prefill it. It is not the landing page's "Try the demo" account.
+- [ ] Generate the demo account's AI synthesis **before** submitting — after submission the content is frozen.
+- [ ] Pick the 3 screenshots (from the live scenes) and write the testing-instructions and known-limitations lines.
+- [ ] Sample data clearly labeled: a judge signing in as the demo account should be able to tell the 18 entries are sample entries, not their own (handbook's own final check).
 - Before submitting: sign in as the judges' demo account on the published app and confirm the 18 entries, marks and Synthesize all work there.
 - Landing "Try the demo" uses its own read-only visitor account, so the judges' login never ships in the app.
+- Eligibility gates: fresh project after kickoff, no unresolved security errors, accessible through the published link, unchanged after submission.
 
 ## Still not supplied
 - `ariadne-base.css` values are in `src/ariadne.css`, but the logo lockup/header mark SVG source, screens 01–11, and `seed.json` from the brief have not been uploaded.
