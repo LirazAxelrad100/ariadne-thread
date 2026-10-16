@@ -39,7 +39,7 @@ function WriteView() {
   const { data: demoMode } = useQuery(demoModeQueryOptions(user?.id));
   const { data: notes = [] } = useQuery({ queryKey: ["notes", "today"], queryFn: fetchTodayNotes });
   const { data: allAnnots = [] } = useQuery(annotationsQuery());
-  const { data: allItems = [] } = useQuery(itemsQuery());
+  const { data: allItems = [], isSuccess: itemsLoaded } = useQuery(itemsQuery());
 
   const draft = useRef<Draft>({ id: null, body: "", startedAt: new Date().toISOString() });
   const saving = useRef<Promise<string | null>>(Promise.resolve(null));
@@ -248,7 +248,7 @@ function WriteView() {
     <>
       <main className="stream" ref={streamRef}>
         <div className="inner">
-          {allItems.length === 0 && !boxBody && !boxId && !wrote && (
+          {itemsLoaded && allItems.length === 0 && !boxBody && !boxId && !wrote && (
             <div className="firstSteps">
               <svg className="fsThread" viewBox="0 0 900 120" aria-hidden="true">
                 <path d="M 0 118 C 50 120, 105 103, 150 100 C 240 94, 360 42, 450 40 C 540 38, 660 106, 750 100 C 785 98, 822 66, 842 46" fill="none" />
