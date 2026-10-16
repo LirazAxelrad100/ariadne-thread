@@ -1259,7 +1259,15 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 .privCard p { margin: 0 0 12px; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--ink-recede); }
 .privCard p:last-child { margin-bottom: 0; }
 .privCard a { color: var(--ink-recede); text-decoration: underline; text-underline-offset: 3px; }
-@media (max-width: 720px) { .privBackdrop { padding: 0 16px; } }
+/* "How it works" pop-up: step name in brown, its line beside it. */
+.privStep { display: flex; gap: 14px; align-items: baseline; margin: 0 0 10px; }
+.privStepName { flex: none; width: 92px; font-size: 13px; font-weight: 500; letter-spacing: .06em; color: var(--meta); }
+.privStepLine { font-size: 15px; font-weight: 300; line-height: 1.6; color: var(--ink-recede); }
+@media (max-width: 720px) {
+  .privBackdrop { padding: 0 16px; }
+  .privStep { flex-direction: column; gap: 2px; }
+  .privStepName { width: auto; }
+}
 
 /* Landing warmth (ideas 1 + 4): brown thread + active step, stronger hook */
 .landGrow { background: var(--logo-dot); }
