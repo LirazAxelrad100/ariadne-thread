@@ -152,6 +152,10 @@ export function LandingPage() {
                 Drag this button to your bookmarks bar. On any page, select a passage
                 and click it to send it here.
               </p>
+              <p className="landCapPhone">
+                The bookmarklet works on desktop browsers. On your phone, tap + Capture
+                in the app and paste the passage you want to keep.
+              </p>
               <BookmarkletLink />
             </div>
           </section>
