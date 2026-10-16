@@ -638,8 +638,10 @@ body.mode-item .entry .body {
 
 .moreBtn:hover { color: var(--ink); }
 
-/* Read timeline: one rail per day, ~40px from a day's end to the next divider. */
-body.mode-reading .stream .inner > section + section { margin-top: 40px; }
+/* Read timeline: one rail per day, ~40px from a day's end to the next divider.
+   The reading column already adds a 22px gap between sections, so the margin
+   only makes up the rest. */
+body.mode-reading .stream .inner > section + section { margin-top: 18px; }
 
 /* ---------- ARIADNE: marks and comments ---------- */
 
