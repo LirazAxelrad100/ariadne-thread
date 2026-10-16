@@ -118,4 +118,4 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Judges signing in to demo@ariadne-thread.app landed on a blank Write (nothing written that day). The first-visit intro now also shows for the demo account whenever today has no notes, and disappears as soon as they type. Other accounts unchanged (intro only on their very first visit).
 - [x] Verified in a test browser with a real demo sign-in: the intro is on Write, gone while typing, no console errors; the typed probe note was deleted afterwards and the thread is back to 19 items.
 - [x] Security scan before publishing: clean. Publish requested 16 Oct 17:13 UTC.
-- [ ] Read count (16 Oct 17:14): the month-filtered count reads "10" while Write says 19 — show "10 / 19" in Read so it doesn't look like a bug.
+- [x] Read count (16 Oct 17:14): the month-filtered count reads "10" while Write says 19 — show "10 / 19" in Read so it doesn't look like a bug.
