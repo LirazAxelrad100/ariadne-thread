@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { LogoMark } from "@/components/Logo";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
 import { startDemoSession } from "@/lib/demo.functions";
-import { STEPS, DURATIONS } from "@/lib/shots";
+import { STEPS, DURATIONS, type Step } from "@/lib/shots";
 
 const STEP_H = 96;
 const PRIVACY = [
