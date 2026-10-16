@@ -703,8 +703,9 @@ mark mark { background: #ecd394; }
 
 .annotInput:focus { outline: none; }
 
-/* Shown once the first mark is placed. */
-.lockLine {
+/* The line above the body: the hint while there are no marks, the lock notice after. */
+.lockLine,
+.markHint {
   margin: 0 0 6px;
   line-height: var(--l1);
   font-family: var(--font-mono);
