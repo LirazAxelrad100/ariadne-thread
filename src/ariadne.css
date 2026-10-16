@@ -1044,6 +1044,7 @@ body.mode-item .composerWrap { display: none; }
   background: linear-gradient(to bottom, rgba(231, 236, 243, 0), var(--surface));
 }
 .capHead { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--surface-border); }
+.capFail { margin: 0 0 12px; font-family: var(--font-mono); font-size: 11px; line-height: var(--l1); color: var(--meta-soft); }
 .capInput {
   min-width: 0; padding: 0; border: 0; border-radius: 0; background: transparent;
   font: inherit; color: inherit; caret-color: var(--accent-live);

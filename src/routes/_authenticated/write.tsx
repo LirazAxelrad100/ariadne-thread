@@ -300,6 +300,9 @@ function WriteView() {
             onInput={() => { idleLeft.current = IDLE_MS; }}
             onKeyDown={() => { idleLeft.current = IDLE_MS; }}
           >
+            {cap && !boxBody.trim() && (
+              <p className="capFail">Nothing came through from that link — write your own note here.</p>
+            )}
             {cap && <CaptureHead cap={cap} onChange={setCap} />}
             <FadeScroll on={!!cap} dep={boxBody}>
               <MarkedBody
