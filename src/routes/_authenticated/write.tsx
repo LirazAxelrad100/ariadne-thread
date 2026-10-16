@@ -279,7 +279,7 @@ function WriteView() {
               {notes.filter((n) => n.id !== draft.current.id).map((n) =>
                 n.type === "capture"
                   ? <Entry key={n.id} item={n} annots={allAnnots.filter((a) => a.item_id === n.id)}
-                      onOpen={() => navigateTo({ to: "/item/$id", params: { id: n.id } })} />
+                      onOpen={() => navigateTo({ to: "/item/$id", params: { id: n.id }, search: { from: "write" } })} />
                   : <TodayNote key={n.id} note={n} />)}
             </div>
           )}
