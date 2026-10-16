@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { LogoMark } from "@/components/Logo";
 import { SiteFooter } from "@/components/SiteFooter";
-import { BookmarkletLink } from "@/components/BookmarkletLink";
 import { startDemoSession } from "@/lib/demo.functions";
 import { STEPS, DURATIONS, type Step } from "@/lib/shots";
 import { LiveScene } from "@/components/LiveScenes";
@@ -135,9 +134,6 @@ export function LandingPage() {
             <h2>Ariadne’s Thread</h2>
             <p>AI that finds the thread in the maze of your mind.</p>
             {actions}
-            <div className="landCloseBm">
-              <BookmarkletLink inline />
-            </div>
           </section>
 
           <SiteFooter />

@@ -1348,6 +1348,5 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
 
 /* Bookmarklet: inside the Capture scene and under the closing buttons */
 .liveBmGet { margin-top: 20px; }
-.landCloseBm { margin-top: 20px; display: flex; justify-content: center; }
-@media (max-width: 720px) { .liveBmGet, .landCloseBm { display: none; } }
+@media (max-width: 720px) { .liveBmGet { display: none; } }
 .livePage .liveByline { margin: -6px 0 14px; font-family: var(--font-sans, inherit); font-size: 13px; color: #8a93a1; }

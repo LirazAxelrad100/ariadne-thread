@@ -57,4 +57,4 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [ ] Republish the landing so the live site carries the live scenes (waiting on the user's word).
 - [ ] Synthesize scene's finding line is the AI's wording (built on real demo lines); the user may replace it with her own sentence.
 - [x] Article attribution (16 Oct): the author is Judson Brewer, MD, PhD. Capture scene byline and Read scene source line carry the full name; the demo item's writer field set to match so the real demo agrees; the footer now carries a credit line linking to the article, rights reserved.
-- [ ] Landing bookmarklet placement for logged-out visitors: the landing is only seen signed out, so decide whether the "Capture to Ariadne" button (Capture scene + closing section) earns its place there, or should be removed in favour of Start / Try the demo.
+- [x] Landing bookmarklet placement (16 Oct, user's call): removed from the closing section so Start / Try the demo stand alone; the button stays only inside the Capture scene. Signed-out captures confirmed to be kept in the browser and restored after sign-in, so nothing is lost either way.
