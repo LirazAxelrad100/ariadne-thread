@@ -51,7 +51,7 @@ function ItemView() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [navigate]);
+  }, [navigate, backTo]);
 
   async function saveBody(body: string) {
     window.clearTimeout(saveTimer.current);
