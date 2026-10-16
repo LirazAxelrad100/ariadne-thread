@@ -18,27 +18,28 @@ const CAPTURE_CHARS = 6000;
 
 const INSTRUCTIONS = `You read one person's private notes and the articles they captured, and find the threads between them.
 
-Return four lists: themes, connections, open_questions, contradictions.
+Return "thread" plus four lists: themes, connections, open_questions, contradictions.
+- thread: 2-3 short sentences naming the single overarching direction or tension running through everything. Plain prose, no lists.
 - themes: recurring subjects. Sort by how many items they appear in, most first.
 - connections: non-obvious links between specific items.
 - open_questions: questions the person keeps circling without answering.
 - contradictions: places where the person's thinking, or their sources, clearly pull against each other.
 
-Each entry: "text" is one or two short sentences. "examples" are 1-3 short bullets pointing at concrete evidence (a phrase, a claim). "sources" are the numbers of the items the entry draws on.
+Each entry: "text" is ONE sharp, specific sentence (under 30 words). "sources" are the numbers of the items the entry draws on.
 
 Weighting: the person's own words matter most. NOTE items, "What caught me" lines, MARK passages and especially MARK comments are personal reflection — weight them about 3x higher than raw captured article text. A CAPTURE marked "written by the user" counts as the person's own note.
 
 Rules:
 - Use only item numbers from the list. Every entry needs at least one source.
 - If nothing clearly fits a list, return it empty. Never invent findings, never manufacture conflicts.
-- Be short and concise: at most 4 entries per list, and cite only the 2-4 items that matter most for each entry. Write in English even if items are in other languages.
-- Never mention item numbers inside text or examples.`;
+- Be very short: at most 2 entries per list, only the strongest. Cite only the 2-4 items that matter most for each entry. Write in English even if items are in other languages.
+- Never mention item numbers inside thread or text.`;
 
 type Row = {
   id: string; type: string; title: string | null; body: string; writer: string | null;
   why: string | null; author_me: boolean; item_date: string;
 };
-type Entry = { text: string; examples: string[]; sources: number[] };
+type Entry = { text: string; sources: number[] };
 
 function label(it: Row) {
   const raw = it.type === "capture" && it.title
@@ -99,8 +100,9 @@ export const synthesize = createServerFn({ method: "POST" })
           return res;
         },
       });
-      const entry = z.object({ text: z.string(), examples: z.array(z.string()), sources: z.array(z.number()) });
+      const entry = z.object({ text: z.string(), sources: z.array(z.number()) });
       const schema = z.object({
+        thread: z.string(),
         themes: z.array(entry), connections: z.array(entry),
         open_questions: z.array(entry), contradictions: z.array(entry),
       });
@@ -118,9 +120,9 @@ export const synthesize = createServerFn({ method: "POST" })
           },
         },
       });
-      let out: Record<string, Entry[]>;
+      let out: { thread?: string; [k: string]: Entry[] | string | undefined };
       try {
-        out = (await result.output) as Record<string, Entry[]>;
+        out = (await result.output) as unknown as typeof out;
       } catch (e) {
         if (NoObjectGeneratedError.isInstance(e) && e.text) {
           try { out = JSON.parse(e.text); } catch { throw e; }
@@ -128,22 +130,24 @@ export const synthesize = createServerFn({ method: "POST" })
       }
 
       // Keep only numbers on the list; drop entries left without a source.
-      let body = "";
+      let sections = "";
       const used = new Set<number>();
       for (const [key, name] of SECTIONS) {
-        const entries = (Array.isArray(out[key]) ? out[key] : [])
-          .map((e) => ({ ...e, sources: [...new Set((e.sources ?? []).filter((n) => Number.isInteger(n) && n >= 1 && n <= items.length))] }))
-          .filter((e) => e.text?.trim() && e.sources.length);
+        const entries = ((Array.isArray(out[key]) ? out[key] : []) as Entry[])
+          .map((e) => ({ ...e, sources: [...new Set((e.sources ?? []).filter((n) => Number.isInteger(n) && n >= 1 && n <= items.length))].slice(0, 4) }))
+          .filter((e) => e.text?.trim() && e.sources.length)
+          .slice(0, 2);
         if (!entries.length) continue;
-        body += `${body ? "\n" : ""}## ${name}\n`;
+        sections += `${sections ? "\n" : ""}## ${name}\n`;
         for (const e of entries) {
-          body += `${e.text.replace(/\s*\n\s*/g, " ").trim()}\n`;
-          for (const x of (e.examples ?? []).slice(0, 3)) if (x.trim()) body += `- ${x.replace(/\s*\n\s*/g, " ").trim()}\n`;
+          sections += `${e.text.replace(/\s*\n\s*/g, " ").trim()}\n`;
           e.sources.forEach((n) => used.add(n));
-          body += `From: ${e.sources.map((n) => `[[${items[n - 1]!.id}|${label(items[n - 1]!)}]]`).join(" · ")}\n`;
+          sections += `From: ${e.sources.map((n) => `[[${items[n - 1]!.id}|${label(items[n - 1]!)}]]`).join(" · ")}\n`;
         }
       }
-      if (!body) return { ok: false, reason: "error", message: "No clear threads were found yet." };
+      if (!sections) return { ok: false, reason: "error", message: "No clear threads were found yet." };
+      const thread = (out.thread ?? "").replace(/\[\[|\]\]/g, "").replace(/\s*\n\s*/g, " ").trim();
+      const body = thread ? `## The thread\n${thread}\n\n${sections}` : sections;
 
       const now = new Date();
       const { data: saved, error: saveErr } = await supabase
