@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Entry } from "@/components/Entry";
-import { groupByDay, itemsQuery, monthKey, monthNames } from "@/lib/items";
+import { dayLabel, groupByDay, itemsQuery, monthKey, monthNames } from "@/lib/items";
 import { annotationsQuery } from "@/lib/marks";
 import { loadDemoItems } from "@/lib/notes";
 
@@ -57,28 +57,45 @@ function ReadView() {
   if (!items.length) {
     return (
       <main className="stream">
-        <div className="inner emptyState">
-          <p className="emptyTitle">Nothing to read yet.</p>
-          <p className="emptySub">Your notes and captures will gather here, day by day.</p>
-          <div className="emptyActions">
-            <Link to="/write" className="btn emptyBtn">Write your first thought</Link>
-            <button
-              type="button"
-              className="btn emptyBtn"
-              disabled={loadingDemo}
-              onClick={async () => {
-                setLoadingDemo(true);
-                try {
-                  await loadDemoItems();
-                  await qc.invalidateQueries({ queryKey: ["items"] });
-                } finally {
-                  setLoadingDemo(false);
-                }
-              }}
-            >
-              {loadingDemo ? "Bringing them in…" : "Explore the demo entries"}
-            </button>
-          </div>
+        <div className="inner readEmpty">
+          <section>
+            <div className="dayDivider"><span>{dayLabel(new Date().toISOString())}</span></div>
+            <div className="thread reThread">
+              <div className="entry reFirst">
+                <span className="dot reDot" />
+                <span className="time reNow">now</span>
+                <p className="reTitle">Your thread starts here.</p>
+                <p className="reSub">Every note you write and everything you capture becomes a dot on this line, day by day. Then Synthesize finds what connects them.</p>
+                <div className="reActions">
+                  <Link to="/write" className="rePrimary">Write your first thought</Link>
+                  <button
+                    type="button"
+                    className="reLink"
+                    disabled={loadingDemo}
+                    onClick={async () => {
+                      setLoadingDemo(true);
+                      try {
+                        await loadDemoItems();
+                        await qc.invalidateQueries({ queryKey: ["items"] });
+                      } finally {
+                        setLoadingDemo(false);
+                      }
+                    }}
+                  >
+                    {loadingDemo ? "Bringing them in…" : "or explore the demo entries"}
+                  </button>
+                </div>
+              </div>
+              {[0, 1].map((n) => (
+                <div key={n} className="entry rePh" aria-hidden="true">
+                  <span className="dot" />
+                  <span className="time">··:··</span>
+                  <span className="reBar" style={{ width: "78%" }} />
+                  <span className="reBar" style={{ width: "52%" }} />
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </main>
     );

@@ -116,6 +116,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         ) : (
           <>
             <span className="barTitle">Read</span>
+            {items.length > 0 && <>
             <nav className="monthNav" aria-label="Month">
               <Link to="/read" search={older ? { m: older } : {}} className="mArrow" aria-label="Previous month"
                 disabled={!older} style={!older ? { opacity: 0.3, pointerEvents: "none" } : undefined}>‹</Link>
@@ -126,6 +127,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 disabled={!newer} style={!newer ? { opacity: 0.3, pointerEvents: "none" } : undefined}>›</Link>
             </nav>
               <span className="mono countReading">{count} of {items.length} {items.length === 1 ? "entry" : "entries"}</span>
+            </>}
           </>
         )}
         <div className="spacer" />
