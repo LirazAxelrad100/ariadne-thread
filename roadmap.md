@@ -127,3 +127,4 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [ ] User checks: Speak, bookmarklet on 3 sites, iPhone/Android capture, Safari/Firefox
 - [ ] Submission copy: description, problem + intended user, category, additional context, testing instructions, known limitations
 - [ ] Submission visuals: up to 3 screenshots
+- [x] Judges' first screen (16 Oct 18:03): the demo account now opens straight on Read — Write only holds today's notes, so it would be empty on whatever day a judge looks. Every other account (Google sign-ins) still lands on Write. Verified in a test browser with a real demo sign-in: lands on /read, October with 9 entries, header "9 / 19 entries", no console errors; Write still opens from the tab. Needs one publish.
