@@ -119,9 +119,11 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Verified in a test browser with a real demo sign-in: the intro is on Write, gone while typing, no console errors; the typed probe note was deleted afterwards and the thread is back to 19 items.
 - [x] Security scan before publishing: clean. Publish requested 16 Oct 17:13 UTC.
 - [x] Read count (16 Oct 17:14): the month-filtered count reads "10" while Write says 19 — show "10 / 19" in Read so it doesn't look like a bug.
+- [x] WhatsApp preview card (16 Oct 17:28): WhatsApp's desktop-screenshot fallback replaced with a real og:image — public/og-card.jpg (1200×630, paper background, mark + name + hook), wired into the landing and /auth heads (og:image + twitter:summary_large_image, absolute URL). Needs one publish, then re-check the WhatsApp card.
+- [ ] Bookmarklet icon still wrong (user, 16 Oct 17:29, "should I blame Google?"): live site verified serving all five correct icon files byte-identical to local — server side is clean. Icon links bumped to ?v=3 to defeat per-URL browser favicon caches. Google's favicon service also caches per domain, so it can serve the old placeholder for a while. Remedy to give the user: delete the old bookmark, open the live site fresh (incognito or after restart) and confirm the tab shows the thread mark, then re-drag. Needs publish first.
 
 ## Pre-submission (submit Sat evening; deadline Sun Oct 18 06:59 UTC)
-- [ ] Full QA run (demo + new Google user): write, capture, mark ± comment, synthesize, Read, sign-out, mobile size
-- [ ] User checks: Speak, bookmarklet on 3 sites, iPhone/Android capture, Safari/Firefox, WhatsApp preview
+- [ ] Full QA run (demo + new Google user): write, capture, mark ± comment, synthesize, Read, sign-out, mobile size — Liraz's order (16 Oct 17:28): when she's back, the agent runs everything it can first, then she runs her part.
+- [ ] User checks: Speak, bookmarklet on 3 sites, iPhone/Android capture, Safari/Firefox
 - [ ] Submission copy: description, problem + intended user, category, additional context, testing instructions, known limitations
 - [ ] Submission visuals: up to 3 screenshots
