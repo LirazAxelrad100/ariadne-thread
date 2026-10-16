@@ -131,8 +131,13 @@ export function LandingPage() {
 
 
           <section className="landClose">
-            <h2>Ariadne’s Thread</h2>
-            <p>AI that finds the thread in the maze of your mind.</p>
+            <div className="landLock">
+              <LogoMark size={92} />
+              <div className="landLockText">
+                <h2 className="landName">Ariadne’s Thread</h2>
+                <p className="landHook">AI that finds the thread in the maze of your mind.</p>
+              </div>
+            </div>
             {actions}
           </section>
 

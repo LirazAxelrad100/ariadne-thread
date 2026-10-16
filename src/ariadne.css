@@ -1123,11 +1123,15 @@ body.mode-item .composerWrap { display: none; }
 .landInner { max-width: 1120px; margin: 0 auto; }
 
 .landHero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 8vh 0 7vh; }
-.landLock { display: flex; align-items: center; gap: 24px; }
-.landLock svg { width: 92px; height: 92px; flex: none; }
-.landLockText { display: flex; flex-direction: column; gap: 8px; text-align: start; }
+.landLock { position: relative; display: flex; }
+.landLock svg { position: absolute; right: 100%; top: 50%; transform: translateY(-50%); margin-right: 24px; width: 92px; height: 92px; flex: none; }
+.landLockText { display: flex; flex-direction: column; gap: 8px; text-align: center; }
 .landName { margin: 0; font-size: 64px; font-weight: 400; letter-spacing: -.02em; line-height: 1.05; color: var(--ink); }
 .landHook { margin: 0; font-size: 22px; font-weight: 300; line-height: 1.4; color: var(--ink-recede); }
+@media (max-width: 860px) {
+  .landLock { flex-direction: column; align-items: center; gap: 16px; }
+  .landLock svg { position: static; transform: none; margin: 0; }
+}
 .landActions { display: flex; gap: 12px; margin-top: 22px; }
 .landActions .btn { height: 48px; padding-inline: 22px; font-size: 15px; }
 .landNote { margin: 14px 0 0; font-size: 13px; color: var(--ink-recede); }
@@ -1158,9 +1162,7 @@ body.mode-item .composerWrap { display: none; }
 .landCapCopy { margin: 0; max-width: 560px; font-size: 15px; font-weight: 300; line-height: 1.6; color: var(--ink-recede); }
 .landCapPhone { display: none; margin: 0; max-width: 560px; font-size: 15px; font-weight: 300; line-height: 1.6; color: var(--ink-recede); }
 
-.landClose { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 10vh 0 8vh; }
-.landClose h2 { margin: 0; font-size: 44px; font-weight: 400; letter-spacing: -.02em; color: var(--ink); }
-.landClose p { margin: 0; font-size: 20px; font-weight: 300; color: var(--ink-recede); }
+.landClose { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10vh 0 8vh; }
 
 .landPrivacy { max-width: 680px; margin: 0 auto; padding-bottom: 30px; }
 .landPrivacy p { margin: 0 0 14px; font-size: 15px; font-weight: 300; line-height: 1.7; color: var(--ink-recede); }
@@ -1220,8 +1222,6 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
   .landCapCopy { display: none; }
   .landCapPhone { display: block; }
   .landClose { padding: 7vh 0 6vh; }
-  .landClose h2 { font-size: 30px; }
-  .landClose p { font-size: 17px; }
   .landFootRow { flex-direction: column; gap: 8px; }
   .landFootRow span { white-space: nowrap; }
 }
