@@ -128,6 +128,13 @@ function RootComponent() {
   // Name this tab so the bookmarklet's window.open(…, "ariadne") reuses it.
   useEffect(() => {
     if (window.top === window) window.name = "ariadne";
+    // Lets phones install the app so it appears in the Share menu. Not in the
+    // editor preview iframe or dev, where a worker would serve stale pages.
+    const inIframe = window.top !== window;
+    const preview = /id-preview--|lovableproject\.com|localhost/.test(location.hostname);
+    if ("serviceWorker" in navigator && !inIframe && !preview) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
   }, []);
 
   useEffect(() => {
