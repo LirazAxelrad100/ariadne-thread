@@ -63,3 +63,7 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 ## Mobile capture (16 Oct)
 - [x] Paste a link (phones only, under the writing box) — the page's title, writer and text come in like a bookmarklet capture. Verified on the real Substack article.
 - [x] Share to Ariadne — app is installable (icon, manifest), shared links land in the writing box; signed-out shares wait through sign-in. Works on Android after "Add to home screen"; iPhone doesn't offer web apps in its Share menu, so iPhone uses Paste a link. Needs publish + a check on a real phone.
+
+## Footer "How it works" (16 Oct)
+- [x] Footer link "How it works" added next to Privacy and Support; opens the same card style as Privacy with five short lines, one per step (Write, Capture, Mark, Read, Synthesize). Esc, × and backdrop click all close it; focus returns to the link. Phone: lines stack.
+- [ ] Copy: the five lines are the carousel's wording for now — the user is writing her own.
