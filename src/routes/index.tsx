@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { LandingPage } from "@/components/LandingPage";
+import { DEMO_EMAIL } from "@/lib/demoAccount";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,7 +41,7 @@ function Landing() {
         }
         return;
       }
-      if (alive) navigate({ to: "/write", replace: true });
+      if (alive) navigate({ to: me.user.email === DEMO_EMAIL ? "/read" : "/write", replace: true });
     })();
     return () => { alive = false; };
   }, [navigate, queryClient]);
