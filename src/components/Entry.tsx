@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { hhmm } from "@/lib/notes";
@@ -19,7 +19,7 @@ export function Entry({
   actions?: MarkActions;
   editable?: boolean;
   onEdit?: (body: string) => void;
-  hint?: string | undefined;
+  hint?: ReactNode | undefined;
 }) {
   const [expanded, setExpanded] = useState(false);
   const isCapture = item.type === "capture";

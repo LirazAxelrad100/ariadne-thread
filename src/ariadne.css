@@ -715,6 +715,7 @@ mark mark { background: #ecd394; }
 
 /* The select-text hint lives in the gutter, under the time: always visible,
    however long the text, and it never pushes the body around. */
+.gutterHint .hintShort { display: none; }
 .gutterHint {
   position: absolute;
   inset-inline-start: calc(var(--gutter) * -1 + 12px);
@@ -940,6 +941,8 @@ body.mode-item .composerWrap { display: none; }
   .entry .dot { top: calc(var(--l1) / 2 - 4px); width: 8px; height: 8px; inset-inline-start: calc(var(--gutter) * -1 - 5px); }
   .entry .time { font-size: 11px; inset-inline-start: calc(var(--gutter) * -1 + 10px); }
   .gutterHint { inset-inline-start: calc(var(--gutter) * -1 + 10px); width: calc(var(--gutter) - 18px); top: calc(var(--l1) + 7px); font-size: 10px; }
+  .gutterHint .hintFull { display: none; }
+  .gutterHint .hintShort { display: inline; }
 
   body.mode-reading .entry .body,
   body.mode-item .entry .body { font-size: 15.5px; line-height: 1.75; }
