@@ -16,9 +16,10 @@ s=s.split('\\n').filter(function(l){var t=l.trim();return !/^(\\d+|share|subscri
 var E=s.search(/\\n\\s*(explore more on these topics|reuse this content|most viewed|related stories|related articles|read more|more from|you might also like|share this post|discussion about this post|ready for more\\?)\\s*\\n/i);if(E>0)s=s.slice(0,E);
 L=s.split('\\n');while(L.length>1){var t=L[L.length-1].trim();if(!t||(t.length<60&&!/[.!?:"\\u201d\\u2019)]$/.test(t)))L.pop();else break}
 s=L.join('\\n').trim().replace(/\\n{3,}/g,'\\n\\n');}
-var w=g('meta[name="author"]')||g('meta[property="article:author"]')||g('[rel="author"]')||g('.reader-author-info__name')||g('[data-tracking-control-name="public_post_author-name"]')||g('[class*="author"] [class*="name"]');
-if(!w){try{var jj=document.querySelectorAll('script[type="application/ld+json"]');for(var k=0;k<jj.length;k++){var o=JSON.parse(jj[k].textContent);if(o['@graph'])o=o['@graph'][0];var au=o&&(o.author||o.creator);if(au){w=(Array.isArray(au)?au[0]:au).name||'';if(w)break}}}catch(_){}}
+var w=g('meta[name="author"]')||g('meta[name="sailthru.author"]')||g('meta[name="parsely-author"]')||g('meta[property="article:author"]')||g('[rel="author"]')||g('.reader-author-info__name')||g('[data-tracking-control-name="public_post_author-name"]')||g('[class*="author"] [class*="name"]');
+if(!w){try{var jj=document.querySelectorAll('script[type="application/ld+json"]');for(var k=0;k<jj.length;k++){var o=JSON.parse(jj[k].textContent);if(Array.isArray(o))o=o[0];if(o&&o['@graph'])o=o['@graph'].filter(function(z){return z.author})[0]||o['@graph'][0];var au=o&&(o.author||o.creator);if(au){w=(Array.isArray(au)?au[0]:au).name||'';if(w)break}}}catch(_){}}
 if(/^https?:/.test(w))w='';
+var D=g('meta[property="og:description"]')||g('meta[name="description"]');if(D&&!window.getSelection().toString().trim()&&D.length>20&&s.indexOf(D.slice(0,40))<0&&!/\u2026|\.\.\.$/.test(D))s=D+'\n\n'+s;
 var h=document.querySelector('h1.post-title,.reader-article-header__title,article h1,main h1,h1');
 var d={url:location.href,title:(h&&h.innerText.trim())||g('meta[property="og:title"]')||document.title,text:s.slice(0,60000),writer:w.slice(0,120)};
 var O=${JSON.stringify(origin)};
