@@ -1,10 +1,10 @@
 import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { enrich } from "@/lib/share";
 import { fetchTodayNotes, hhmm, INCOMING_KEY, saveNote, type CaptureMeta, type Incoming, type NoteRow } from "@/lib/notes";
 import { annotationsQuery } from "@/lib/marks";
-import { itemsQuery } from "@/lib/items";
+import { hostOf, itemsQuery } from "@/lib/items";
 import { MarkedBody, type MarkActions } from "@/components/MarkedBody";
 import { Entry } from "@/components/Entry";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
@@ -289,21 +289,31 @@ function WriteView() {
           <span className="liveDot" />
           <span className="liveTime">{hhmm(liveTime)}</span>
           <div
+            className={cap ? "capBox" : undefined}
             onPointerDown={() => { idleLeft.current = IDLE_MS; }}
             onInput={() => { idleLeft.current = IDLE_MS; }}
             onKeyDown={() => { idleLeft.current = IDLE_MS; }}
           >
-            <MarkedBody
-              body={boxBody}
-              annots={boxAnnots}
-              className="composer"
-              editable
-              actions={actions}
-              onEdit={onEdit}
-              placeholder="What couldn’t you stop thinking about today?"
-            />
+            {cap && <CaptureHead cap={cap} onChange={setCap} />}
+            <FadeScroll on={!!cap} dep={boxBody}>
+              <MarkedBody
+                body={boxBody}
+                annots={boxAnnots}
+                className={cap ? "composer capText" : "composer"}
+                editable
+                actions={actions}
+                onEdit={onEdit}
+                placeholder={cap ? "The captured text" : "What couldn’t you stop thinking about today?"}
+              />
+            </FadeScroll>
+            {cap && (
+              <div className="capWhyRow">
+                <span className="capWhyLabel">What caught me</span>
+                <input className="capInput capWhy" placeholder="one line, optional" value={cap.why}
+                  onChange={(e) => setCap({ ...cap, why: e.target.value })} aria-label="What caught me" />
+              </div>
+            )}
           </div>
-          {cap && <CaptureFields cap={cap} onChange={setCap} />}
           <p className="status">
             <VoiceButton
               label={cap ? "Speak a comment" : "Speak"}
@@ -369,20 +379,56 @@ function TodayNote({ note }: { note: NoteRow }) {
   );
 }
 
-function CaptureFields({ cap, onChange }: { cap: CaptureMeta; onChange: (c: CaptureMeta) => void }) {
-  const set = (k: keyof CaptureMeta) => (e: ChangeEvent<HTMLInputElement>) =>
-    onChange({ ...cap, [k]: k === "author_me" ? e.target.checked : e.target.value });
+/** Title, writer, source and "I wrote this", laid out like a capture entry in Read. */
+function CaptureHead({ cap, onChange }: { cap: CaptureMeta; onChange: (c: CaptureMeta) => void }) {
+  const [editUrl, setEditUrl] = useState(false);
+  const host = hostOf(cap.source_url);
+  const writer = cap.author_me ? "You" : cap.writer;
   return (
-    <div className="capFields">
-      <input className="capField capFieldTitle" placeholder="Title" value={cap.title} onChange={set("title")} aria-label="Title" />
-      <div className="capRow">
-        <input className="capField" placeholder="Writer" value={cap.writer} onChange={set("writer")} aria-label="Writer" disabled={cap.author_me} />
-        <input className="capField" placeholder="Source link" value={cap.source_url} onChange={set("source_url")} aria-label="Source link" inputMode="url" />
-        <label className="capMine"><input type="checkbox" checked={cap.author_me} onChange={set("author_me")} /> I wrote this</label>
+    <div className="capHead">
+      <input className="capInput capTitle" placeholder="Title" value={cap.title}
+        onChange={(e) => onChange({ ...cap, title: e.target.value })} aria-label="Title" />
+      <div className="capMeta">
+        <span className="capGrow" data-value={writer || "Writer"}>
+          <input className="capInput" placeholder="Writer" value={writer} readOnly={cap.author_me}
+            onChange={(e) => onChange({ ...cap, writer: e.target.value })} aria-label="Writer" size={1} />
+        </span>
+        <span className="capSep" aria-hidden="true">·</span>
+        {editUrl || !host ? (
+          <input className="capInput capUrl" placeholder="Source link" value={cap.source_url} inputMode="url"
+            autoFocus={editUrl} onBlur={() => setEditUrl(false)}
+            onKeyDown={(e) => { if (e.key === "Enter") (e.currentTarget as HTMLInputElement).blur(); }}
+            onChange={(e) => onChange({ ...cap, source_url: e.target.value })} aria-label="Source link" />
+        ) : (
+          <button type="button" className="capHost" onClick={() => setEditUrl(true)} aria-label={`Source: ${cap.source_url}. Edit`}>
+            {host}
+          </button>
+        )}
+        <label className="capMine">
+          <input type="checkbox" checked={cap.author_me} onChange={(e) => onChange({ ...cap, author_me: e.target.checked })} />
+          <span className="capCheck" aria-hidden="true" />
+          I wrote this
+        </label>
       </div>
-      <input className="capField capWhy" placeholder="What caught you? (optional)" value={cap.why} onChange={set("why")} aria-label="What caught you?" />
     </div>
   );
+}
+
+/** Captured text scrolls inside the box; a fade at the bottom says there's more below. */
+function FadeScroll({ on, dep, children }: { on: boolean; dep: unknown; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [more, setMore] = useState(false);
+  useLayoutEffect(() => {
+    const el = ref.current?.querySelector<HTMLElement>(".composer");
+    if (!on || !el) { setMore(false); return; }
+    const check = () => setMore(el.scrollHeight - el.scrollTop - el.clientHeight > 2);
+    check();
+    el.addEventListener("scroll", check);
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => { el.removeEventListener("scroll", check); ro.disconnect(); };
+  }, [on, dep]);
+  return <div ref={ref} className={on ? "capTextWrap" : undefined} data-more={more || undefined}>{children}</div>;
 }
 
 /** Phone capture: paste an article's link, the page comes in like a bookmarklet capture. */

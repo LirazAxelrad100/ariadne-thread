@@ -85,3 +85,5 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Automated: tests pass (incl. new rule tests), security + dependency scans clean, data separation rules checked, live landing OK on desktop and phone (no console errors, pop-ups open/close), demo account holds the 18 seed items only.
 - [ ] (user) Judges' email sign-in on live, Google sign-in with a new account, Speak on phone, bookmarklet on 3 sites, iPhone Paste a link / Android Share, Safari + Firefox, link preview in WhatsApp.
 - [ ] Publish latest (How it works step 04 copy) and re-check on live.
+
+- [x] Capture composer redesign: all details inside the writing box (title, writer · domain, I wrote this, text with fade, What caught me)
