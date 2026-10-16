@@ -18,21 +18,22 @@ const CAPTURE_CHARS = 6000;
 
 const INSTRUCTIONS = `You read one person's private notes and the articles they captured, and find the threads between them.
 
-Return four lists: themes, connections, open_questions, contradictions.
+Return "thread" plus four lists: themes, connections, open_questions, contradictions.
+- thread: 2-3 short sentences naming the single overarching direction or tension running through everything. Plain prose, no lists.
 - themes: recurring subjects. Sort by how many items they appear in, most first.
 - connections: non-obvious links between specific items.
 - open_questions: questions the person keeps circling without answering.
 - contradictions: places where the person's thinking, or their sources, clearly pull against each other.
 
-Each entry: "text" is one or two short sentences. "examples" are 1-3 short bullets pointing at concrete evidence (a phrase, a claim). "sources" are the numbers of the items the entry draws on.
+Each entry: "text" is ONE sharp, specific sentence (under 30 words). "sources" are the numbers of the items the entry draws on.
 
 Weighting: the person's own words matter most. NOTE items, "What caught me" lines, MARK passages and especially MARK comments are personal reflection — weight them about 3x higher than raw captured article text. A CAPTURE marked "written by the user" counts as the person's own note.
 
 Rules:
 - Use only item numbers from the list. Every entry needs at least one source.
 - If nothing clearly fits a list, return it empty. Never invent findings, never manufacture conflicts.
-- Be short and concise: at most 4 entries per list, and cite only the 2-4 items that matter most for each entry. Write in English even if items are in other languages.
-- Never mention item numbers inside text or examples.`;
+- Be very short: at most 2 entries per list, only the strongest. Cite only the 2-4 items that matter most for each entry. Write in English even if items are in other languages.
+- Never mention item numbers inside thread or text.`;
 
 type Row = {
   id: string; type: string; title: string | null; body: string; writer: string | null;
@@ -99,8 +100,9 @@ export const synthesize = createServerFn({ method: "POST" })
           return res;
         },
       });
-      const entry = z.object({ text: z.string(), examples: z.array(z.string()), sources: z.array(z.number()) });
+      const entry = z.object({ text: z.string(), sources: z.array(z.number()) });
       const schema = z.object({
+        thread: z.string(),
         themes: z.array(entry), connections: z.array(entry),
         open_questions: z.array(entry), contradictions: z.array(entry),
       });
