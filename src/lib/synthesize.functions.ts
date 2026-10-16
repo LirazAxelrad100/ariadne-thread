@@ -31,7 +31,7 @@ Weighting: the person's own words matter most. NOTE items, "What caught me" line
 Rules:
 - Use only item numbers from the list. Every entry needs at least one source.
 - If nothing clearly fits a list, return it empty. Never invent findings, never manufacture conflicts.
-- Be short and concise. Write in English even if items are in other languages.
+- Be short and concise: at most 4 entries per list, and cite only the 2-4 items that matter most for each entry. Write in English even if items are in other languages.
 - Never mention item numbers inside text or examples.`;
 
 type Row = {
