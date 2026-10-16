@@ -1450,3 +1450,5 @@ body.mode-demo .accountMenu .bmInstall { display: none; }
   .topbar .monthNav { margin-top: 16px; margin-bottom: -16px; }
 }
 .synthBtn { align-self: center; }
+.topbar .logo { align-self: baseline; }
+@media (min-width: 721px) { .topbar .mArrow { padding-block: 0; margin-block: 0; } }
