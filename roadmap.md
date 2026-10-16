@@ -101,3 +101,8 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 
 - Sign-in page redesign (no demo prefill; judges get credentials privately)
 - [x] Article credit placement (16 Oct): the "Article in the demo:" credit belongs to the landing page only — the sign-in page's footer carries just the buildathon line and the three links. Verified in a test browser: landing footer shows the credit, /auth footer does not.
+
+## Dead-login white loop (16 Oct, live site)
+- [x] Symptom (user, 16 Oct 16:53): after publish, the live landing showed for a second, then a blank page with the URL flipping to /auth on its own. Cause: her browser still held the sign-in of the landing-page demo account we deleted that afternoon — the landing's auto-advance and the /write guard bounced that dead login back and forth while /auth rendered nothing.
+- [x] Fix: /auth and the landing now ask the server whether the stored account still exists before sending anyone on — a dead login is signed out and the sign-in form is shown; a merely flaky network keeps the session. /auth also always reveals the form within 1.2s (4s when returning from Google), so a stalled check can never leave a blank screen.
+- [x] Verified in a test browser holding a real login the server refuses: landing stays the landing and the stale login is dropped; /read lands on a working sign-in form. Real login still flows straight to Write, /read shows the thread, and a Google-style return (?code=) still reaches Write with no form flash and no console errors.
