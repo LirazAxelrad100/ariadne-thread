@@ -16,7 +16,7 @@
 
 ## Next steps (spec build order — each starts when the user sends its prompt)
 
-1. Seed import — `/import` loads seed.json, idempotent on import_key; demo account preloaded.
+Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ariadne-thread.app); your own account untouched. Email sign-in added to the sign-in page.
 2. Synthesis — needs 5+ items, four sections, "From" source links.
 3. Empty states.
 4. Landing page (current front page is a stand-in: logo + "Start").
