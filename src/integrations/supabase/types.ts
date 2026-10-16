@@ -58,6 +58,21 @@ export type Database = {
           },
         ]
       }
+      demo_visitors: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       items: {
         Row: {
           author_me: boolean
@@ -150,7 +165,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      insert_synthesis: {
+        Args: {
+          p_body: string
+          p_created_at: string
+          p_item_date: string
+          p_synthesis: Json
+          p_title: string
+        }
+        Returns: string
+      }
+      is_demo_visitor: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

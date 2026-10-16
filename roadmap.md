@@ -32,6 +32,11 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - Mobile pass not started: header two rows, month switcher on its own centred row, no carousel (steps as a list with a shot under each), writing box fixed 232px, editable fields ≥16px.
 
 
+## Submission checklist (event rules)
+- Judges' demo login (demo@ariadne-thread.app) goes in the private submission form only — never in app code, never in public Slack. It is not the landing page's "Try the demo" account.
+- Before submitting: sign in as the judges' demo account on the published app and confirm the 18 entries, marks and Synthesize all work there.
+- Landing "Try the demo" uses its own read-only visitor account, so the judges' login never ships in the app.
+
 ## Still not supplied
 - `ariadne-base.css` values are in `src/ariadne.css`, but the logo lockup/header mark SVG source, screens 01–11, and `seed.json` from the brief have not been uploaded.
 
