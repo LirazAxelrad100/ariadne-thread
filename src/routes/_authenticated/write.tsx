@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from "react";
 import { fetchTodayNotes, hhmm, INCOMING_KEY, saveNote, type CaptureMeta, type Incoming, type NoteRow } from "@/lib/notes";
@@ -9,6 +9,7 @@ import { Entry } from "@/components/Entry";
 import { BookmarkletLink } from "@/components/BookmarkletLink";
 import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
 import { supabase } from "@/integrations/supabase/client";
+import { demoModeQueryOptions } from "@/lib/demo";
 
 export const Route = createFileRoute("/_authenticated/write")({
   head: () => ({
@@ -31,6 +32,8 @@ const EMPTY_CAP: CaptureMeta = { title: "", source_url: "", writer: "", author_m
 
 function WriteView() {
   const qc = useQueryClient();
+  const { user } = useRouteContext({ from: "/_authenticated" });
+  const { data: demoMode } = useQuery(demoModeQueryOptions(user?.id));
   const { data: notes = [] } = useQuery({ queryKey: ["notes", "today"], queryFn: fetchTodayNotes });
   const { data: allAnnots = [] } = useQuery(annotationsQuery());
   const { data: allItems = [] } = useQuery(itemsQuery());
