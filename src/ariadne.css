@@ -348,6 +348,8 @@ body {
 .menu[hidden] { display: none; }
 
 .menu button, .menu a[role="menuitem"] {
+  text-decoration: none;
+  box-sizing: border-box;
   display: block;
   width: 100%;
   padding: 8px 10px;

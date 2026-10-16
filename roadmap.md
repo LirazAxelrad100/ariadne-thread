@@ -76,3 +76,4 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Speech-to-text runs through src/routes/api/transcribe.ts (bearer-checked, streamed); recordings stop on their own after 10 minutes.
 - [ ] Real microphone test by the user (desktop + phone) — checked only with a computer-voiced sample so far; tell me if phrases arrive too slowly or cut in the wrong places.
 - [ ] Publish so the live site carries the Speak button.
+- [x] Account menu: How it works, Privacy, Support
