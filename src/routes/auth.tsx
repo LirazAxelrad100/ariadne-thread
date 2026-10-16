@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/auth";
 import { LogoMark } from "@/components/Logo";
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   // Stay blank while a session may be arriving (e.g. back from Google), so the form never flashes.
   const [checking, setChecking] = useState(true);
@@ -27,16 +29,22 @@ function AuthPage() {
   useEffect(() => {
     const returning = /access_token|code=|error=/.test(window.location.hash + window.location.search);
     let fallback: ReturnType<typeof setTimeout> | undefined;
+    // Drop anything cached while signed out (empty lists), so Write never
+    // shows the first-visit picture before this account's notes arrive.
+    const enter = () => {
+      queryClient.clear();
+      navigate({ to: "/write", replace: true });
+    };
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/write", replace: true });
+      if (data.session) enter();
       else if (returning) fallback = setTimeout(() => setChecking(false), 4000);
       else setChecking(false);
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (session) navigate({ to: "/write", replace: true });
+      if (session) enter();
     });
     return () => { sub.subscription.unsubscribe(); if (fallback) clearTimeout(fallback); };
-  }, [navigate]);
+  }, [navigate, queryClient]);
 
   async function onSignIn() {
     setError(null);

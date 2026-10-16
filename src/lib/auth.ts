@@ -11,6 +11,6 @@ export async function signInWithGoogle() {
 
 export async function signOut(queryClient: QueryClient) {
   await queryClient.cancelQueries();
-  queryClient.clear();
   await supabase.auth.signOut();
+  queryClient.clear();
 }
