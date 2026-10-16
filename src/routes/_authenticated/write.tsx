@@ -3,8 +3,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from "react";
 import { fetchTodayNotes, hhmm, INCOMING_KEY, saveNote, type CaptureMeta, type Incoming, type NoteRow } from "@/lib/notes";
 import { annotationsQuery } from "@/lib/marks";
+import { itemsQuery } from "@/lib/items";
 import { MarkedBody, type MarkActions } from "@/components/MarkedBody";
 import { Entry } from "@/components/Entry";
+import { BookmarkletLink } from "@/components/BookmarkletLink";
 import { domToMd, listOnInput, listOnKeyDown, mdToHtml, plainPaste } from "@/lib/listEditor";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -31,6 +33,7 @@ function WriteView() {
   const qc = useQueryClient();
   const { data: notes = [] } = useQuery({ queryKey: ["notes", "today"], queryFn: fetchTodayNotes });
   const { data: allAnnots = [] } = useQuery(annotationsQuery());
+  const { data: allItems = [] } = useQuery(itemsQuery());
 
   const draft = useRef<Draft>({ id: null, body: "", startedAt: new Date().toISOString() });
   const saving = useRef<Promise<string | null>>(Promise.resolve(null));
@@ -229,6 +232,19 @@ function WriteView() {
     <>
       <main className="stream" ref={streamRef}>
         <div className="inner">
+          {allItems.length === 0 && !boxBody && (
+            <div className="firstSteps">
+              <p className="fsTitle">First steps</p>
+              <ol className="fsList">
+                <li>Write your thoughts in the text field below — it saves as you type.</li>
+                <li>
+                  Capture text from any page with the bookmarklet — drag it to your bookmarks bar.
+                  <BookmarkletLink />
+                </li>
+                <li>Select text in any note to mark it or add a related thought.</li>
+              </ol>
+            </div>
+          )}
           {notes.length > 0 && (
             <div className="thread">
               {notes.filter((n) => n.id !== draft.current.id).map((n) =>
@@ -255,6 +271,7 @@ function WriteView() {
               editable
               actions={actions}
               onEdit={onEdit}
+              placeholder="What's an idea you couldn't stop thinking about today?"
             />
           </div>
           {cap && <CaptureFields cap={cap} onChange={setCap} />}
