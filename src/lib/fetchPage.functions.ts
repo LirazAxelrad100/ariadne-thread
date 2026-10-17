@@ -54,9 +54,14 @@ export function extract(html: string, url: string) {
   const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1];
   const title = meta(html, "og:title") || (h1 ? strip(h1) : "") || strip(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "");
 
-  const nu = (v: string) => (/^https?:/.test(v) ? "" : v);
+  const nu = (v: string) => cleanWriter(/^https?:/.test(v) ? "" : v);
   const relAuthor = html.match(/<a[^>]*rel=["']author["'][^>]*>([\s\S]*?)<\/a>/i)?.[1];
-  let writer = nu(meta(html, "author")) || nu(meta(html, "sailthru.author")) || nu(meta(html, "parsely-author")) || nu(meta(html, "article:author")) || (relAuthor ? strip(relAuthor) : "");
+  // In-page byline links (/author/, /authors/, /contributor/) and schema.org name spans beat site-wide meta tags.
+  const linkAuthor = html.match(/<a[^>]+href=["'][^"']*\/(?:authors?|contributors?|writers?)\/[^"']+["'][^>]*>([\s\S]*?)<\/a>/i)?.[1];
+  const propName = html.match(/property=["']author["'][^>]*>[\s\S]{0,300}?property=["']name["'][^>]*>([\s\S]*?)<\//i)?.[1];
+  const bylineEl = html.match(/<(?:p|div|span)[^>]+class=["'][^"']*\bbyline\b[^"']*["'][^>]*>([\s\S]*?)<\/(?:p|div|span)>/i)?.[1];
+  let writer = nu(relAuthor ? strip(relAuthor) : "") || nu(propName ? strip(propName) : "") || nu(linkAuthor ? strip(linkAuthor) : "") || nu(bylineEl ? strip(bylineEl) : "")
+    || nu(meta(html, "author")) || nu(meta(html, "sailthru.author")) || nu(meta(html, "parsely-author")) || nu(meta(html, "article:author"));
   if (!writer) {
     for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
       try {
@@ -69,7 +74,7 @@ export function extract(html: string, url: string) {
       } catch { /* bad json */ }
     }
   }
-  if (/^https?:/.test(writer)) writer = "";
+  writer = cleanWriter(writer);
 
   let body = html.replace(/<(script|style|noscript|svg|nav|aside|footer|header|form|figure|iframe|button)[\s\S]*?<\/\1>/gi, "");
   const scope =
@@ -91,4 +96,12 @@ export function extract(html: string, url: string) {
   else if (dek.length > 20 && !text.includes(dek.slice(0, 40)) && !/(\u2026|\.\.\.)$/.test(dek)) text = dek + "\n\n" + text;
 
   return { url, title: title.slice(0, 300), writer: writer.slice(0, 120), text: text.trim().slice(0, 60000) };
+}
+
+/** Strip "By"/"Author:" labels; drop URLs and site/department names that CMSs put in author tags. */
+export function cleanWriter(v: string) {
+  const w = (v || "").replace(/\s+/g, " ").trim().replace(/^(by|author:?|written by)\s+/i, "").replace(/^author:\s*/i, "").trim();
+  if (/^https?:/.test(w) || w.length > 80 || w.includes("|")) return "";
+  if (/\b(marketing|communications|web team|staff|editorial|newsroom|university of|magazine|admin)\b/i.test(w)) return "";
+  return w;
 }

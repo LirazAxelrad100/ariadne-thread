@@ -1053,11 +1053,11 @@ body.mode-item .composerWrap { display: none; }
 .capInput:hover, .capInput:focus { outline: none; text-decoration-color: var(--accent-live); }
 .capInput::placeholder { color: #a8a29a; }
 .capTitle { display: block; width: 100%; font-size: 19px; font-weight: 500; line-height: 1.35; color: var(--ink); }
-.capMeta { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; font-size: 13.5px; color: var(--ink-recede); }
+.capMeta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; row-gap: 4px; margin-top: 4px; font-size: 13.5px; color: var(--ink-recede); }
 /* Writer sizes to its text: the span carries the value, the input overlays it. */
-.capGrow { display: inline-grid; min-width: 3ch; }
-.capGrow::after { content: attr(data-value); visibility: hidden; white-space: pre; grid-area: 1 / 1; }
-.capGrow .capInput { grid-area: 1 / 1; width: 100%; }
+.capGrow { display: inline-grid; min-width: 3ch; max-width: 100%; overflow: hidden; }
+.capGrow::after { content: attr(data-value); visibility: hidden; white-space: pre; grid-area: 1 / 1; overflow: hidden; }
+.capGrow .capInput { grid-area: 1 / 1; width: 100%; min-width: 0; text-overflow: ellipsis; }
 .capGrow .capInput[readonly] { cursor: default; text-decoration-color: transparent; }
 .capSep { color: #a8a29a; }
 .capUrl { flex: 1 1 160px; }
