@@ -28,7 +28,7 @@ export function LandingPage() {
         Start
       </Link>
       <Link to="/demo" className="btn" style={{ textDecoration: "none" }}>
-        See a sample thread
+        Demo
       </Link>
     </div>
   );
