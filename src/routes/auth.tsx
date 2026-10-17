@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/auth";
 import { LogoMark } from "@/components/Logo";
 import { SiteFooter } from "@/components/SiteFooter";
-import { DEMO_EMAIL } from "@/lib/demoAccount";
+import { DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/demoAccount";
 
 
 export const Route = createFileRoute("/auth")({
@@ -87,8 +87,9 @@ function AuthPage() {
     if (result.error) setError("Couldn’t sign in. Please try again.");
   }
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(DEMO_EMAIL);
+  const [password, setPassword] = useState(DEMO_PASSWORD);
+  const prefilled = email === DEMO_EMAIL && password === DEMO_PASSWORD;
   const [emailErr, setEmailErr] = useState<string | null>(null);
   const [passErr, setPassErr] = useState<string | null>(null);
 
@@ -115,12 +116,13 @@ function AuthPage() {
       <main className="authPage">
         <div className="authCenter">
           <div className="authCol">
-            <LogoMark size={56} />
-            <h1 className="authHead">Pick up the thread.</h1>
-            <p className="authLead">
-              Your notes and captures are private.<br />Only you can see them.
-            </p>
+            <div className="authTop">
+              <LogoMark size={56} />
+              <h1 className="authHead">Ariadne’s Thread</h1>
+              <p className="authLead">AI that finds the thread in the maze of your mind.</p>
+            </div>
             <button type="button" className="authGoogle" onClick={onSignIn}>Continue with Google</button>
+            <p className="authPriv">Your notes and captures are private. Only you can see them.</p>
             {error && <p className="authErr" style={{ marginTop: 8 }}>{error}</p>}
             <div className="authOr">or with email</div>
             <form className="authForm" onSubmit={onEmail} noValidate>
@@ -138,6 +140,9 @@ function AuthPage() {
               </div>
               <button className="authSubmit" type="submit">Sign in</button>
             </form>
+            {prefilled && (
+              <p className="authJudge">Judging the buildathon?<br />The demo account is filled in. Just press Sign in.</p>
+            )}
           </div>
         </div>
         <SiteFooter />
