@@ -118,7 +118,7 @@ function AuthPage() {
             <div className="authTop">
               <LogoMark size={56} />
               <h1 className="authHead">Ariadne’s Thread</h1>
-              <p className="authLead">AI that finds the thread in the maze of your mind.</p>
+              <p className="authLead">AI that finds the thread in the maze of your mind</p>
             </div>
             <button type="button" className="authGoogle" onClick={onSignIn}>Continue with Google</button>
             <p className="authPriv">Your notes and captures are private. Only you can see them.</p>
