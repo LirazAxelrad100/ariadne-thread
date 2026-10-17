@@ -92,7 +92,7 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 
 ## Pre-submission QA (16 Oct)
 - [x] Automated: tests pass (incl. new rule tests), security + dependency scans clean, data separation rules checked, live landing OK on desktop and phone (no console errors, pop-ups open/close), demo account holds the 18 seed items only.
-- [ ] (user) Judges' email sign-in on live, Google sign-in with a new account, bookmarklet on 3 sites, iPhone Paste a link, link preview in WhatsApp. (Android Share and Safari + Firefox dropped by the user, 17 Oct 07:45 — out of scope for this submission.)
+- [ ] (user) Judges' email sign-in on live, Google sign-in with a new account, bookmarklet on 3 sites, iPhone Paste a link. (WhatsApp link preview tested by the user on 16 Oct — done. Android Share and Safari + Firefox dropped by the user, 17 Oct 07:45 — out of scope for this submission.)
 - [x] Publish latest (How it works step 04 copy) and re-check on live — pushed and confirmed on ariadne-thread.lovable.app.
 
 - [x] Capture composer redesign: all details inside the writing box (title, writer · domain, I wrote this, text with fade, What caught me)
