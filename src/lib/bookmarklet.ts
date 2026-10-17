@@ -1,9 +1,10 @@
 /** The bookmarklet source. It never saves: it reads the page in the user's own
- * browser (so paywalled pages work), opens /capture?bm=1 in the tab named
- * "ariadne" (an already-open app tab is reused), and hands the page over by
- * postMessage once that tab says it's ready. A whole article is too big for a
- * URL ("Payload Too Large"), so only a short text may ride in the hash, as a
- * fallback when the tab can't be opened. */
+ * browser (so paywalled pages work), opens /capture?bm=1 (the window name is
+ * kept for browsers that honour it), and hands the page over by postMessage
+ * once that tab says it's ready. The capture tab then relays the page to an
+ * already-open app tab and closes itself — Chrome won't target a tab by name.
+ * A whole article is too big for a URL ("Payload Too Large"), so only a short
+ * text may ride in the hash, as a fallback when the tab can't be opened. */
 export function bookmarkletHref(origin: string) {
   const js = `(function(){
 var g=function(q){var e=document.querySelector(q);return e?(e.getAttribute('content')||e.textContent||'').trim():''};
