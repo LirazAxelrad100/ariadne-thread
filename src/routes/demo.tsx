@@ -3,7 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { Entry } from "@/components/Entry";
 import { LogoMark } from "@/components/Logo";
-import { groupByDay } from "@/lib/items";
+import { groupByDay, type Item } from "@/lib/items";
 import { getPublicDemo } from "@/lib/publicDemo.functions";
 
 const demoQuery = () => queryOptions({ queryKey: ["public-demo"], queryFn: () => getPublicDemo() });
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/demo")({
 
 function DemoView() {
   const { data } = useSuspenseQuery(demoQuery());
-  const shown = useMemo(() => [...data.items].reverse(), [data.items]); // oldest first
+  const shown = useMemo(() => ([...data.items] as Item[]).reverse(), [data.items]); // oldest first
   const known = useMemo(() => new Set(data.items.map((i) => i.id)), [data.items]);
 
   useEffect(() => {

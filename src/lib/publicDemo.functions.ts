@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import type { Item } from "@/lib/items";
 import type { Annot } from "@/lib/marks";
 
 // The judges' demo account. Its thread is shown read-only to every visitor at /demo.
@@ -17,5 +16,6 @@ export const getPublicDemo = createServerFn({ method: "GET" }).handler(async () 
   ]);
   if (items.error) throw new Error("Could not load the demo");
   if (annots.error) throw new Error("Could not load the demo");
-  return { items: (items.data ?? []) as Item[], annots: (annots.data ?? []) as unknown as Annot[] };
+  type Row = { id: string; type: string; is_synthesis: boolean; title: string | null; body: string; source_url: string | null; source_label: string | null; writer: string | null; why: string | null; author_me: boolean; synthesis: { count?: number } | null; item_date: string };
+  return { items: (items.data ?? []) as unknown as Row[], annots: (annots.data ?? []) as unknown as Annot[] };
 });
