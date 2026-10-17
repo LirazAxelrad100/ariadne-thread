@@ -10,7 +10,7 @@ const SHORT_CAPTURE = 120;
 
 /** One timeline entry, as in the Read design. `full` = item view (no cut). */
 export function Entry({
-  item, full = false, onOpen, annots = [], actions, editable = false, onEdit, hint,
+  item, full = false, onOpen, annots = [], actions, editable = false, onEdit, hint, knownIds, onSourceItem,
 }: {
   item: Item;
   full?: boolean;
@@ -20,6 +20,8 @@ export function Entry({
   editable?: boolean;
   onEdit?: (body: string) => void;
   hint?: ReactNode | undefined;
+  knownIds?: Set<string>;
+  onSourceItem?: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const isCapture = item.type === "capture";
@@ -27,15 +29,16 @@ export function Entry({
   const cut = isCapture && !full && !expanded && words > SHORT_CAPTURE;
   const synthCount = (item.synthesis as { count?: number } | null)?.count;
   const navigate = useNavigate();
-  const { data: all } = useQuery({ ...itemsQuery(), enabled: item.is_synthesis });
-  const known = useMemo(() => (all ? new Set(all.map((i) => i.id)) : undefined), [all]);
+  const { data: all } = useQuery({ ...itemsQuery(), enabled: item.is_synthesis && !knownIds });
+  const known = useMemo(() => knownIds ?? (all ? new Set(all.map((i) => i.id)) : undefined), [all, knownIds]);
   // "From" source links open that item.
   const onSource = (e: React.MouseEvent) => {
     const a = (e.target as HTMLElement).closest("a[data-item]") as HTMLElement | null;
     if (!a) return;
     e.preventDefault();
     e.stopPropagation();
-    navigate({ to: "/item/$id", params: { id: a.dataset["item"]! } });
+    if (onSourceItem) onSourceItem(a.dataset["item"]!);
+    else navigate({ to: "/item/$id", params: { id: a.dataset["item"]! } });
   };
 
   return (
