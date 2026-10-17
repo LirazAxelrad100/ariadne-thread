@@ -1542,8 +1542,10 @@ body.mode-item .composerWrap { display: none; }
 .authPage { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
 .authCenter { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 0; }
 .authCol { width: 380px; max-width: calc(100% - 32px); display: flex; flex-direction: column; align-items: center; text-align: center; }
-.authHead { font-family: "Space Grotesk", sans-serif; font-size: 30px; font-weight: 400; letter-spacing: -0.015em; margin: 18px 0 8px; color: #2E2822; }
-.authLead { font-size: 16px; font-weight: 300; color: #5C5348; line-height: 1.5; margin: 0 0 30px; }
+.authTop { width: 100vw; padding: 0 16px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; }
+.authHead { font-family: "Space Grotesk", sans-serif; font-size: 64px; font-weight: 400; line-height: 1.05; letter-spacing: -0.02em; margin: 18px 0 10px; color: #2E2822; white-space: nowrap; }
+.authLead { font-family: "Space Grotesk", sans-serif; font-size: 22px; font-weight: 300; color: #5C5348; line-height: 1.5; margin: 0 0 36px; white-space: nowrap; }
+.authPriv { margin: 12px 0 0; font-size: 13px; line-height: 1.5; color: #5C5348; text-align: center; }
 .authGoogle, .authSubmit { width: 100%; height: 48px; border-radius: 8px; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .authGoogle { background: #2E2822; color: #F0F3F7; border: 0; }
 .authSubmit { background: transparent; border: 1px solid #CFD8E3; color: #2E2822; }
@@ -1559,4 +1561,4 @@ body.mode-item .composerWrap { display: none; }
 .authErr { font-size: 13px; color: #5C5348; margin: 0; }
 .authJudge { margin: 22px 0 0; font-size: 12.5px; color: #A8887A; line-height: 1.5; }
 .authPage .landFoot { width: calc(100% - 48px); max-width: 1120px; margin: 0 auto; }
-@media (max-width: 640px) { .authField input { font-size: 16px; } }
+@media (max-width: 640px) { .authField input { font-size: 16px; } .authHead { font-size: 40px; white-space: normal; } .authLead { font-size: 18px; white-space: normal; } }
