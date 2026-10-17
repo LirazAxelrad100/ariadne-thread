@@ -139,7 +139,6 @@ function AuthPage() {
               </div>
               <button className="authSubmit" type="submit">Sign in</button>
             </form>
-            <p className="authJudge">Judging the buildathon?<br />Sign in with {DEMO_EMAIL} — the password is in the submission form.</p>
           </div>
         </div>
         <SiteFooter />
