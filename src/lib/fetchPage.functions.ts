@@ -57,10 +57,11 @@ export function extract(html: string, url: string) {
   const nu = (v: string) => cleanWriter(/^https?:/.test(v) ? "" : v);
   const relAuthor = html.match(/<a[^>]*rel=["']author["'][^>]*>([\s\S]*?)<\/a>/i)?.[1];
   // In-page byline links (/author/, /authors/, /contributor/) and schema.org name spans beat site-wide meta tags.
-  const linkAuthor = html.match(/<a[^>]+href=["'][^"']*\/(?:authors?|contributors?|writers?)\/[^"']+["'][^>]*>([\s\S]*?)<\/a>/i)?.[1];
+  const linkAuthor = [...html.replace(/<(nav|header|footer)[\s\S]*?<\/\1>/gi, "").matchAll(/<a[^>]+href=["'][^"']*\/(?:authors?|contributors?|writers?)\/[^"'\/?#]+\/?["'][^>]*>([\s\S]*?)<\/a>/gi)]
+    .map((m) => cleanWriter(strip(m[1] ?? ""))).find(Boolean);
   const propName = html.match(/property=["']author["'][^>]*>[\s\S]{0,300}?property=["']name["'][^>]*>([\s\S]*?)<\//i)?.[1];
   const bylineEl = html.match(/<(?:p|div|span)[^>]+class=["'][^"']*\bbyline\b[^"']*["'][^>]*>([\s\S]*?)<\/(?:p|div|span)>/i)?.[1];
-  let writer = nu(relAuthor ? strip(relAuthor) : "") || nu(propName ? strip(propName) : "") || nu(linkAuthor ? strip(linkAuthor) : "") || nu(bylineEl ? strip(bylineEl) : "")
+  let writer = nu(relAuthor ? strip(relAuthor) : "") || nu(propName ? strip(propName) : "") || nu(bylineEl ? strip(bylineEl) : "") || nu(linkAuthor ? strip(linkAuthor) : "")
     || nu(meta(html, "author")) || nu(meta(html, "sailthru.author")) || nu(meta(html, "parsely-author")) || nu(meta(html, "article:author"));
   if (!writer) {
     for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
@@ -103,5 +104,7 @@ export function cleanWriter(v: string) {
   const w = (v || "").replace(/\s+/g, " ").trim().replace(/^(by|author:?|written by)\s+/i, "").replace(/^author:\s*/i, "").trim();
   if (/^https?:/.test(w) || w.length > 80 || w.includes("|")) return "";
   if (/\b(marketing|communications|web team|staff|editorial|newsroom|university of|magazine|admin)\b/i.test(w)) return "";
+  // Menu links like "Contributors" / "Authors" are section names, not people.
+  if (/^(our |all |meet the |see all )?(contributors?|authors?|writers?|columnists?)$/i.test(w)) return "";
   return w;
 }
