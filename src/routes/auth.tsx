@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/auth";
 import { LogoMark } from "@/components/Logo";
 import { SiteFooter } from "@/components/SiteFooter";
-import { DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/demoAccount";
+import { DEMO_EMAIL } from "@/lib/demoAccount";
 
 
 export const Route = createFileRoute("/auth")({
@@ -87,9 +87,8 @@ function AuthPage() {
     if (result.error) setError("Couldn’t sign in. Please try again.");
   }
 
-  const [email, setEmail] = useState(DEMO_EMAIL);
-  const [password, setPassword] = useState(DEMO_PASSWORD);
-  const prefilled = email === DEMO_EMAIL && password === DEMO_PASSWORD;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [emailErr, setEmailErr] = useState<string | null>(null);
   const [passErr, setPassErr] = useState<string | null>(null);
 
@@ -140,9 +139,7 @@ function AuthPage() {
               </div>
               <button className="authSubmit" type="submit">Sign in</button>
             </form>
-            {prefilled && (
-              <p className="authJudge">Judging the buildathon?<br />The demo account is filled in. Just press Sign in.</p>
-            )}
+            <p className="authJudge">Judging the buildathon?<br />Sign in with {DEMO_EMAIL} — the password is in the submission form.</p>
           </div>
         </div>
         <SiteFooter />

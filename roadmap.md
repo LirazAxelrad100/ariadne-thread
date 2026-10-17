@@ -100,7 +100,7 @@ Seed import — DONE: 18 items + 27 marks loaded into the demo account (demo@ari
 - [x] Mark hint on phones (16 Oct): the gutter hint reads "Select to mark" on a phone and "Select words to mark or comment" on a computer. Wording settled — the user tried to find a single word and gave up, so it stays two short lines.
 - [ ] Captured article title (16 Oct): dropped by the user for now — selecting words in a capture's title, writer or site name stays inert; marks and comments remain on the article text only. Revisit only if it confuses a judge.
 
-- Sign-in page redesign (no demo prefill; judges get credentials privately)
+- [x] Sign-in page redesign (17 Oct): same header/footer as the landing, centred 380px column, large title + tagline, dark Google button, "or with email" divider, labelled fields, outlined "Sign in", errors under the field. No demo prefill — the password was removed from `src/lib/demoAccount.ts` (it must never ship in site code); both boxes start empty, fields carry `autocomplete="email"` / `current-password` so the browser offers to save, and the judge note under the button reads "Sign in with demo@ariadne-thread.app — the password is in the submission form." Verified in a test browser: empty boxes, note shown, manual sign-in lands on /read with "9 / 19 entries", no console errors.
 - [x] Article credit placement (16 Oct): the "Article in the demo:" credit belongs to the landing page only — the sign-in page's footer carries just the buildathon line and the three links. Verified in a test browser: landing footer shows the credit, /auth footer does not.
 
 ## Dead-login white loop (16 Oct, live site)
