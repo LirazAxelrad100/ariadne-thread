@@ -97,3 +97,11 @@ export function extract(html: string, url: string) {
 
   return { url, title: title.slice(0, 300), writer: writer.slice(0, 120), text: text.trim().slice(0, 60000) };
 }
+
+/** Strip "By"/"Author:" labels; drop URLs and site/department names that CMSs put in author tags. */
+export function cleanWriter(v: string) {
+  const w = (v || "").replace(/\s+/g, " ").trim().replace(/^(by|author:?|written by)\s+/i, "").replace(/^author:\s*/i, "").trim();
+  if (/^https?:/.test(w) || w.length > 80 || w.includes("|")) return "";
+  if (/\b(marketing|communications|web team|staff|editorial|newsroom|university of|magazine|admin)\b/i.test(w)) return "";
+  return w;
+}
