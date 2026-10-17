@@ -72,32 +72,6 @@ function CapturePage() {
     }
 
     let done = false;
-    let bc: BroadcastChannel | null = null;
-    try { bc = new BroadcastChannel("ariadne-tabs"); } catch { /* old browser */ }
-    // Chrome never hands window.open to an already-open app tab by name (it
-    // only targets windows it opened itself), so the page is relayed to that
-    // tab over BroadcastChannel and this one closes itself.
-    const handOff = () => {
-      let alive = false;
-      try { alive = Date.now() - Number(localStorage.getItem("ariadne:hb") || 0) < 65000; } catch { /* private mode */ }
-      let claimed = false;
-      let left = false;
-      const leave = () => { if (left) return; left = true; void go(); };
-      if (bc) {
-        bc.onmessage = (e: MessageEvent) => {
-          if (e.data !== "ariadne:claimed" || left) return;
-          claimed = true;
-          try { bc?.close(); } catch { /* closed */ }
-          window.close();
-        };
-        bc.postMessage("ariadne:incoming");
-      }
-      if (!alive) { leave(); return; }
-      window.setTimeout(() => {
-        if (!claimed) { try { window.close(); } catch { /* blocked */ } }
-        window.setTimeout(leave, 400);
-      }, 350);
-    };
     const onMsg = (e: MessageEvent) => {
       if (done || e.source !== opener) return;
       const m = e.data as { type?: string; d?: Partial<Incoming> } | null;
@@ -106,7 +80,9 @@ function CapturePage() {
       stash(m.d);
       try { opener.postMessage("ariadne:got", "*"); } catch { /* tab closed */ }
       history.replaceState(null, "", "/capture");
-      handOff();
+      // The capture tab itself becomes Write, so the user sees the captured
+      // page land in the composer.
+      void go();
     };
     window.addEventListener("message", onMsg);
     // "ready" carries no data, so any origin may hear it.
@@ -121,7 +97,6 @@ function CapturePage() {
       window.removeEventListener("message", onMsg);
       window.clearInterval(t);
       window.clearTimeout(stop);
-      try { bc?.close(); } catch { /* closed */ }
     };
   }, [navigate]);
 
