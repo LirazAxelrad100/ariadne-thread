@@ -25,4 +25,11 @@ describe("product rules", () => {
     expect(r.text.startsWith("A little creamy, a little sweet, and a little spicy.")).toBe(true);
     expect(r.text).toContain("First paragraph of the story.");
   });
+  it("takes the article byline over a site-wide author tag", () => {
+    const r = extract(`<meta name="author" content="Marketing Communications: Web | University of Notre Dame"><p property="author" typeof="Person"><span>Author:</span> <span property="name"><a href="/stories/authors/kerry-temple/">Kerry Temple ’74</a></span></p>`, "https://x.org/a");
+    expect(r.writer).toBe("Kerry Temple ’74");
+  });
+  it("reads a contributor byline", () => {
+    expect(extract(`<div class="byline">By <a href="/contributor/john-freeman/">John Freeman</a></div>`, "https://x.org/a").writer).toBe("John Freeman");
+  });
 });
