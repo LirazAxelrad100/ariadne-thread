@@ -32,4 +32,7 @@ describe("product rules", () => {
   it("reads a contributor byline", () => {
     expect(extract(`<div class="byline">By <a href="/contributor/john-freeman/">John Freeman</a></div>`, "https://x.org/a").writer).toBe("John Freeman");
   });
+  it("skips a 'Contributors' menu link for the real byline", () => {
+    expect(extract(`<nav><a href="https://x.org/contributors/">Contributors</a></nav><main><a href="/contributors/">Contributors</a><div class="byline">By John Freeman</div></main>`, "https://x.org/a").writer).toBe("John Freeman");
+  });
 });
