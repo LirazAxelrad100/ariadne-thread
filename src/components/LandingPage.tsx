@@ -53,7 +53,7 @@ export function LandingPage() {
               <LogoMark size={92} />
               <div className="landLockText">
                 <h1 className="landName">Ariadne’s Thread</h1>
-                <p className="landHook">AI that finds the thread in the maze of your mind.</p>
+                <p className="landHook">AI that finds the thread in the maze of your mind</p>
               </div>
             </div>
             {actions}
@@ -107,7 +107,7 @@ export function LandingPage() {
             <div className="landLock landLockPlain">
               <div className="landLockText">
                 <h2 className="landName">Ariadne’s Thread</h2>
-                <p className="landHook">AI that finds the thread in the maze of your mind.</p>
+                <p className="landHook">AI that finds the thread in the maze of your mind</p>
               </div>
             </div>
             {actions}
