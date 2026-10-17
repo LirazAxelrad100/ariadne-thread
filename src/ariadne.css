@@ -1561,3 +1561,7 @@ body.mode-item .composerWrap { display: none; }
 .authErr { font-size: 13px; color: #5C5348; margin: 0; }
 .authPage .landFoot { width: calc(100% - 48px); max-width: 1120px; margin: 0 auto; }
 @media (max-width: 640px) { .authField input { font-size: 16px; } .authHead { font-size: 40px; white-space: normal; } .authLead { font-size: 18px; white-space: normal; } }
+
+/* Public demo: the read-only label beside the logo. */
+.demoTag { margin-left: 14px; font-size: 11px; color: var(--meta-soft); }
+@media (max-width: 640px) { .demoTag { display: none; } }
