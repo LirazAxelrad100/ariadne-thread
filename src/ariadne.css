@@ -1559,6 +1559,5 @@ body.mode-item .composerWrap { display: none; }
 .authField input:focus { border-color: #5C6B7D; box-shadow: 0 0 0 2px rgba(92,107,125,.2); }
 .authField input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #F7F9FB inset; -webkit-text-fill-color: #2E2822; }
 .authErr { font-size: 13px; color: #5C5348; margin: 0; }
-.authJudge { margin: 22px 0 0; font-size: 12.5px; color: #A8887A; line-height: 1.5; }
 .authPage .landFoot { width: calc(100% - 48px); max-width: 1120px; margin: 0 auto; }
 @media (max-width: 640px) { .authField input { font-size: 16px; } .authHead { font-size: 40px; white-space: normal; } .authLead { font-size: 18px; white-space: normal; } }
