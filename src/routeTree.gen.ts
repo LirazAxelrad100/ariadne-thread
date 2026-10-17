@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CaptureRouteImport } from './routes/capture'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as AuthenticatedReadRouteImport } from './routes/_authenticated/read'
 import { Route as AuthenticatedWriteRouteImport } from './routes/_authenticated/write'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
@@ -35,6 +36,11 @@ const AuthRoute = AuthRouteImport.update({
 const CaptureRoute = CaptureRouteImport.update({
   id: '/capture',
   path: '/capture',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedReadRoute = AuthenticatedReadRouteImport.update({
@@ -62,6 +68,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/capture': typeof CaptureRoute
+  '/demo': typeof DemoRoute
   '/read': typeof AuthenticatedReadRoute
   '/write': typeof AuthenticatedWriteRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/capture': typeof CaptureRoute
+  '/demo': typeof DemoRoute
   '/read': typeof AuthenticatedReadRoute
   '/write': typeof AuthenticatedWriteRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/capture': typeof CaptureRoute
+  '/demo': typeof DemoRoute
   '/_authenticated/read': typeof AuthenticatedReadRoute
   '/_authenticated/write': typeof AuthenticatedWriteRoute
   '/api/transcribe': typeof ApiTranscribeRoute
@@ -93,6 +102,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/capture'
+    | '/demo'
     | '/read'
     | '/write'
     | '/api/transcribe'
@@ -102,6 +112,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/capture'
+    | '/demo'
     | '/read'
     | '/write'
     | '/api/transcribe'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/capture'
+    | '/demo'
     | '/_authenticated/read'
     | '/_authenticated/write'
     | '/api/transcribe'
@@ -123,6 +135,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CaptureRoute: typeof CaptureRoute
+  DemoRoute: typeof DemoRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
 }
 
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/capture'
       fullPath: '/capture'
       preLoaderRoute: typeof CaptureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/read': {
@@ -207,6 +227,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CaptureRoute: CaptureRoute,
+  DemoRoute: DemoRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
 }
 export const routeTree = rootRouteImport
