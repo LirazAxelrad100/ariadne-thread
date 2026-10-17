@@ -34,9 +34,16 @@ type Rec = { stop: () => void; cancel: () => void };
  * turned into text while the speaker carries on.
  */
 async function startRec(onSegment: (f: File) => void): Promise<Rec> {
-  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-  const ctx = new AudioContext();
-  await ctx.resume();
+  // iPhone: the audio engine must be created and resumed inside the tap
+  // itself, before any await — otherwise iOS refuses to start it.
+  const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+  const ctx = new AC();
+  const resumed = ctx.resume().catch(() => {});
+  if (!navigator.mediaDevices?.getUserMedia) { void ctx.close(); throw new Error("unsupported"); }
+  let stream: MediaStream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { void ctx.close(); throw e; }
+  await resumed;
   const src = ctx.createMediaStreamSource(stream);
   const node = ctx.createScriptProcessor(4096, 1, 1);
   const rate = ctx.sampleRate;
@@ -126,7 +133,12 @@ export function VoiceButton({ onText, label = "Speak", box = false }: { onText: 
     setErr(null);
     heard.current = false;
     try { rec.current = await startRec(segment); setSec(0); setState("rec"); }
-    catch { setErr("Microphone not available."); }
+    catch (e) {
+      const n = (e as { name?: string })?.name;
+      setErr(n === "NotAllowedError" || n === "SecurityError"
+        ? "Microphone blocked. Allow it for this site in your browser settings."
+        : "Microphone not available.");
+    }
   }
   function stop() {
     const r = rec.current; rec.current = null;
