@@ -121,6 +121,7 @@ function CapturePage() {
       window.removeEventListener("message", onMsg);
       window.clearInterval(t);
       window.clearTimeout(stop);
+      try { bc?.close(); } catch { /* closed */ }
     };
   }, [navigate]);
 

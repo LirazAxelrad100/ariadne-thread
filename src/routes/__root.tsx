@@ -140,6 +140,24 @@ function RootComponent() {
     }
   }, []);
 
+  // Relay bookmarklet captures to this tab (Chrome won't target an open tab
+  // by window name) and keep a heartbeat so the capture tab knows we exist.
+  useEffect(() => {
+    let bc: BroadcastChannel | null = null;
+    try {
+      bc = new BroadcastChannel("ariadne-tabs");
+      bc.onmessage = (e) => {
+        if (e.data !== "ariadne:incoming") return;
+        try { bc?.postMessage("ariadne:claimed"); } catch { /* gone */ }
+        window.location.assign("/write");
+      };
+    } catch { /* no BroadcastChannel */ }
+    const beat = () => { try { localStorage.setItem("ariadne:hb", String(Date.now())); } catch { /* private mode */ } };
+    beat();
+    const t = window.setInterval(beat, 25000);
+    return () => { try { bc?.close(); } catch { /* closed */ } window.clearInterval(t); };
+  }, []);
+
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
