@@ -54,9 +54,14 @@ export function extract(html: string, url: string) {
   const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1];
   const title = meta(html, "og:title") || (h1 ? strip(h1) : "") || strip(html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "");
 
-  const nu = (v: string) => (/^https?:/.test(v) ? "" : v);
+  const nu = (v: string) => cleanWriter(/^https?:/.test(v) ? "" : v);
   const relAuthor = html.match(/<a[^>]*rel=["']author["'][^>]*>([\s\S]*?)<\/a>/i)?.[1];
-  let writer = nu(meta(html, "author")) || nu(meta(html, "sailthru.author")) || nu(meta(html, "parsely-author")) || nu(meta(html, "article:author")) || (relAuthor ? strip(relAuthor) : "");
+  // In-page byline links (/author/, /authors/, /contributor/) and schema.org name spans beat site-wide meta tags.
+  const linkAuthor = html.match(/<a[^>]+href=["'][^"']*\/(?:authors?|contributors?|writers?)\/[^"']+["'][^>]*>([\s\S]*?)<\/a>/i)?.[1];
+  const propName = html.match(/property=["']author["'][^>]*>[\s\S]{0,300}?property=["']name["'][^>]*>([\s\S]*?)<\//i)?.[1];
+  const bylineEl = html.match(/<(?:p|div|span)[^>]+class=["'][^"']*\bbyline\b[^"']*["'][^>]*>([\s\S]*?)<\/(?:p|div|span)>/i)?.[1];
+  let writer = nu(relAuthor ? strip(relAuthor) : "") || nu(propName ? strip(propName) : "") || nu(linkAuthor ? strip(linkAuthor) : "") || nu(bylineEl ? strip(bylineEl) : "")
+    || nu(meta(html, "author")) || nu(meta(html, "sailthru.author")) || nu(meta(html, "parsely-author")) || nu(meta(html, "article:author"));
   if (!writer) {
     for (const m of html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
       try {
@@ -69,7 +74,7 @@ export function extract(html: string, url: string) {
       } catch { /* bad json */ }
     }
   }
-  if (/^https?:/.test(writer)) writer = "";
+  writer = cleanWriter(writer);
 
   let body = html.replace(/<(script|style|noscript|svg|nav|aside|footer|header|form|figure|iframe|button)[\s\S]*?<\/\1>/gi, "");
   const scope =
